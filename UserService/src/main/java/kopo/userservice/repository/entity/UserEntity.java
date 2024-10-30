@@ -27,7 +27,7 @@ public class UserEntity {
     private String userPw;
 
     @Column(name = "user_age")
-    private String userAge;
+    private int userAge;
 
     @Column(name = "user_name")
     private String userName;
