@@ -1,0 +1,42 @@
+server:
+  port: 11000
+
+spring:
+  application:
+    name: UserService
+
+  # JPA ??
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgresSQLDialect
+        default_batch_fetch_size: 100
+        format_sql: true
+    show-sql: true
+    open-in-view: false
+  datasource:
+    username: promemoria
+    password: '1234'
+    url: jdbc:postgresql://133.186.150.106:5432/promemoria
+    driver-class-name: org.postgresql.Driver
+
+# JWT ?? ??
+jwt:
+  token:
+    creator: pm
+    refresh:
+      valid:
+        time: '3000'
+      name: jwtRefreshToken
+    access:
+      valid:
+        time: '3000'
+      name: jwtAccessToken
+  secret:
+    key: '12345678123456781234567812345678123456781234'
+

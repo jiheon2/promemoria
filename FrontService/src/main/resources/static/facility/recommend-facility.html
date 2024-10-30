@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pro Memoria - 시설 추천</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Poppins:wght@200;300;400;500&display=swap"
+          rel="stylesheet">
+    <script src="/js/modernizr.js"></script>
+    <script src="https://kit.fontawesome.com/5693f8ac72.js" crossorigin="anonymous"></script>
+    <style>
+        @font-face {
+            font-family: 'TTLaundryGothicB';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/TTLaundryGothicB.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        p {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 15px;
+        }
+
+        h3 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        h5 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        /* 두 개의 박스가 나란히 배치되는 레이아웃 */
+        .content-boxes {
+            width: 80%;
+            margin: 50px auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .content-box {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+            height: 820px; /* 박스 높이를 고정 */
+        }
+
+        .search-box {
+            background: white;
+            /*border-radius: 40px;*/
+            padding: 10px;
+            border-bottom: 1px solid #89480a;
+            height: 7.5%;
+            margin: 0 20px 20px 20px;
+        }
+
+        .search-txt {
+            border: none;
+            background: none;
+            outline: none;
+            float: left;
+            color: #797979;
+            font-size: 16px;
+            line-height: 30px;
+        }
+
+        .search-button {
+            color: #89480a;
+            float: right;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            font-size: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        #dementia {
+            margin: 0 auto;
+            align-items: center;
+            display: flex;
+            background-color: #f1d5a3;
+            border-color: #f1d5a3;
+            color: black;
+            height: 40px;
+            justify-content: center;
+            font-size: 16px;
+            width: 43%;
+            border-radius: 10px;
+        }
+
+        #health {
+            margin: 0 auto;
+            align-items: center;
+            display: flex;
+            background-color: #f1d5a3;
+            border-color: #f1d5a3;
+            color: black;
+            height: 40px;
+            justify-content: center;
+            font-size: 16px;
+            width: 43%;
+            border-radius: 10px;
+        }
+
+        .card {
+            font-size: 16px;
+            width: 95%;
+            margin: 0 auto 15px;
+        }
+
+        .card #facilityWork {
+            height: 150px;
+        }
+
+        .card-header {
+            background: #f8efdf;
+            color: #89480a;
+        }
+
+    </style>
+</head>
+<body class="bg-body" data-bs-spy="scroll" data-bs-target="#navbar" data-bs-root-margin="0px 0px -40%"
+      data-bs-smooth-scroll="true" tabindex="0">
+
+<!-- 스피너 -->
+<div id="preloader">
+      <span class="loader">
+        <span class="loader-inner"></span>
+      </span>
+</div>
+<!-- 스피너 -->
+
+<!-- 헤더 -->
+<div class="header-include"></div>
+<!-- 헤더 -->
+
+<!-- 메인 페이지 -->
+
+<!-- 두 개의 중앙 컨텐츠 박스 -->
+<div class="content-boxes">
+    <div class="content-box" id="map">
+        <!-- 첫 번째 박스의 내용 -->
+    </div>
+    <div class="content-box">
+        <!-- 두 번째 박스의 내용 -->
+        <div class="search-box">
+            <input class="search-txt" type="text" name="" placeholder="시설명을 검색하세요">
+            <button class="search-button" type="button">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px">
+            <button type="button" id="dementia">치매시설</button>
+            <button type="button" id="health">건강시설</button>
+        </div>
+        <div class="card">
+            <div class="card-header">시설명</div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" id="facilityName"><span>- </span>영등포구치매안심센터</li>
+            </ul>
+        </div>
+        <div class="card">
+            <div class="card-header">시설유형</div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" id="facilityType"><span>- </span>치매센터</li>
+            </ul>
+        </div>
+        <div class="card">
+            <div class="card-header">시설주소</div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" id="facilityAddress"><span>- </span>영등포</li>
+            </ul>
+        </div>
+        <div class="card">
+            <div class="card-header">시설전화번호</div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" id="facilityCallNum"><span>- </span>02-0000-0000</li>
+            </ul>
+        </div>
+        <div class="card">
+            <div class="card-header">업무내용</div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" id="facilityWork"><span>- </span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- 메인페이지 -->
+
+<!-- 푸터 -->
+<div class="footer-include"></div>
+<!-- 푸터 -->
+
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="/js/plugins.js"></script>
+<script type="text/javascript" src="/js/script.js"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=d32662782c96463dd75da82538e45b09"></script>
+<script>
+    $(document).ready(function () {
+        $('.header-include').load('/header.html');
+        $('.footer-include').load('/footer.html');
+    })
+
+    // 카카오 맵 초기화
+    var container = document.getElementById('map'); // 지도를 담을 영역의 DOM 레퍼런스
+    var options = { // 지도를 생성할 때 필요한 기본 옵션
+        center: new kakao.maps.LatLng(37.549868, 126.842289), // 지도의 초기 중심좌표
+        level: 3 // 지도의 레벨(확대, 축소 정도)
+    };
+
+    var map = new kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
+    var markers = []; // 마커를 저장할 배열
+    var currentInfoWindow = null; // 현재 열린 인포윈도우를 저장
+
+    // 검색 버튼 클릭 이벤트
+    document.getElementById('btnSearch').addEventListener('click', function() {
+        var centerName = document.getElementById('centerName').value;
+
+        // 기존 마커 제거
+        removeMarkers();
+
+        // AJAX 요청
+        $.ajax({
+            url: '/facility/v1/getCenterName', // API 엔드포인트
+            type: 'POST',
+            data: { centerName: centerName },
+            success: function(response) {
+                if (response && response.data) {
+                    response.data.forEach(function(facility) {
+                        addMarker(facility); // 시설 위치에 마커 추가
+                    });
+                } else {
+                    alert('시설을 찾을 수 없습니다.');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX 요청 실패:', error);
+                alert('시설 조회에 실패했습니다.');
+            }
+        });
+    });
+
+    // 버튼 클릭 이벤트
+    document.getElementById('dementia').addEventListener('click', function() {
+        loadFacilities('치매시설');
+    });
+
+    document.getElementById('health').addEventListener('click', function() {
+        loadFacilities('건강시설');
+    });
+
+    function loadFacilities(centerType) {
+        // 기존 마커 제거
+        removeMarkers();
+
+        // AJAX 요청
+        $.ajax({
+            url: '/facility/v1/getCenterTypeList', // API 엔드포인트
+            type: 'POST',
+            data: { centerType: centerType },
+            success: function(response) {
+                if (response && response.data) {
+                    response.data.forEach(function(facility) {
+                        addMarker(facility); // 시설 위치에 마커 추가
+                    });
+                } else {
+                    alert('시설을 찾을 수 없습니다.');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX 요청 실패:', error);
+                alert('시설 조회에 실패했습니다.');
+            }
+        });
+    }
+
+    // 마커 추가 함수
+    function addMarker(facility) {
+        var markerPosition = new kakao.maps.LatLng(facility.latitude, facility.longitude);
+        var marker = new kakao.maps.Marker({
+            position: markerPosition
+        });
+
+        marker.setMap(map);
+        markers.push(marker); // 배열에 마커 추가
+
+        // 마커에 커서 올리면 센터 이름 표시
+        var infowindow = new kakao.maps.InfoWindow({
+            content: '<div style="padding:5px; font-size: medium">' + facility.centerName + '</div>'
+        });
+
+        kakao.maps.event.addListener(marker, 'mouseover', function() {
+            infowindow.open(map, marker);
+        });
+
+        kakao.maps.event.addListener(marker, 'mouseout', function() {
+            infowindow.close();
+        });
+
+        // 마커 클릭 시 시설 정보 표시 및 인포윈도우 관리
+        kakao.maps.event.addListener(marker, 'click', function() {
+            // 이전 인포윈도우 닫기
+            if (currentInfoWindow) {
+                currentInfoWindow.close();
+            }
+            currentInfoWindow = infowindow; // 현재 인포윈도우 갱신
+            infowindow.open(map, marker);
+
+            // 시설 정보 카드에 데이터 채우기
+            document.getElementById('facilityName').innerText = facility.centerName;
+            document.getElementById('facilityType').innerText = facility.centerType;
+            document.getElementById('facilityAddress').innerText = facility.addr;
+            document.getElementById('facilityCallNum').innerText = facility.contactTel;
+            document.getElementById('facilityWork').innerText = facility.taskContent;
+
+            // 시설 정보 카드 표시
+            document.getElementById('facilityInfo').style.display = 'block';
+
+            // 지도 중심을 마커 위치로 이동 (확실하게 이동)
+            map.panTo(markerPosition);
+            map.setLevel(5); // 레벨 조정
+        });
+    }
+
+    // 기존 마커 제거 함수
+    function removeMarkers() {
+        markers.forEach(function(marker) {
+            marker.setMap(null); // 지도에서 마커 제거
+        });
+        markers = []; // 배열 초기화
+
+        // 열린 인포윈도우 닫기
+        if (currentInfoWindow) {
+            currentInfoWindow.close();
+        }
+        currentInfoWindow = null; // 현재 열린 인포윈도우 초기화
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pro Memoria - 화상채팅</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Poppins:wght@200;300;400;500&display=swap"
+          rel="stylesheet">
+    <script src="/js/modernizr.js"></script>
+    <style>
+        @font-face {
+            font-family: 'TTLaundryGothicB';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/TTLaundryGothicB.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        p {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 15px;
+        }
+
+        h1 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+        }
+
+        h3 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        h5 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        /* 두 개의 박스가 나란히 배치되는 레이아웃 */
+        .content-boxes {
+            width: 80%;
+            margin: 50px auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .content-box {
+            width: 45%;
+            border-radius: 20px;
+            box-shadow: 5px 5px 12px rgb(0,0,0,0.5);
+            padding: 50px;
+            height: 500px; /* 박스 높이를 고정 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: black;
+            cursor: pointer;
+        }
+
+        .content-box:active {
+            box-shadow: 1px 1px 0 rgb(0,0,0,0.5);
+            position: relative;
+            border: none;
+            top: 2px;
+        }
+
+        .box1 {
+            background-color: #d4a373; /* 첫 번째 박스의 배경색 */
+        }
+
+        .box2 {
+            background-color: #f0e1c0; /* 두 번째 박스의 배경색 */
+        }
+
+        .small-text {
+            font-size: 24px;
+            color: #3d3d3d;
+            margin-bottom: 20px;
+        }
+
+        .box1 > h1, .box2 > h1 {
+            font-size: 48px;
+        }
+
+        .modal-body {
+            max-height: 500px;
+            overflow-y: scroll;
+        }
+
+        .neighbor-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .neighbor-item:last-child {
+            border-bottom: none; /* 마지막 항목의 경계선 제거 */
+        }
+
+        .neighbor-name {
+            font-weight: bold;
+        }
+
+        .enter-button {
+            padding: 5px 10px;
+            background-color: #f1d5a3;
+            border-color: #f1d5a3;
+            color: #89480a;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .enter-button:hover {
+            background-color: #89480a; /* 버튼 호버 색상 */
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-body" data-bs-spy="scroll" data-bs-target="#navbar" data-bs-root-margin="0px 0px -40%"
+      data-bs-smooth-scroll="true" tabindex="0">
+
+<!-- 스피너 -->
+<div id="preloader">
+      <span class="loader">
+        <span class="loader-inner"></span>
+      </span>
+</div>
+<!-- 스피너 -->
+
+<!-- 헤더 -->
+<div class="header-include"></div>
+<!-- 헤더 -->
+
+<!-- 메인 페이지 -->
+<!-- 두 개의 중앙 컨텐츠 박스 -->
+<div class="content-boxes">
+    <div class="content-box box1" id="makeVideoChat">
+        <p class="small-text">새로 채팅방을 만들고 싶어요</p>
+        <h1>채팅방 생성</h1>
+    </div>
+    <div class="content-box box2" id="enterVideoChat">
+        <p class="small-text">이웃의 채팅방에 참여하고 싶어요</p>
+        <h1>채팅방 참여</h1>
+    </div>
+</div>
+
+<!-- 채팅 목록 모달 -->
+<div class="modal fade" id="videoChatListModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="exampleModalLabel" style="font-size: 20px">화상채팅 목록</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="neighbor-list">
+                    <div class="neighbor-item">
+                        <span class="neighbor-name">이웃명</span>
+                        <button class="enter-button">입장</button>
+                    </div>
+                    <div class="neighbor-item">
+                        <span class="neighbor-name">이웃명</span>
+                        <button class="enter-button">입장</button>
+                    </div>
+                    <div class="neighbor-item">
+                        <span class="neighbor-name">이웃명</span>
+                        <button class="enter-button">입장</button>
+                    </div>
+                    <div class="neighbor-item">
+                        <span class="neighbor-name">이웃명</span>
+                        <button class="enter-button">입장</button>
+                    </div>
+                    <div class="neighbor-item">
+                        <span class="neighbor-name">이웃명</span>
+                        <button class="enter-button">입장</button>
+                    </div>
+                    <div class="neighbor-item">
+                        <span class="neighbor-name">이웃명</span>
+                        <button class="enter-button">입장</button>
+                    </div>
+                    <div class="neighbor-item">
+                        <span class="neighbor-name">이웃명</span>
+                        <button class="enter-button">입장</button>
+                    </div>
+                    <div class="neighbor-item">
+                        <span class="neighbor-name">이웃명</span>
+                        <button class="enter-button">입장</button>
+                    </div>
+                </div>
+            </div>
+<!--            <div class="modal-footer">-->
+<!--                <button type="button" class="btn" id="insertWordBtn">입력하기</button>-->
+<!--                <button type="button" class="btn" id="laterBtn">나중에</button>-->
+<!--            </div>-->
+        </div>
+    </div>
+</div>
+<!-- 메인페이지 -->
+
+<!-- 푸터 -->
+<div class="footer-include"></div>
+<!-- 푸터 -->
+
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="/js/plugins.js"></script>
+<script type="text/javascript" src="/js/script.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.header-include').load('/header.html');
+        $('.footer-include').load('/footer.html');
+
+        $('#makeVideoChat').on("click", function () {
+            location.href="/video/video-chat-room.html";
+        })
+
+        $('#enterVideoChat').on("click", function () {
+            $("#videoChatListModal").modal("show");
+        })
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+server:
+  port: 11000
+  address: localhost
+
+spring:
+  application:
+    name: MonoPM
+
+# JWT 토큰 설정
+jwt:
+  token:
+    creator: pm
+    refresh:
+      valid:
+        time: '3000'
+      name: jwtRefreshToken
+    access:
+      valid:
+        time: '3000'
+      name: jwtAccessToken
+  secret:
+    key: '12345678123456781234567812345678123456781234'

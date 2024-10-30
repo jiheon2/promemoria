@@ -1,0 +1,40 @@
+# 일반 설정
+global:
+  postgresql:
+    auth:
+      postgresPassword: "1234"      # PostgreSQL admin 계정 비밀번호
+      username: "pm"               # 기본 사용자 이름
+      password: "1234"               # 기본 사용자 비밀번호
+      database: "pm"               # 기본 데이터베이스 이름
+
+# 이미지 설정
+image:
+  registry: docker.io
+  repository: bitnami/postgresql
+  tag: 15.3.0
+  pullPolicy: IfNotPresent
+
+# PostgreSQL 설정
+primary:
+  persistence:
+    enabled: true                             # 데이터 보존 여부
+    size: 5Gi                                 # 데이터 볼륨 크기
+    storageClass: "nks-block-storage"                  # Kubernetes의 storageClass (GCP, AWS 등 환경에 따라 설정)
+  resources:
+    limits:
+      memory: 500Mi
+      cpu: 250m
+    requests:
+      memory: 500Mi
+      cpu: 250m
+
+# 서비스 설정
+service:
+  type: ClusterIP                             # 서비스 유형: ClusterIP, NodePort, LoadBalancer 중 선택
+  port: 5432                                  # PostgreSQL 기본 포트
+
+# 메트릭 설정 (필요시 활성화)
+metrics:
+  enabled: false                              # true로 설정하면 Prometheus 메트릭을 노출
+  serviceMonitor:
+    enabled: false                            # Prometheus Operator와 통합하려면 true로 설정

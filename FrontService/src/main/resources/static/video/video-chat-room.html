@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pro Memoria - 화상채팅</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Poppins:wght@200;300;400;500&display=swap"
+          rel="stylesheet">
+    <script src="/js/modernizr.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        @font-face {
+            font-family: 'TTLaundryGothicB';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/TTLaundryGothicB.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        p {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 15px;
+        }
+
+        h3 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        h5 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        /* 두 개의 박스가 나란히 배치되는 레이아웃 */
+        .content-boxes {
+            width: 70%;
+            margin: 50px auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        #right-boxes {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: 30px;
+        }
+
+        #content-box1 {
+            flex: 2;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+            height: 700px; /* 박스 높이를 고정 */
+        }
+
+        #content-box2 {
+            flex: 1.5;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+            height: 250px; /* 박스 높이를 고정 */
+        }
+
+        #content-box3 {
+            flex: 1.5;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+            height: 350px; /* 박스 높이를 고정 */
+        }
+
+        video {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-body" data-bs-spy="scroll" data-bs-target="#navbar" data-bs-root-margin="0px 0px -40%"
+      data-bs-smooth-scroll="true" tabindex="0">
+
+<!-- 스피너 -->
+<div id="preloader">
+      <span class="loader">
+        <span class="loader-inner"></span>
+      </span>
+</div>
+<!-- 스피너 -->
+
+<!-- 헤더 -->
+<div class="header-include"></div>
+<!-- 헤더 -->
+
+<!-- 메인 페이지 -->
+<!-- 두 개의 중앙 컨텐츠 박스 -->
+<div class="content-boxes">
+    <div id="content-box1">
+        <div id="remoteVideoCallStream"></div> <!--상대 웹 캠 화면-->
+    </div>
+    <div id="right-boxes">
+        <div id="content-box2">
+            <video id="localVideoCallStream" autoplay playsinline controls></video> <!--내 웹 캠 화면-->
+        </div>
+        <div id="content-box3" style="position: relative;">
+            <h3 style="text-align: center">화상 채팅 정보</h3>
+            <hr>
+            <p>참여자 : 홍길동, 임꺽정</p>
+            <p>개설일 : 2024/10/18</p>
+            <div style="text-align: center; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);">
+                <span class="badge rounded-pill bg-danger mb-3">치매 조기 진단을 위해 [화면 녹화 시작]을 눌러주세요.</span>
+                <div class="d-flex justify-content-between">
+                    <div style="flex: 1">
+                        <button class="btn btn-danger w-100" id="startScreenRecordBtn">화면 녹화 시작</button>
+                        <button class="btn btn-warning w-100" id="stopScreenRecordBtn" style="display: none">화면 녹화 중지</button>
+                        <button class="btn btn-success w-100" id="uploadRecordedFile"  style="display: none">다운로드 하기</button>
+                    </div>
+                    <div style="flex: 1">
+                        <button class="btn btn-secondary w-100" id="videoChatEndBtn" style="margin-left: 15px">화상채팅 종료</button>
+                    </div>
+                </div>
+            </div>
+            <div> <!-- TODO 이건 없애야 합니다... -->
+                <input type="number" id="roomId">
+                <button type="button" id="enterRoomBtn">입장하기</button>
+                <button type="button" id="startStreamBtn" style="display: none;">시작하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 메인페이지 -->
+
+<!-- 푸터 -->
+<div class="footer-include"></div>
+<!-- 푸터 -->
+
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="/js/plugins.js"></script>
+<script type="text/javascript" src="/js/script.js"></script>
+<script src="/js/peerConfig.js"></script> <!--webRTC 연결을 위한 js-->
+<script>
+    $(document).ready(function () {
+        $('.header-include').load('/header.html');
+        $('.footer-include').load('/footer.html');
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+server:
+  port: 11000
+
+spring:
+  application:
+    name: PreventionService
+
+  # JPA
+  jpa:
+    open-in-view: 'false'
+    show-sql: 'true'
+    properties:
+      hibernate:
+        default_batch_fetch_size: '100'
+        format_sql: 'true'
+        use_sql_comments: 'true'
+
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+  # MariaDB
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: root
+    password: 1234
+    url: jdbc:mariadb://223.130.158.65:30006/promemoria

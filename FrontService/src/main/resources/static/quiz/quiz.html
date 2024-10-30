@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pro Memoria - 퀴즈 풀이</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Poppins:wght@200;300;400;500&display=swap"
+          rel="stylesheet">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css'>
+    <script src="/js/modernizr.js"></script>
+    <style>
+        @font-face {
+            font-family: 'TTLaundryGothicB';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/TTLaundryGothicB.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        p {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 15px;
+        }
+
+        h2 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 30px;
+        }
+
+        h3 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        h5 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        /* 중앙 컨텐츠 박스 스타일 */
+        .content-box {
+            width: 60%;
+            height: 660px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+            gap: 30px;
+        }
+
+        .answer {
+            flex: 1;
+            border-radius: 20px;
+            /*box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);*/
+            padding: 50px;
+            height: 250px; /* 박스 높이를 고정 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .answer-box {
+            display: flex;
+            margin: 0 auto;
+            justify-content: space-between;
+            gap: 80px;
+            width: 80%;
+        }
+
+        .quiz-box {
+            background-color: #fff;
+            padding: 50px;
+            height: 250px; /* 박스 높이를 고정 */
+        }
+
+        /* 모달 배경 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        /* 모달 박스 */
+        .modal-content {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 30px;
+            width: 25%;
+            height: 60%;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
+            text-align: center;
+        }
+
+        /* 닫기 버튼 */
+        .close-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #f8efdf;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            background-color: #f8efdf;
+        }
+
+        .fi,
+        .fi::before {
+            font-size: 120px;
+            height: 100%;
+        }
+
+    </style>
+</head>
+<body class="bg-body" data-bs-spy="scroll" data-bs-target="#navbar" data-bs-root-margin="0px 0px -40%"
+      data-bs-smooth-scroll="true" tabindex="0">
+
+<!-- 스피너 -->
+<div id="preloader">
+      <span class="loader">
+        <span class="loader-inner"></span>
+      </span>
+</div>
+<!-- 스피너 -->
+
+<!-- 헤더 -->
+<div class="header-include"></div>
+<!-- 헤더 -->
+
+<!-- 메인 페이지 -->
+
+<!-- 중앙 컨텐츠 박스 -->
+<div class="content-box">
+    <div class="quiz-box">
+        <p>1번 퀴즈</p>
+        <p>2024 KBO 리그의 정규 시즌 3위는 삼성 라이온즈다.</p>
+    </div>
+    <div class="answer-box">
+        <div class="answer" style="background-color: white; border: #1d71b8 solid 15px; box-shadow: 0 0 15px #1d71b8;"><i class="fi fi-br-o" style="color: #1d71b8;"></i></div>
+        <div class="answer" style="background-color: white; border: #f25a5a solid 15px; box-shadow: 0 0 15px #f25a5a;"><i class="fi fi-br-x" style="color: #f25a5a"></i></div>
+    </div>
+</div>
+<!-- 메인페이지 -->
+
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content">
+        <div style="height: 90%;">
+            <h2>모달 창</h2>
+            <p>이것은 화면 정중앙에 위치한 모달 창입니다.</p>
+        </div>
+        <button class="close-btn" id="closeModalBtn">다음 문제 풀기</button>
+    </div>
+</div>
+
+<!-- 푸터 -->
+<div class="footer-include"></div>
+<!-- 푸터 -->
+
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="/js/plugins.js"></script>
+<script type="text/javascript" src="/js/script.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.header-include').load('/header.html');
+        $('.footer-include').load('/footer.html');
+    })
+
+    // 모달 열기 및 닫기 기능
+    const openModalBtns = document.getElementsByClassName('answer');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const modalOverlay = document.getElementById('modalOverlay');
+
+    for (let i = 0; i < openModalBtns.length; i++) {
+        openModalBtns[i].addEventListener('click', () => {
+            modalOverlay.style.display = 'block';
+        });
+    }
+
+    closeModalBtn.addEventListener('click', () => {
+        modalOverlay.style.display = 'none';
+    });
+
+</script>
+</body>
+</html>

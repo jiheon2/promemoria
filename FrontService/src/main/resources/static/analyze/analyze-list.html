@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pro Memoria - 분석 결과</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Poppins:wght@200;300;400;500&display=swap"
+          rel="stylesheet">
+    <script src="/js/modernizr.js"></script>
+    <script src="https://kit.fontawesome.com/5693f8ac72.js" crossorigin="anonymous"></script>
+    <style>
+        @font-face {
+            font-family: 'TTLaundryGothicB';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/TTLaundryGothicB.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        p {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 15px;
+        }
+
+        h3 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        h5 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        /* 중앙 컨텐츠 박스 스타일 */
+        .content-box {
+            width: 60%;
+            height: 660px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+        }
+
+        /* 리스트 스타일 */
+        .diagnosis-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            max-height: 480px;
+            overflow-y: scroll;
+        }
+
+        .diagnosis-item {
+            padding: 10px; /* 패딩을 줄여서 항목 간격 감소 */
+            margin: 10px 0; /* 항목 간의 여백 */
+            background-color: #f8f9fa; /* 배경색을 약간 변경 */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .diagnosis-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .date {
+            font-weight: bold;
+        }
+
+        .status {
+            margin-left: 10px;
+            color: #555;
+        }
+
+        .search-area {
+            border-bottom: 1px solid #89480a;
+            margin: 0 20px 20px 20px;
+        }
+
+        .search-txt {
+            border: none;
+            background: none;
+            outline: none;
+            float: left;
+        }
+
+        .search-button {
+            color: #89480a;
+            float: right;
+        }
+    </style>
+</head>
+<body class="bg-body" data-bs-spy="scroll" data-bs-target="#navbar" data-bs-root-margin="0px 0px -40%"
+      data-bs-smooth-scroll="true" tabindex="0">
+
+<!-- 스피너 -->
+<div id="preloader">
+      <span class="loader">
+        <span class="loader-inner"></span>
+      </span>
+</div>
+<!-- 스피너 -->
+
+<!-- 헤더 -->
+<div class="header-include"></div>
+<!-- 헤더 -->
+
+<!-- 메인 페이지 -->
+
+<!-- 중앙 컨텐츠 박스 -->
+<div class="content-box">
+    <div class="d-flex justify-content-end">
+        <div class="search-area" style="width: 40%">
+            <input class="search-txt" type="date" name="" style="width: 80%">
+            <button class="search-button btn btn-primary" type="button" style="display: inline-block">검색</button>
+        </div>
+    </div>
+    <p>* 종료된 화상채팅의 분석 결과는 10분 후부터 확인 가능합니다.</p>
+    <ul class="diagnosis-list">
+        <li class="diagnosis-item d-flex justify-content-between" onclick="location.href='/analyze/analyze.html'">
+            <div>
+                <span class="date">2024-10-29</span><span> 분석 결과</span>
+            </div>
+            <span class="status">결과: 비정상</span>
+        </li>
+        <li class="diagnosis-item d-flex justify-content-between">
+            <div>
+                <span class="date">2024-10-22</span><span> 분석 결과</span>
+            </div>
+            <span class="status">결과: 정상</span>
+        </li>
+        <li class="diagnosis-item d-flex justify-content-between">
+            <div>
+                <span class="date">2024-10-15</span><span> 분석 결과</span>
+            </div>
+            <span class="status">결과: 비정상</span>
+        </li>
+        <li class="diagnosis-item d-flex justify-content-between">
+            <div>
+                <span class="date">2024-10-15</span><span> 분석 결과</span>
+            </div>
+            <span class="status">결과: 비정상</span>
+        </li>
+        <li class="diagnosis-item d-flex justify-content-between">
+            <div>
+                <span class="date">2024-10-15</span><span> 분석 결과</span>
+            </div>
+            <span class="status">결과: 비정상</span>
+        </li>
+        <li class="diagnosis-item d-flex justify-content-between">
+            <div>
+                <span class="date">2024-10-15</span><span> 분석 결과</span>
+            </div>
+            <span class="status">결과: 비정상</span>
+        </li>
+        <li class="diagnosis-item d-flex justify-content-between">
+            <div>
+                <span class="date">2024-10-15</span><span> 분석 결과</span>
+            </div>
+            <span class="status">결과: 비정상</span>
+        </li>
+        <li class="diagnosis-item d-flex justify-content-between">
+            <div>
+                <span class="date">2024-10-15</span><span> 분석 결과</span>
+            </div>
+            <span class="status">결과: 비정상</span>
+        </li>
+        <li class="diagnosis-item d-flex justify-content-between">
+            <div>
+                <span class="date">2024-10-15</span><span> 분석 결과</span>
+            </div>
+            <span class="status">결과: 비정상</span>
+        </li>
+    </ul>
+</div>
+<!-- 메인페이지 -->
+
+<!-- 푸터 -->
+<div class="footer-include"></div>
+<!-- 푸터 -->
+
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="/js/plugins.js"></script>
+<script type="text/javascript" src="/js/script.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.header-include').load('/header.html');
+        $('.footer-include').load('/footer.html');
+    })
+</script>
+</body>
+</html>

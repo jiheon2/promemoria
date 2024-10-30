@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pro Memoria - 분석 결과</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Poppins:wght@200;300;400;500&display=swap"
+          rel="stylesheet">
+    <script src="/js/modernizr.js"></script>
+    <script src="https://kit.fontawesome.com/5693f8ac72.js" crossorigin="anonymous"></script>
+    <style>
+        @font-face {
+            font-family: 'TTLaundryGothicB';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/TTLaundryGothicB.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        p {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 15px;
+        }
+
+        h3 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        h5 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        /* 중앙 컨텐츠 박스 스타일 */
+        .content-box {
+            width: 80%;
+            height: 660px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+        }
+
+        /* 영상 출력 박스 */
+        #content-box2 {
+            flex: 1;
+            border: 1px solid #89480a;
+            background-color: #f6f4f0;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+            height: 400px;
+            margin-bottom: 20px;
+        }
+
+        /* 분석 결과 박스 */
+        #content-box3 {
+            border: 1px solid #89480a;
+            background-color: #f6f4f0;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 20px 50px;
+            height: 400px;
+        }
+
+        /* 페이지네이션 부트스트랩 기본 스타일 변경용 */
+        .page-link:focus {
+            z-index: 3;
+            color: black !important;
+            outline: 0;
+            box-shadow: none;
+            background-color: #FFffff;
+        }
+
+        .page-link {
+            border : none !important;
+            color: #89480a !important;
+        }
+
+        .pagination .page-item a.page-link:hover {
+            background-color: #FFffff;
+            color: black !important;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #FFffff;
+        }
+    </style>
+</head>
+<body class="bg-body" data-bs-spy="scroll" data-bs-target="#navbar" data-bs-root-margin="0px 0px -40%"
+      data-bs-smooth-scroll="true" tabindex="0">
+
+<!-- 스피너 -->
+<div id="preloader">
+      <span class="loader">
+        <span class="loader-inner"></span>
+      </span>
+</div>
+<!-- 스피너 -->
+
+<!-- 헤더 -->
+<div class="header-include"></div>
+<!-- 헤더 -->
+
+<!-- 메인 페이지 -->
+
+<!-- 중앙 컨텐츠 박스 -->
+<div class="content-box">
+    <h1 class="text-center" style="color: #89480a; font-family: TTLaundryGothicB; text-align: center">홍길동님의 분석결과입니다.</h1>
+    <div class="d-flex justify-content-between mt-5">
+        <!-- 왼쪽 부분 -->
+        <div class="row" style="width: 50%">
+            <div id="content-box2">
+                <!-- 영상 들어갈 부분 -->
+            </div>
+
+            <!-- 페이지네이션 -->
+            <div class="d-flex justify-content-center" id="pagination">
+                <ul class="pagination pagination-lg">
+                    <li class="page-item">
+                        <a class="page-link" href="#"><i class="fa-solid fa-play fa-flip-horizontal fa-xl"></i></a>
+                    </li>
+                    <li class="page-item active">
+                        <a class="page-link" href="#">1</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">2</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">3</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#"><i class="fa-solid fa-play fa-xl"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 오른쪽 부분 -->
+        <div class="row" style="width: 50%">
+            <div id="content-box3">
+                <h3 style="text-align: center">분석일 : 2024-10-29</h3>
+                <div class="d-flex justify-content-between mt-5">
+                    <div class="d-flex justify-content-start" style="width: 50%">
+                        <div id="resultTitle" style="margin-right: 10px">
+                            <h3 style="color: #89480a; font-family: TTLaundryGothicB;">눈 깜빡임 : </h3>
+                            <h3 style="color: #89480a; font-family: TTLaundryGothicB;">정확도 : </h3>
+                            <br>
+                            <h3 style="color: #89480a; font-family: TTLaundryGothicB;">입술 떨림 : </h3>
+                            <h3 style="color: #89480a; font-family: TTLaundryGothicB;">정확도 : </h3>
+                            <br>
+                            <h3 style="color: #89480a; font-family: TTLaundryGothicB;">머리 기울기 : </h3>
+                            <h3 style="color: #89480a; font-family: TTLaundryGothicB;">정확도 : </h3>
+                        </div>
+                        <div id="resultContent">
+                            <h3 style="font-family: TTLaundryGothicB;">정상</h3>
+                            <h3 style="font-family: TTLaundryGothicB;">0.666671 %</h3>
+                            <br>
+                            <h3 style="font-family: TTLaundryGothicB;">비정상</h3>
+                            <h3 style="font-family: TTLaundryGothicB;">0.44445 %</h3>
+                            <br>
+                            <h3 style="font-family: TTLaundryGothicB;">정상</h3>
+                            <h3 style="font-family: TTLaundryGothicB;">0.444447 %</h3>
+                        </div>
+                    </div>
+                    <div class="text-center align-self-center" style="width: 50%">
+                        <h2 style="color: #89480a; font-family: TTLaundryGothicB;">검사 결과</h2>
+                        <div class="resWarning" id="resWarning">
+                            <span class="badge rounded-pill bg-warning" style="font-size: 24px">비정상</span>
+                            <p class="mt-4" style="color: #c23a06">가까운 검사 기관을 찾아 정밀 검사를 받아보세요</p>
+                            <a href="/facility/recommend-facility.html">시설 찾기</a>
+                        </div>
+                        <div class="resWarning" id="resSuccess" style="display: none">
+                            <span class="badge rounded-pill bg-success" style="font-size: 24px;">정상</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 메인페이지 -->
+
+<!-- 푸터 -->
+<div class="footer-include"></div>
+<!-- 푸터 -->
+
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="/js/plugins.js"></script>
+<script type="text/javascript" src="/js/script.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.header-include').load('/header.html');
+        $('.footer-include').load('/footer.html');
+    })
+</script>
+</body>
+</html>
