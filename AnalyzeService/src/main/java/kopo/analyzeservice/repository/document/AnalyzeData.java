@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import kopo.analyzeservice.dto.AnalyzeDTO;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import java.util.Date;
 import java.util.List;
 
 @Builder
@@ -25,7 +23,6 @@ public class AnalyzeData {
     private String finalStatus; // 최종 이상 여부
 
     @Builder
-    @Getter
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Result {
         private AnalyzeDTO.Status status;  // 상태
@@ -33,7 +30,6 @@ public class AnalyzeData {
     }
 
     @Builder
-    @Getter
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Accuracy {
         private String accurate;     // 정확한 정도

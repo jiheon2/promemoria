@@ -2,13 +2,9 @@ package kopo.analyzeservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
-import lombok.Getter;
-
-import java.util.Date;
 import java.util.List;
 
 @Builder
-@Getter
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public record AnalyzeDTO(
         Result eye, // 눈
@@ -21,14 +17,12 @@ public record AnalyzeDTO(
         String finalStatus // 최종 이상 여부
 ) {
     @Builder
-    @Getter
     public record Result(
             Status status, // 상태
             List<Accuracy> accuracy // 정확도
     ) {
     }
     @Builder
-    @Getter
     public record Accuracy(
             String accurate, // 정확한 정도
             String inaccurate // 정확하지 않은 정도
