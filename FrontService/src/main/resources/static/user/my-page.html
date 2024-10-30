@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pro Memoria - 마이페이지</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Poppins:wght@200;300;400;500&display=swap"
+          rel="stylesheet">
+    <script src="/js/modernizr.js"></script>
+    <style>
+        @font-face {
+            font-family: 'TTLaundryGothicB';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/TTLaundryGothicB.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        p {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 15px;
+        }
+
+        h1 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 60px;
+            margin: 70px auto 0;
+            text-align: center;
+            color: #89480a;
+        }
+
+        h3 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        h5 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        /* 두 개의 박스가 나란히 배치되는 레이아웃 */
+        .content-boxes {
+            width: 70%;
+            margin: 50px auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .content-box {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+            height: 380px; /* 박스 높이를 고정 */
+        }
+
+        #edit {
+            margin: 0 auto;
+            align-items: center;
+            display: flex;
+            background-color: #f1d5a3;
+            border-color: #f1d5a3;
+            color: black;
+            height: 60px;
+            justify-content: center;
+            font-size: 20px;
+            width: 15%;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group-text {
+            width: 25%;
+            justify-content: center;
+            background-color: #f8efdf;
+            color: #89480a;
+        }
+
+        input.form-control:read-only {
+            background-color: white; !important;
+            cursor: default !important;
+        }
+
+        input.form-control:focus, input.form-control:active {
+            border: 1px solid #ced4da;
+            box-shadow: none;
+            outline: none !important;
+        }
+    </style>
+</head>
+<body class="bg-body" data-bs-spy="scroll" data-bs-target="#navbar" data-bs-root-margin="0px 0px -40%"
+      data-bs-smooth-scroll="true" tabindex="0">
+
+<!-- 스피너 -->
+<div id="preloader">
+      <span class="loader">
+        <span class="loader-inner"></span>
+      </span>
+</div>
+<!-- 스피너 -->
+
+<!-- 헤더 -->
+<div class="header-include"></div>
+<!-- 헤더 -->
+
+<!-- 메인 페이지 -->
+<h1>마이 페이지</h1>
+<!-- 두 개의 중앙 컨텐츠 박스 -->
+<div class="content-boxes">
+    <div class="content-box">
+        <!-- 첫 번째 박스의 내용 -->
+        <div style="margin: 15px; display: flex">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">ID</span>
+                <input type="text" readonly class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-lg" id="userId">
+            </div>
+        </div>
+        <div style="margin: 15px; display: flex">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">이름</span>
+                <input type="text" readonly class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-lg" id="userName">
+            </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin: 15px; color: #89480a">
+            <div style="display: flex; width: 48%">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text">나이</span>
+                    <input type="text" readonly class="form-control" aria-label="Sizing example input"
+                           aria-describedby="inputGroup-sizing-lg" id="age">
+                </div>
+            </div>
+            <div style="display: flex; width: 48%">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text">성별</span>
+                    <input type="text" readonly class="form-control" aria-label="Sizing example input"
+                           aria-describedby="inputGroup-sizing-lg" id="gender">
+                </div>
+            </div>
+        </div>
+        <div style="margin: 15px; display: flex">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">휴대폰번호</span>
+                <input type="text" readonly class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-lg" id="phoneNumber">
+            </div>
+        </div>
+    </div>
+    <div class="content-box">
+        <!-- 두 번째 박스의 내용 -->
+        <div style="margin: 15px; display: flex">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">우편번호</span>
+                <input type="text" readonly class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-lg" id="postNumber">
+            </div>
+        </div>
+        <div style="margin: 15px; display: flex">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">주소</span>
+                <input type="text" readonly class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-lg" id="address1">
+            </div>
+        </div>
+        <div style="margin: 15px; display: flex">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">상세주소</span>
+                <input type="text" readonly class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-lg" id="address2">
+            </div>
+        </div>
+        <div style="margin: 15px; display: flex">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">이메일</span>
+                <input type="text" readonly class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-lg" id="email">
+            </div>
+        </div>
+    </div>
+</div>
+<a href="my-page-edit.html"><button type="button" class="btn btn-success" id="edit">수정하기</button></a>
+<!-- 메인페이지 -->
+
+<!-- 푸터 -->
+<div class="footer-include"></div>
+<!-- 푸터 -->
+
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="/js/plugins.js"></script>
+<script type="text/javascript" src="/js/script.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.header-include').load('/header.html');
+        $('.footer-include').load('/footer.html');
+    })
+</script>
+</body>
+</html>

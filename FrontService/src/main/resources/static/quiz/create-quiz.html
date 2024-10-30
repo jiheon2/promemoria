@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pro Memoria - 퀴즈 생성</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Poppins:wght@200;300;400;500&display=swap"
+          rel="stylesheet">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-bold-straight/css/uicons-bold-straight.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-solid-straight/css/uicons-solid-straight.css'>
+    <script src="/js/modernizr.js"></script>
+    <style>
+        @font-face {
+            font-family: 'TTLaundryGothicB';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/TTLaundryGothicB.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        p {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 15px;
+        }
+
+        h1 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 40px;
+        }
+
+        h3 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        h5 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        /* 중앙 컨텐츠 박스 스타일 */
+        .content-box {
+            width: 60%;
+            height: 660px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+        }
+
+        .list-table {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3열 */
+            gap: 10px; /* 각 셀 사이의 간격 */
+            width: 50%;
+            margin: 50px auto;
+            list-style: none;
+            padding: 0;
+        }
+
+        .list-table li {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+    </style>
+</head>
+<body class="bg-body" data-bs-spy="scroll" data-bs-target="#navbar" data-bs-root-margin="0px 0px -40%"
+      data-bs-smooth-scroll="true" tabindex="0">
+
+<!-- 스피너 -->
+<div id="preloader">
+      <span class="loader">
+        <span class="loader-inner"></span>
+      </span>
+</div>
+<!-- 스피너 -->
+
+<!-- 헤더 -->
+<div class="header-include"></div>
+<!-- 헤더 -->
+
+<!-- 메인 페이지 -->
+
+<!-- 중앙 컨텐츠 박스 -->
+<div class="content-box">
+    <h1 style="text-align: center; margin-top: 50px">카테고리를 선택해주세요</h1>
+    <ul class="list-table">
+        <li style="display: flex; flex-direction: column" class="category" value="요리">
+            <i class="fi fi-rr-bowl-rice" style="font-size: 25px"></i>
+            <div>요리</div>
+        </li>
+        <li style="display: flex; flex-direction: column" class="category" value="동물">
+            <i class="fi fi-ss-paw" style="font-size: 25px"></i>
+            <div>동물</div>
+        </li>
+        <li style="display: flex; flex-direction: column" class="category" value="음악">
+            <i class="fi fi-ss-music-alt" style="font-size: 25px"></i>
+            <div>음악</div>
+        </li>
+        <li style="display: flex; flex-direction: column" class="category" value="스포츠">
+            <i class="fi fi-rr-basketball" style="font-size: 25px"></i>
+            <div>스포츠</div>
+        </li>
+        <li style="display: flex; flex-direction: column" class="category" value="여행">
+            <i class="fi fi-sr-plane-departure" style="font-size: 25px"></i>
+            <div>여행</div>
+        </li>
+        <li style="display: flex; flex-direction: column" class="category" value="지리">
+            <i class="fi fi-sr-earth-americas" style="font-size: 25px"></i>
+            <div>지리</div>
+        </li>
+        <li style="display: flex; flex-direction: column" class="category" value="영화">
+            <i class="fi fi-rr-camera-movie" style="font-size: 25px"></i>
+            <div>영화</div>
+        </li>
+        <li style="display: flex; flex-direction: column" class="category" value="자연">
+            <i class="fi fi-rr-leaf" style="font-size: 25px"></i>
+            <div>자연</div>
+        </li>
+        <li style="display: flex; flex-direction: column" class="category" value="교육">
+            <i class="fi fi-rr-graduation-cap" style="font-size: 25px"></i>
+            <div>교육</div>
+        </li>
+    </ul>
+</div>
+<!-- 메인페이지 -->
+
+<!-- 푸터 -->
+<div class="footer-include"></div>
+<!-- 푸터 -->
+
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="/js/plugins.js"></script>
+<script type="text/javascript" src="/js/script.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.header-include').load('/header.html');
+        $('.footer-include').load('/footer.html');
+    })
+</script>
+</body>
+</html>

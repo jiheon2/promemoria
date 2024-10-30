@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pro Memoria - 이웃</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Poppins:wght@200;300;400;500&display=swap"
+          rel="stylesheet">
+    <script src="/js/modernizr.js"></script>
+    <script src="https://kit.fontawesome.com/5693f8ac72.js" crossorigin="anonymous"></script>
+    <style>
+        @font-face {
+            font-family: 'TTLaundryGothicB';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/TTLaundryGothicB.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        p {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 15px;
+        }
+
+        h3 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        h5 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        /* 두 개의 박스가 나란히 배치되는 레이아웃 */
+        .content-boxes {
+            width: 80%;
+            margin: 50px auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .content-box {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+            height: 600px; /* 박스 높이를 고정 */
+        }
+
+        .content-box > h2 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            color: #89480a;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .neighbor-list {
+            max-height: 450px;
+            overflow-y: scroll;
+        }
+
+        .rand-neighbor-list, .search-neighbor-list {
+            max-height: 400px;
+            overflow-y: scroll;
+        }
+
+        .neighbor-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .neighbor-item:last-child {
+            border-bottom: none; /* 마지막 항목의 경계선 제거 */
+        }
+
+        .neighbor-name {
+            font-weight: bold;
+        }
+
+        .enter-button {
+            padding: 5px 10px;
+            background-color: #f1d5a3;
+            border-color: #f1d5a3;
+            color: #89480a;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .enter-button:hover {
+            background-color: #89480a; /* 버튼 호버 색상 */
+            color: white;
+        }
+
+        .search-box {
+            background: white;
+            /*border-radius: 40px;*/
+            padding: 10px;
+            border-bottom: 1px solid #89480a;
+            height: 7.5%;
+            margin: 0 20px 20px 20px;
+        }
+
+        .search-txt {
+            border: none;
+            background: none;
+            outline: none;
+            float: left;
+            font-size: 20px;
+            line-height: 30px;
+        }
+
+        .search-button {
+            color: #89480a;
+            float: right;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            font-size: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        #searchReset {
+            color: #89480a;
+            float: right;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            margin-top: 4px;
+        }
+
+        #searchReset:focus {
+            box-shadow: none;
+            outline: none;
+        }
+
+        #searchReset:hover {
+            background-color: #f0e1c0;
+        }
+    </style>
+</head>
+<body class="bg-body" data-bs-spy="scroll" data-bs-target="#navbar" data-bs-root-margin="0px 0px -40%"
+      data-bs-smooth-scroll="true" tabindex="0">
+
+<!-- 스피너 -->
+<div id="preloader">
+      <span class="loader">
+        <span class="loader-inner"></span>
+      </span>
+</div>
+<!-- 스피너 -->
+
+<!-- 헤더 -->
+<div class="header-include"></div>
+<!-- 헤더 -->
+
+<!-- 메인 페이지 -->
+
+<!-- 두 개의 중앙 컨텐츠 박스 -->
+<div class="content-boxes">
+    <div class="content-box">
+        <h2>내 이웃 목록</h2>
+        <div class="neighbor-list">
+            <div class="neighbor-item">
+                <span class="neighbor-name">이웃명</span>
+                <button class="btn btn-secondary">삭제</button>
+            </div>
+            <div class="neighbor-item">
+                <span class="neighbor-name">이웃명</span>
+                <button class="btn btn-secondary">삭제</button>
+            </div>
+            <div class="neighbor-item">
+                <span class="neighbor-name">이웃명</span>
+                <button class="btn btn-secondary">삭제</button>
+            </div>
+            <div class="neighbor-item">
+                <span class="neighbor-name">이웃명</span>
+                <button class="btn btn-secondary">삭제</button>
+            </div>
+            <div class="neighbor-item">
+                <span class="neighbor-name">이웃명</span>
+                <button class="btn btn-secondary">삭제</button>
+            </div>
+            <div class="neighbor-item">
+                <span class="neighbor-name">이웃명</span>
+                <button class="btn btn-secondary">삭제</button>
+            </div>
+            <div class="neighbor-item">
+                <span class="neighbor-name">이웃명</span>
+                <button class="btn btn-secondary">삭제</button>
+            </div>
+            <div class="neighbor-item">
+                <span class="neighbor-name">이웃명</span>
+                <button class="btn btn-secondary">삭제</button>
+            </div>
+        </div>
+    </div>
+    <div class="content-box">
+        <h2>이웃 추천</h2>
+        <div class="search-box">
+            <input class="search-txt" type="text" name="" placeholder="이웃을 검색하세요">
+            <button class="search-button" type="button">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </div>
+        <div class="rand-neighbor-list">
+            <div class="neighbor-item">
+                <span class="neighbor-name">이웃명</span>
+                <button class="enter-button">추가</button>
+            </div>
+            <div class="neighbor-item">
+                <span class="neighbor-name">이웃명</span>
+                <button class="enter-button">추가</button>
+            </div>
+            <div class="neighbor-item">
+                <span class="neighbor-name">이웃명</span>
+                <button class="enter-button">추가</button>
+            </div>
+            <div class="neighbor-item">
+                <span class="neighbor-name">이웃명</span>
+                <button class="enter-button">추가</button>
+            </div>
+            <div class="neighbor-item">
+                <span class="neighbor-name">이웃명</span>
+                <button class="enter-button">추가</button>
+            </div>
+            <div class="neighbor-item">
+                <span class="neighbor-name">이웃명</span>
+                <button class="enter-button">추가</button>
+            </div>
+            <div class="neighbor-item">
+                <span class="neighbor-name">이웃명</span>
+                <button class="enter-button">추가</button>
+            </div>
+            <div class="neighbor-item">
+                <span class="neighbor-name">이웃명</span>
+                <button class="enter-button">추가</button>
+            </div>
+        </div>
+        <div class="search-area" style="display: none">
+            <div class="search-neighbor-list">
+                <div class="neighbor-item">
+                    <span class="neighbor-name">이웃명</span>
+                    <button class="enter-button">추가</button>
+                </div>
+                <div class="neighbor-item">
+                    <span class="neighbor-name">이웃명</span>
+                    <button class="enter-button">추가</button>
+                </div>
+                <div class="neighbor-item">
+                    <span class="neighbor-name">이웃명</span>
+                    <button class="enter-button">추가</button>
+                </div>
+                <div class="neighbor-item">
+                    <span class="neighbor-name">이웃명</span>
+                    <button class="enter-button">추가</button>
+                </div>
+                <div class="neighbor-item">
+                    <span class="neighbor-name">이웃명</span>
+                    <button class="enter-button">추가</button>
+                </div>
+                <div class="neighbor-item">
+                    <span class="neighbor-name">이웃명</span>
+                    <button class="enter-button">추가</button>
+                </div>
+                <div class="neighbor-item">
+                    <span class="neighbor-name">이웃명</span>
+                    <button class="enter-button">추가</button>
+                </div>
+                <div class="neighbor-item">
+                    <span class="neighbor-name">이웃명</span>
+                    <button class="enter-button">추가</button>
+                </div>
+            </div>
+            <button class="btn btn-link" type="button" id="searchReset">
+                검색 취소
+            </button>
+        </div>
+    </div>
+</div>
+<!-- 메인페이지 -->
+
+<!-- 푸터 -->
+<div class="footer-include"></div>
+<!-- 푸터 -->
+
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="/js/plugins.js"></script>
+<script type="text/javascript" src="/js/script.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.header-include').load('/header.html');
+        $('.footer-include').load('/footer.html');
+    })
+</script>
+</body>
+</html>

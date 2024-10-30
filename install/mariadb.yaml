@@ -1,0 +1,23 @@
+auth:
+  rootPassword: "poly1234"
+  username: "pm"
+  password: "1234"
+  database: "pm"
+
+primary:
+  persistence:
+    enabled: true
+    size: 3Gi
+
+  resources:
+    limits:
+      memory: 500Mi
+      cpu: "250m"
+    requests:
+      memory: 500Mi
+      cpu: "250m"
+
+  service:
+    type: ClusterIP
+    nodePorts:
+      mysql: 30036 # 원하는 NodePort 번호를 설정합니다 (30000-32767 범위 내)

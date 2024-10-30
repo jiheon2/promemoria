@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pro Memoria</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Poppins:wght@200;300;400;500&display=swap"
+          rel="stylesheet">
+    <script src="/js/modernizr.js"></script>
+    <style>
+        @font-face {
+            font-family: 'TTLaundryGothicB';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/TTLaundryGothicB.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        p {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 15px;
+        }
+
+        h3 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 25px;
+        }
+
+        h5 {
+            font-family: 'TTLaundryGothicB', sans-serif;
+            font-size: 20px;
+        }
+
+        .product-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card::after {
+            content: attr(data-after);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f8efdf; /* 베이지 색 */
+            color: #000;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 15px;
+            border: #f5e0ba 1px solid;
+        }
+
+        .product-card:hover::after {
+            opacity: 1;
+        }
+
+    </style>
+</head>
+<body class="bg-body" data-bs-spy="scroll" data-bs-target="#navbar" data-bs-root-margin="0px 0px -40%"
+      data-bs-smooth-scroll="true" tabindex="0">
+
+<!-- 스피너 -->
+<div id="preloader">
+      <span class="loader">
+        <span class="loader-inner"></span>
+      </span>
+</div>
+<!-- 스피너 -->
+
+<!-- 헤더 -->
+<div class="header-include"></div>
+<!-- 헤더 -->
+
+<!-- 메인 페이지 -->
+<section id="featured-products" class="product-store position-relative padding-large">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="display-header pb-3 d-flex justify-content-between flex-wrap col-md-12">
+
+            </div>
+        </div>
+        <div class="row">
+            <div id="featured-swiper" class="product-swiper col-md-12">
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="product-card image-zoom-effect link-effect d-flex flex-wrap" data-after="화상채팅을 시작하세요!" onclick="location.href='/video/video-chat.html';">
+                                <div class="image-holder">
+                                    <img src="/images/memoria/010.png" alt="product-item" class="product-image img-fluid">
+                                </div>
+                                <div class="cart-concern" style="margin-left: 35%">
+                                    <h3 class="card-title text-uppercase pt-3 text-primary">
+                                        <a href="/video/video-chat.html" class="text-primary">화상 채팅</a>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="product-card image-zoom-effect link-effect d-flex flex-wrap" data-after="AI로 만드는 나만의 퀴즈!" onclick="location.href='/quiz/create-quiz.html';">
+                                <div class="image-holder">
+                                    <img src="/images/memoria/011.png" alt="product-item" class="product-image img-fluid">
+                                </div>
+                                <div class="cart-concern" style="margin-left: 35%">
+                                    <h3 class="card-title text-uppercase pt-3 text-primary">
+                                        <a href="/quiz/create-quiz.html" class="text-primary">치매 퀴즈</a>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="product-card image-zoom-effect link-effect d-flex flex-wrap" data-after="주변의 시설 정보는 여기서 한번에!" onclick="location.href='/facility/recommend-facility.html';">
+                                <div class="image-holder">
+                                    <img src="/images/memoria/014.png" alt="product-item" class="product-image img-fluid">
+                                </div>
+                                <div class="cart-concern" style="margin-left: 35%">
+                                    <h3 class="card-title text-uppercase pt-3 text-primary">
+                                        <a href="/facility/recommend-facility.html" class="text-primary">시설 추천</a>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="product-card image-zoom-effect link-effect d-flex flex-wrap" data-after="나의 분석 결과는?" onclick="location.href='/analyze/analyze-list.html';">
+                                <div class="image-holder">
+                                    <img src="/images/memoria/012.png" alt="product-item" class="product-image img-fluid">
+                                </div>
+                                <div class="cart-concern" style="margin-left: 35%">
+                                    <h3 class="card-title text-uppercase pt-3 text-primary">
+                                        <a href="/analyze/analyze-list.html" class="text-primary">분석 결과</a>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-pagination text-center mt-5"></div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- 메인페이지 -->
+
+<!-- 푸터 -->
+<div class="footer-include"></div>
+<!-- 푸터 -->
+
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="/js/plugins.js"></script>
+<script type="text/javascript" src="/js/script.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.header-include').load('header.html');
+        $('.footer-include').load('footer.html');
+    })
+</script>
+</body>
+</html>

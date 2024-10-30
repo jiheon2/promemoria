@@ -1,0 +1,44 @@
+# Redis 기본 설정
+global:
+  redis:
+    password: "1234"  # Redis 비밀번호 설정 (필요 시)
+
+# Redis 이미지 설정
+image:
+  registry: docker.io
+  repository: bitnami/redis
+  tag: 7.0.9
+  pullPolicy: IfNotPresent
+
+# Redis 설정
+architecture: standalone              # standalone 또는 replication (복제 사용 시)
+auth:
+  enabled: true                       # 비밀번호 인증 활성화
+  password: "1234"     # Redis 비밀번호 (global.redis.password와 동일하게 설정)
+
+# Persistence 설정
+primary:
+  persistence:
+    enabled: true                     # 데이터 영구 저장 활성화
+    storageClass: "nks-block-storage"          # 스토리지 클래스 이름
+    size: 1Gi                         # 볼륨 크기
+
+# 서비스 설정
+service:
+  type: ClusterIP                     # 서비스 유형: ClusterIP, NodePort, LoadBalancer 중 선택
+  port: 6379                          # Redis 기본 포트
+
+# 리소스 제한 및 요청 설정
+resources:
+  limits:
+    cpu: 250m
+    memory: 500Mi
+  requests:
+    cpu: 250m
+    memory: 500Mi
+
+# 모니터링 설정 (Prometheus 사용 시)
+metrics:
+  enabled: false                       # Prometheus metrics 비활성화 (활성화하려면 true로 변경)
+  serviceMonitor:
+    enabled: false                     # Prometheus Operator와 통합하려면 true로 설정

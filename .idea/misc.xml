@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_19" default="true" project-jdk-name="corretto-19" project-jdk-type="JavaSDK">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/AnalyzeService" />
+    <file type="web" url="file://$PROJECT_DIR$/AppManager" />
+    <file type="web" url="file://$PROJECT_DIR$/ConfigService" />
+    <file type="web" url="file://$PROJECT_DIR$/DiscoveryService" />
+    <file type="web" url="file://$PROJECT_DIR$/FacilityService" />
+    <file type="web" url="file://$PROJECT_DIR$/FrontService" />
+    <file type="web" url="file://$PROJECT_DIR$/GatewayService" />
+    <file type="web" url="file://$PROJECT_DIR$/NotificationService" />
+    <file type="web" url="file://$PROJECT_DIR$/PreventionService" />
+    <file type="web" url="file://$PROJECT_DIR$/QuizService" />
+    <file type="web" url="file://$PROJECT_DIR$/UserService" />
+    <file type="web" url="file://$PROJECT_DIR$/VideoChatService" />
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
