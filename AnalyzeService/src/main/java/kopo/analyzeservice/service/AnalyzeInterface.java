@@ -16,7 +16,7 @@ public interface AnalyzeInterface {
     List<AnalyzeDTO> getAnalyzeList(String userId);
 
     // Elasticsearch에서 분석 데이터 상세 조회
-    List<AnalyzeDTO> getAnalyzeData(String userId, Date date);
+    List<AnalyzeDTO> getAnalyzeData(String userId, String date);
 
     // Elasticsearch에서 메타데이터 조회하기
     List<MetaDTO> getMetaList(String objectName);

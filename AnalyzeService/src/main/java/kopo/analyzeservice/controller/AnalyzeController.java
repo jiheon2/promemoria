@@ -36,7 +36,7 @@ public class AnalyzeController {
 
     @PostMapping(value = "getAnalyzeInfo")
     public ResponseEntity<CommonResponse> getAnalyzeInfo(@RequestParam("userId") String userId,
-                                                         @RequestParam("date") Date date) throws Exception {
+                                                         @RequestParam("date") String date) throws Exception {
         log.info("getAnalyzeInfo 실행 : {}", this.getClass().getName());
         return ResponseEntity.ok(CommonResponse.of(HttpStatus.OK, HttpStatus.OK.series().name(), analyzeInterface.getAnalyzeData(userId, date)));
     }

@@ -19,7 +19,7 @@ public class AnalyzeData {
     private Result lip;  // 입술
     private Result tilt; // 기울기
     private String userId; // 회원 아이디
-    private Date date; // 분석 날짜
+    private String date; // 분석 날짜
     private String userName; // 회원 이름
     private String videoUrl; // 영상 URL
     private String finalStatus; // 최종 이상 여부

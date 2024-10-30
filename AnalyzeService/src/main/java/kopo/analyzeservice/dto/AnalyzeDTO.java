@@ -16,7 +16,7 @@ public record AnalyzeDTO(
         Result tilt, // 기울기
         String userId, // 회원 아이디
         String name, // 회원 이름
-        Date date, // 분석 날짜
+        String date, // 분석 날짜
         String videoUrl, // 영상 원본 URL
         String finalStatus // 최종 이상 여부
 ) {
