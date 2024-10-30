@@ -3,7 +3,11 @@ server:
 
 spring:
   application:
-    name: UserService
+    name: user
+  data:
+    redis:
+      host: 198.19.172.224
+      port: 6379
 
   # JPA ??
   jpa:
@@ -20,9 +24,9 @@ spring:
     show-sql: true
     open-in-view: false
   datasource:
-    username: promemoria
+    username: pm
     password: '1234'
-    url: jdbc:postgresql://133.186.150.106:5432/promemoria
+    url: jdbc:postgresql://198.19.211.209:5432/pm
     driver-class-name: org.postgresql.Driver
 
 # JWT ?? ??

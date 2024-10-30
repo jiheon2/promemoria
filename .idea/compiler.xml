@@ -10,5 +10,8 @@
         <module name="PreventionService.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="VideoChatService" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>
