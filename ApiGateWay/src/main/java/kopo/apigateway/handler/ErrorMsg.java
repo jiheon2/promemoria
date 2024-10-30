@@ -1,4 +1,4 @@
-package kopo.poly.apigateway.handler;
+package kopo.apigateway.handler;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

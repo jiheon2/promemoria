@@ -1,4 +1,4 @@
-package kopo.poly.apigateway.jwt;
+package kopo.apigateway.jwt;
 
 // JWT 토큰의 상태 값을 정의
 public enum JwtStatus {

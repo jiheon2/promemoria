@@ -1,4 +1,4 @@
-package kopo.poly.apigateway.dto;
+package kopo.apigateway.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;

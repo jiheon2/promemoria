@@ -44,3 +44,8 @@ jwt:
   secret:
     key: '12345678123456781234567812345678123456781234'
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

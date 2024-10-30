@@ -1,4 +1,4 @@
-package kopo.poly.apigateway.config;
+package kopo.apigateway.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
