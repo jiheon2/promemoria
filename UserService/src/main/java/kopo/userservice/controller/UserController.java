@@ -1,18 +1,26 @@
 package kopo.userservice.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import kopo.userservice.auth.AuthInfo;
 import kopo.userservice.auth.JwtTokenProvider;
 import kopo.userservice.auth.TokenType;
 import kopo.userservice.controller.response.CommonResponse;
+import kopo.userservice.dto.MsgDTO;
 import kopo.userservice.dto.TokenDTO;
 import kopo.userservice.dto.UserDTO;
 import kopo.userservice.service.UserInterface;
+import kopo.userservice.service.impl.RedisService;
 import kopo.userservice.util.CmmUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +32,81 @@ import java.util.Optional;
 @RestController
 public class UserController {
 
+    @Value("${jwt.token.access.valid.time}")
+    private long accessTokenValidTime;
+
+    @Value("${jwt.token.access.name}")
+    private String accessTokenName;
+
     private final JwtTokenProvider jwtTokenProvider;
     private final UserInterface userInterface;
+    private final RedisService redisService;
+
+    @PostMapping(value = "loginSuccess")
+    public ResponseEntity<CommonResponse> loginSuccess(
+            @AuthenticationPrincipal AuthInfo authInfo, HttpServletResponse response) throws Exception {
+
+        log.info(this.getClass().getName() + ".loginSuccess 실행");
+
+        // Spring Security에 저장된 정보 가져오기
+        UserDTO rDTO = Optional.ofNullable(authInfo.userDTO())
+                .orElseGet(() -> UserDTO.builder().build());
+
+        String userId = CmmUtil.nvl(rDTO.userId());
+        String userRoles = CmmUtil.nvl(rDTO.roles());
+
+        log.info("userId : " + userId);
+        log.info("userRoles : " + userRoles);
+
+        // Access Token 생성
+        String accessToken = jwtTokenProvider.createToken(userId, userRoles, TokenType.ACCESS_TOKEN);
+        log.info("accessToken : " + accessToken);
+
+        ResponseCookie cookie = ResponseCookie.from(accessTokenName, accessToken)
+                .domain("")
+                .path("/")
+                .maxAge(accessTokenValidTime)
+                .httpOnly(true)
+                .build();
+
+        // 기존쿠키 모두 삭제하고, Cookie에 Access Token 저장하기
+        response.setHeader("Set-Cookie", cookie.toString());
+
+        cookie = null;
+
+        // Refresh Token 생성
+        // Refresh Token은 보안상 노출되면, 위험하기에 Refresh Token은 DB에 저장하고,
+        // DB를 조회하기 위한 값만 Refresh Token으로 생성함
+        // Refresh Token은 Access Token에 비해 만료시간을 길게 설정함
+        String refreshToken = jwtTokenProvider.createToken(userId, userRoles, TokenType.REFRESH_TOKEN);
+
+        log.info("refreshToken : " + refreshToken);
+
+        // 레디스에 리프레시 토큰 저장
+        redisService.setValues(refreshToken, userId);
+
+        // 결과 메시지 전달하기
+        MsgDTO dto = MsgDTO.builder().result(1).msg(userId + "님 로그인이 성공하였습니다.").build();
+
+        log.info(this.getClass().getName() + ".loginSuccess End!");
+
+        return ResponseEntity.ok(
+                CommonResponse.of(HttpStatus.OK, HttpStatus.OK.series().name(), dto));
+
+    }
+
+    @PostMapping(value = "loginFail")
+    public ResponseEntity<CommonResponse> loginFail() {
+
+        log.info(this.getClass().getName() + ".loginFail 실행");
+
+        MsgDTO dto = MsgDTO.builder().result(0).msg("로그인 실패").build();
+
+        log.info(this.getClass().getName() + ".loginFail 종료");
+
+        return ResponseEntity.ok(
+                CommonResponse.of(HttpStatus.OK, HttpStatus.OK.series().name(), dto));
+    }
 
     @PostMapping(value = "getToken")
     private TokenDTO getToken(HttpServletRequest request) {
