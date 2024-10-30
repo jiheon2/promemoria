@@ -10,6 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface MetaRepository extends ElasticsearchRepository<MetaDTO, String> {
-
-    List<MetaDTO> findAllByUserIdAndDate(String userId, String date);
+    List<MetaDTO> findAllByObjectName(String objectName);
 }

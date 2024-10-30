@@ -1,13 +1,8 @@
 package kopo.analyzeservice.service.impl;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import kopo.analyzeservice.dto.AnalyzeDTO;
@@ -19,6 +14,7 @@ import kopo.analyzeservice.repository.MetaRepository;
 import kopo.analyzeservice.repository.document.AnalyzeData;
 import kopo.analyzeservice.service.AnalyzeInterface;
 import kopo.analyzeservice.util.AnalyzeDataMapper;
+import kopo.analyzeservice.util.CustomMultipartFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -26,9 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.mock.web.MockMultipartFile;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,37 +32,40 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AnalyzeService implements AnalyzeInterface {
 
-    private final AnalyzeInterface analyzeInterface;
     private final AnalyzeRepository analyzeRepository;
     private final MetaRepository metaRepository;
     private final ModelClient modelClient;
     private final AmazonS3 s3;
 
-//    @Value("${ncp.objectStorage.endPoint}")
-//    private String endPoint;
-//
-//    @Value("${ncp.objectStorage.regionName}")
-//    private String regionName;
-//
-//    @Value("${ncp.objectStorage.accessKey}")
-//    private String accessKey;
-//
-//    @Value("${ncp.objectStorage.secretKey}")
-//    private String secretKey;
-
     @Value("${ncp.objectStorage.bucketName}")
     private String bucketName;
 
-//    // S3 client
-//    final AmazonS3 amazonS3 = AmazonS3ClientBuilder.standard()
-//            .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
-//            .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-//            .build();
-
-
     @Override
-    public MsgDTO saveAnalyzeData(AnalyzeDTO analyzeDTO) {
-        return null;
+    public MsgDTO saveAnalyzeData(String kafkaObjectName) {
+
+        log.info("saveAnalyzeData start : {}", this.getClass().getName());
+
+        kafkaObjectName = "";
+
+        List<MetaDTO> metaList = getMetaList(kafkaObjectName);
+        List<AnalyzeDTO> analyzeList = analyzeData(metaList);
+
+        // analyzeList 저장 로직 추가
+        try {
+            this.saveAll(analyzeList); // 현재 클래스의 saveAll 메서드 호출
+            MsgDTO dto = MsgDTO.builder()
+                    .result(1)
+                    .msg("Analyze data saved successfully.")
+                    .build();
+            return dto;
+        } catch (Exception e) {
+            log.error("Error saving analyze data", e);
+            MsgDTO dto = MsgDTO.builder()
+                    .result(0)
+                    .msg("Failed to save analyze data.")
+                    .build();
+            return dto;
+        }
     }
 
     @Override
@@ -122,13 +119,23 @@ public class AnalyzeService implements AnalyzeInterface {
     }
 
     @Override
-    public List<MetaDTO> getMetaList(String userId, Date date) {
-        return List.of();
+    public List<MetaDTO> getMetaList(String objectName) {
+
+        log.info("getMetaList start : {}", this.getClass().getName());
+
+        log.info("objectName : {}", objectName);
+
+        List<MetaDTO> metaList = metaRepository.findAllByObjectName(objectName);
+
+        log.info("metaList : {}", metaList);
+
+        log.info("getMetaList end : {}", this.getClass().getName());
+
+        return metaList;
     }
 
     @Override
     public List<AnalyzeDTO> analyzeData(List<MetaDTO> metaList) {
-
         if (metaList == null || metaList.isEmpty()) {
             throw new IllegalArgumentException("metaList는 비어 있을 수 없습니다.");
         }
@@ -165,7 +172,21 @@ public class AnalyzeService implements AnalyzeInterface {
         try (S3Object s3Object = s3.getObject(bucketName, objectName);
              S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent()) {
             byte[] content = IOUtils.toByteArray(s3ObjectInputStream);
-            return new MockMultipartFile("file", objectName, MediaType.APPLICATION_OCTET_STREAM_VALUE, content);
+            return new CustomMultipartFile(content, "file", objectName, MediaType.APPLICATION_OCTET_STREAM_VALUE);
         }
+    }
+
+    private void saveAll(List<AnalyzeDTO> analyzeList) {
+        if (analyzeList == null || analyzeList.isEmpty()) {
+            log.info("No analyze data to save.");
+            return;
+        }
+
+        List<AnalyzeData> dataList = analyzeList.stream()
+                .map(AnalyzeDataMapper::toDocument)
+                .collect(Collectors.toList());
+
+        analyzeRepository.saveAll(dataList);
+        log.info("Saved {} analyze data entries.", dataList.size());
     }
 }
