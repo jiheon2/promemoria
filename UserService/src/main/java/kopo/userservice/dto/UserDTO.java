@@ -18,9 +18,8 @@ public record UserDTO(
         @NotBlank(message = "비밀번호는 필수입니다")
         String userPw, // 비밀번호
 
-        @NonNull
         @NotBlank(message = "나이는 필수입니다")
-        String userAge, // 나이
+        int userAge, // 나이
 
         @NonNull
         @NotBlank(message = "사용자 이름은 필수입니다")

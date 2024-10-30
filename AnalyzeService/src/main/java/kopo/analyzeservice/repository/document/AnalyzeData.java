@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import kopo.analyzeservice.dto.AnalyzeDTO;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.List;
 @Data
 @Document(indexName = "analyze_index")
 public class AnalyzeData {
+    @Id
+    private String id;
     private Result eye;  // 눈
     private Result lip;  // 입술
     private Result tilt; // 기울기
@@ -24,6 +27,7 @@ public class AnalyzeData {
 
     @Builder
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Data
     public static class Result {
         private AnalyzeDTO.Status status;  // 상태
         private List<Accuracy> accuracy;   // 정확도
@@ -31,6 +35,7 @@ public class AnalyzeData {
 
     @Builder
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Data
     public static class Accuracy {
         private String accurate;     // 정확한 정도
         private String inaccurate;   // 정확하지 않은 정도

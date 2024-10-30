@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,15 +41,16 @@ public class AnalyzeService implements AnalyzeInterface {
     @Value("${ncp.objectStorage.bucketName}")
     private String bucketName;
 
-    @Override
-    public MsgDTO saveAnalyzeData(String kafkaObjectName) {
+    @KafkaListener(topics = "analyze-data", groupId = "analyze-group")
+    public void listenAndSaveAnalyzeData(String kafkaObjectName) {
 
-        log.info("saveAnalyzeData start : {}", this.getClass().getName());
+        log.info("카프카에게 받은 메시지 : {}", kafkaObjectName);
 
-        kafkaObjectName = "";
-
+        // kafkaObjectName을 사용하여 메타 데이터를 가져오고 분석 데이터를 처리합니다.
         List<MetaDTO> metaList = getMetaList(kafkaObjectName);
         List<AnalyzeDTO> analyzeList = analyzeData(metaList);
+
+        log.info("저장 데이터 : {}", analyzeList);
 
         // analyzeList 저장 로직 추가
         try {
@@ -57,16 +59,17 @@ public class AnalyzeService implements AnalyzeInterface {
                     .result(1)
                     .msg("Analyze data saved successfully.")
                     .build();
-            return dto;
+            log.info("Analyze data saved successfully: {}", dto.msg());
         } catch (Exception e) {
             log.error("Error saving analyze data", e);
             MsgDTO dto = MsgDTO.builder()
                     .result(0)
                     .msg("Failed to save analyze data.")
                     .build();
-            return dto;
+            log.error("Failed to save analyze data: {}", dto.msg());
         }
     }
+
 
     @Override
     public List<AnalyzeDTO> getAnalyzeList(String userId) {

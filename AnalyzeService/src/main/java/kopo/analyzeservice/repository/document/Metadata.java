@@ -11,7 +11,6 @@ import org.springframework.data.elasticsearch.annotations.Document;
 @Data
 @Document(indexName = "metadata_index")
 public class Metadata {
-
     @Id
     private String id;
     private String bucketName;

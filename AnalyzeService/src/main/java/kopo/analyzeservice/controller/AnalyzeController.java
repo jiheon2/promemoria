@@ -21,13 +21,6 @@ public class AnalyzeController {
 
     private final AnalyzeInterface analyzeInterface;
 
-//    @PostMapping(value = "/analyzeDataPipeline")
-//    public ResponseEntity<CommonResponse> getAnalyzeData() throws Exception {
-//
-//
-//        return null;
-//    }
-
     @PostMapping(value = "getAnalyzeList")
     public ResponseEntity<CommonResponse> getAnalyzeList(@RequestParam("userId") String userId) throws Exception {
         log.info("getAnalyzeList 실행 : {}", this.getClass().getName());

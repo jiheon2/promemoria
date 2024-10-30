@@ -9,9 +9,6 @@ import java.util.List;
 
 public interface AnalyzeInterface {
 
-    // Elasticsearch에 분석 결과 저장
-    MsgDTO saveAnalyzeData(String kafkaObjectName);
-
     // Elasticsearch에서 분석 데이터 리스트 조회
     List<AnalyzeDTO> getAnalyzeList(String userId);
 
