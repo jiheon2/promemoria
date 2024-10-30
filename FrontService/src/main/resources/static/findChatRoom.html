@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>스터디룸</title>
+
+    <!-- 웹소캣 연결에 필요한 라이브러리 선언 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript">
+
+        function callData() {
+            // AJAX 요청을 사용해 이웃 리스트와 채팅방 목록 가져오기
+            const friendsListRequest = $.ajax({
+                url: "http://localhost:25000/friend/getMyFriends",
+                method: 'get',
+                dataType: "JSON",
+                headers: {
+                    "X-User-Id": "browni" // 테스트 하느라 넣어둔 거임 나중에 지워야 됨
+                },
+                xhrFields: { withCredentials: true }
+            });
+
+            const chatListRequest = $.ajax({
+                url: "http://localhost:25000/getChatRoomList",
+                method: 'get',
+                dataType: "JSON"
+            });
+
+            // 두 요청이 모두 완료된 후 실행
+            $.when(friendsListRequest, chatListRequest).done((friendsListResponse, chatListResponse) => {
+                const friendsList = friendsListResponse[0];
+                const chatList = chatListResponse[0];
+
+                console.log("이웃 리스트 결과: ", friendsList);
+                console.log("채팅방 게시글 결과: ", chatList);
+
+                // chatList에 있는 값이 friendsList에 있으면 버튼 생성
+                chatList.forEach(chatRoomId => {
+                    const friend = friendsList.find(friend => friend.friendId === chatRoomId);
+                    if (friend) {
+                        // friendId로 버튼 생성
+                        const button = $('<button>버튼</button>')
+                            .text(friend.friendId)  // 버튼 텍스트 설정
+                            .attr('id', `btn_${friend.friendId}`)  // 버튼 ID 설정
+                            .click(() => {
+                                console.log(`${friend.friendId} 채팅방으로 입장`);
+                                // 버튼 클릭 시 실행할 로직 추가 가능
+                                joinRoom(friend.friendId); // 친구의 ID로 방에 입장
+                            });
+
+                        // 생성한 버튼을 buttonContainer에 추가
+                        $('#buttonContainer').append(button);
+                    }
+                });
+
+            }).fail((jqXHR, textStatus, errorThrown) => {
+                console.error("AJAX 요청 실패:", textStatus, errorThrown);
+            });
+        }
+
+        const joinRoom = async (hostId) => {
+            roomId = hostId; // 이미 존재하는 방의 ID로 설정
+            await startCam(); // 카메라 시작
+            await connectSocket(); // 기존 방에 입장하는 WebSocket 연결
+
+        };
+
+
+    </script>
+</head>
+<body>
+
+<div>
+    <button type="button" id="enterRoomBtn" onclick="callData()">입장하기</button> <!--오른쪽 버튼(방 찾기)-->
+</div>
+<div id="buttonContainer"></div>
+
+<br>
+<div style="position: relative; display: inline-block;">
+    <video id="localVideoCallStream" autoplay playsinline controls></video> <!--내 웹 캠 화면-->
+    <button id="startScreenRecordBtn"
+            style="position: absolute; bottom: 10px; right: 110px; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 5px 10px; cursor: pointer;">
+        화면 녹화 시작
+    </button>
+    <button id="stopScreenRecordBtn"
+            style="display: none; position: absolute; bottom: 10px; right: 10px; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 5px 10px; cursor: pointer;">
+        화면 녹화 중지
+    </button>
+    <button id="uploadRecordedFile"
+            style="display: none; position: absolute; bottom: 10px; right: 10px; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 5px 10px; cursor: pointer;">
+        다운로드 하기
+    </button>
+</div>
+<div id="remoteVideoCallStream"></div> <!--상대 웹 캠 화면-->
+
+
+<script src="/js/peerConfigParticipants.js"></script> <!--webRTC 연결을 위한 js-->
+
+</body>
+</html>

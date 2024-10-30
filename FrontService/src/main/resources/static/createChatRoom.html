@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>스터디룸</title>
+
+    <!-- 웹소캣 연결에 필요한 라이브러리 선언 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript">
+    </script>
+
+</head>
+<body>
+
+<div>
+<!--    <input type="number" id="roomId">-->
+    <button type="button" id="enterRoomBtn">입장하기</button>    <!--왼쪽 버튼(생성하기)-->
+    <button type="button" id="startStreamBtn" style="display: none;">시작하기</button>
+    <div id="notifications"></div>
+</div>
+
+
+<br>
+<div style="position: relative; display: inline-block;">
+    <video id="localVideoCallStream" autoplay playsinline controls></video> <!--내 웹 캠 화면-->
+    <button id="startScreenRecordBtn"
+            style="position: absolute; bottom: 10px; right: 110px; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 5px 10px; cursor: pointer;">
+        화면 녹화 시작
+    </button>
+    <button id="stopScreenRecordBtn"
+            style="display: none; position: absolute; bottom: 10px; right: 10px; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 5px 10px; cursor: pointer;">
+        화면 녹화 중지
+    </button>
+    <button id="uploadRecordedFile"
+            style="display: none; position: absolute; bottom: 10px; right: 10px; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 5px 10px; cursor: pointer;">
+        다운로드 하기
+    </button>
+</div>
+    <div id="remoteVideoCallStream"></div> <!--상대 웹 캠 화면-->
+
+
+<script src="/js/peerConfig.js"></script> <!--webRTC 연결을 위한 js-->
+
+</body>
+</html>

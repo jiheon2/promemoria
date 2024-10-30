@@ -176,97 +176,125 @@ const connectSocket = async () => {
     stompClient = Stomp.over(socket);
     stompClient.debug = null;
 
-    stompClient.connect({'X-User-Id': 'bread'},  // 헤더에 userId 값 추가하는 부분 --> 지금은 로그인이 안 됐으니 이렇게 넣어서 테스트하고, 나중에 이거 지우고 아래 코드로
-    // stompClient.connect({},
-        function () {
-            console.log('Connected to WebRTC server');
+    stompClient.connect({'X-User-Id': 'bread'}, function () {
+        console.log('Connected to WebRTC server');
 
-            // 연결이 완료된 후 AJAX 요청 실행
-            $.ajax({
-                url: "http://localhost:25000/createRoom",
-                method: 'get',
-                headers: {
-                    "X-User-Id": "bread" // 테스트 하느라 넣어둔 거임 나중에 지워야 됨
-                },
-                xhrFields: { withCredentials: true
-                },
-                success: function(response) {
-                    console.log("방 생성 요청 성공:", response);
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.error("방 생성 요청 실패:", textStatus, errorThrown);
+        // 연결이 완료된 후 자신의 키를 다른 참가자들에게 전송
+        stompClient.send(`/studyRoom/call/key`, {}, {});
+
+        setTimeout(() => {
+            otherKeyList.map((key) => {
+                if (!pcListMap.has(key)) {
+                    pcListMap.set(key, createPeerConnection(key));
+                    sendOffer(pcListMap.get(key), key); // 각 참가자에게 연결 요청
                 }
             });
+        }, 1000);
 
-            // 유저 B(peer)가 유저 A(peer)의 채팅방에 들어올 수 있게 해주는 부분은 여러 subscribe 구독 부분과,
-            // 이후 startStreamBtn 버튼 클릭 이벤트 내에서 동작하는 로직에서 이루어진다.
+        // 필요한 구독 설정들 (iceCandidate, offer, answer 등)
+        stompClient.subscribe(`/videoCall/peer/iceCandidate/${myKey}/${roomId}`, candidate => {
+            const key = JSON.parse(candidate.body).key;
+            const message = JSON.parse(candidate.body).body;
 
-            //iceCandidate peer 교환을 위한 subscribe
-            stompClient.subscribe(`/videoCall/peer/iceCandidate/${myKey}/${roomId}`, candidate => {
-                const key = JSON.parse(candidate.body).key
-                const message = JSON.parse(candidate.body).body;
-
-                // 해당 key에 해당되는 peer 에 받은 정보를 addIceCandidate 해준다.
-                pcListMap.get(key).addIceCandidate(new RTCIceCandidate({
-                    candidate: message.candidate,
-                    sdpMLineIndex: message.sdpMLineIndex,
-                    sdpMid: message.sdpMid
-                }));
-
-            });
-
-            //offer peer 교환을 위한 subscribe
-            stompClient.subscribe(`/videoCall/peer/offer/${myKey}/${roomId}`, offer => {
-                const key = JSON.parse(offer.body).key;
-                const message = JSON.parse(offer.body).body;
-
-                // 해당 key에 새로운 peerConnection 를 생성해준후 pcListMap 에 저장해준다.
-                pcListMap.set(key, createPeerConnection(key));
-                // 생성한 peer 에 offer정보를 setRemoteDescription 해준다.
-                pcListMap.get(key).setRemoteDescription(new RTCSessionDescription({
-                    type: message.type,
-                    sdp: message.sdp
-                }));
-                //sendAnswer 함수를 호출해준다.
-                sendAnswer(pcListMap.get(key), key);
-
-            });
-
-            //answer peer 교환을 위한 subscribe
-            stompClient.subscribe(`/videoCall/peer/answer/${myKey}/${roomId}`, answer => {
-                const key = JSON.parse(answer.body).key;
-                const message = JSON.parse(answer.body).body;
-
-                // 해당 key에 해당되는 Peer 에 받은 정보를 setRemoteDescription 해준다.
-                pcListMap.get(key).setRemoteDescription(new RTCSessionDescription(message));
-
-            });
-
-            // key를 보내라는 신호를 받은 subscribe
-            // 새로운 참가자(B)가 채팅방에 접속할 때마다 자신의 key를 전송하는 부분
-            // key는 각 사용자(peer)를 구분하기 위한 식별자 역할을 한다.
-            // new! 서버는 /call/key를 통해 새로운 참가자가 들어왔음을 알린다.
-            stompClient.subscribe(`/videoCall/call/key`, message => {
-                //자신의 key를 보내는 send
-                stompClient.send(`/videoCall/send/key`, {}, JSON.stringify(myKey));
-
-            });
-
-            // 상대방의 key를 받는 subscribe
-            // 구독을 통해 다른 참가자들의 key를 수신하고, otherKeyList에 저장한다.
-            // 유저 B가 유저 A의 방에 들어오면 유저 A가 유저 B의 key를 받아 저장하게 된다.
-            // new! 다른 참가자들의 키 수신? otherKeyList가 같은 채팅방 내 다른 사용자들?
-            stompClient.subscribe(`/videoCall/send/key`, message => {
-                const key = JSON.parse(message.body);
-
-                //만약 중복되는 키가 ohterKeyList에 있는지 확인하고 없다면 추가해준다.
-                if (myKey !== key && otherKeyList.find((mapKey) => mapKey === myKey) === undefined) {
-                    otherKeyList.push(key);
-                }
-            });
-
+            pcListMap.get(key).addIceCandidate(new RTCIceCandidate({
+                candidate: message.candidate,
+                sdpMLineIndex: message.sdpMLineIndex,
+                sdpMid: message.sdpMid
+            }));
         });
-}
+
+        stompClient.subscribe(`/videoCall/peer/offer/${myKey}/${roomId}`, offer => {
+            const key = JSON.parse(offer.body).key;
+            const message = JSON.parse(offer.body).body;
+
+            pcListMap.set(key, createPeerConnection(key));
+            pcListMap.get(key).setRemoteDescription(new RTCSessionDescription({
+                type: message.type,
+                sdp: message.sdp
+            }));
+            sendAnswer(pcListMap.get(key), key);
+        });
+
+        stompClient.subscribe(`/videoCall/peer/answer/${myKey}/${roomId}`, answer => {
+            const key = JSON.parse(answer.body).key;
+            const message = JSON.parse(answer.body).body;
+
+            pcListMap.get(key).setRemoteDescription(new RTCSessionDescription(message));
+        });
+
+        stompClient.subscribe(`/videoCall/call/key`, message => {
+            stompClient.send(`/videoCall/send/key`, {}, JSON.stringify(myKey));
+        });
+
+        stompClient.subscribe(`/videoCall/send/key`, message => {
+            const key = JSON.parse(message.body);
+            if (myKey !== key && !otherKeyList.includes(key)) {
+                otherKeyList.push(key);
+            }
+        });
+
+        console.log(`${roomId} 채팅방에 입장했습니다.`);
+    });
+};
+
+// const connectSocket = async () => {
+//     const socket = new SockJS('/signaling');
+//     stompClient = Stomp.over(socket);
+//     stompClient.debug = null;
+//
+//     stompClient.connect({'X-User-Id': 'bread'}, // 테스트용 헤더
+//         function () {
+//             console.log('Connected to WebRTC server');
+//
+//             // 이미 만들어진 방에 입장하기 위한 구독 설정들
+//             stompClient.subscribe(`/videoCall/peer/iceCandidate/${myKey}/${roomId}`, candidate => {
+//                 const key = JSON.parse(candidate.body).key;
+//                 const message = JSON.parse(candidate.body).body;
+//
+//                 pcListMap.get(key).addIceCandidate(new RTCIceCandidate({
+//                     candidate: message.candidate,
+//                     sdpMLineIndex: message.sdpMLineIndex,
+//                     sdpMid: message.sdpMid
+//                 }));
+//             });
+//
+//             stompClient.subscribe(`/videoCall/peer/offer/${myKey}/${roomId}`, offer => {
+//                 const key = JSON.parse(offer.body).key;
+//                 const message = JSON.parse(offer.body).body;
+//
+//                 pcListMap.set(key, createPeerConnection(key));
+//                 pcListMap.get(key).setRemoteDescription(new RTCSessionDescription({
+//                     type: message.type,
+//                     sdp: message.sdp
+//                 }));
+//                 sendAnswer(pcListMap.get(key), key);
+//             });
+//
+//             stompClient.subscribe(`/videoCall/peer/answer/${myKey}/${roomId}`, answer => {
+//                 const key = JSON.parse(answer.body).key;
+//                 const message = JSON.parse(answer.body).body;
+//
+//                 pcListMap.get(key).setRemoteDescription(new RTCSessionDescription(message));
+//             });
+//
+//             stompClient.subscribe(`/videoCall/call/key`, message => {
+//                 stompClient.send(`/videoCall/send/key`, {}, JSON.stringify(myKey));
+//             });
+//
+//             stompClient.subscribe(`/videoCall/send/key`, message => {
+//                 const key = JSON.parse(message.body);
+//                 if (myKey !== key && !otherKeyList.includes(key)) {
+//                     otherKeyList.push(key);
+//                 }
+//             });
+//
+//             console.log(`${roomId} 채팅방에 입장했습니다.`);
+//
+//
+//         }
+//
+//     );
+// };
 
 
 // 3. peerConnection 생성해주는 함수

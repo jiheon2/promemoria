@@ -1,6 +1,7 @@
-package kopo.frontservice.config;
-
+import kopo.frontservice.interceptor.WebSocketChannelInterceptor;
+import kopo.frontservice.interceptor.WebSocketInterceptor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -23,7 +24,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/signaling")  // webSocket 접속 시 endpoints 설정(여기로 클라이언트가 웹 소켓에 '접속' -> 처음에 웹 소켓에 접속 할 때만 씀(연결 설정), 메세지 보내는 건 /studyRoom 이거임)
                 .setAllowedOriginPatterns("*")      // cors 설정(모두 허용)
+                .addInterceptors(new WebSocketInterceptor())  // WebSocketInterceptor 추가
                 .withSockJS(); // 브라우저에서 webSocket을 지원하지 않는 경우에 대한 대안으로 어플리케이션의 코드를 변경할 필요 없이 런타임에 필요할 때 대체하기 위해 설정
+    }
+
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(new WebSocketChannelInterceptor()); // ChannelInterceptor 등록
     }
 
     /**
