@@ -32,3 +32,9 @@ ncp:
     accessKey: "gtiHaVgTnYHFkX6aRzLu"
     secretKey: "eNVqarObDsvHvamFovccIAcUQFFcOzcsKg4CCrI1"
     bucketName: "pro-memoria24"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

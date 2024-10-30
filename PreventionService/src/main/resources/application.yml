@@ -26,3 +26,9 @@ spring:
     username: root
     password: 1234
     url: jdbc:mariadb://223.130.158.65:30006/promemoria
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

@@ -1,15 +1,13 @@
-server:
-  port: 11000
-  address: localhost
-
 spring:
   application:
-    name: MonoPM
+    name: gateway
 
-# JWT 토큰 설정
+server:
+  port: 11000
+
 jwt:
   token:
-    creator: pm
+    creator: closet
     refresh:
       valid:
         time: '3000'

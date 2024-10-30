@@ -1,10 +1,10 @@
-package kopo.poly.apigateway.filter;
+package kopo.apigateway.filter;
 
-import kopo.poly.apigateway.dto.TokenDTO;
-import kopo.poly.apigateway.jwt.JwtStatus;
-import kopo.poly.apigateway.jwt.JwtTokenProvider;
-import kopo.poly.apigateway.jwt.JwtTokenType;
-import kopo.poly.apigateway.util.CmmUtil;
+import kopo.apigateway.dto.TokenDTO;
+import kopo.apigateway.jwt.JwtStatus;
+import kopo.apigateway.jwt.JwtTokenProvider;
+import kopo.apigateway.jwt.JwtTokenType;
+import kopo.apigateway.util.CmmUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

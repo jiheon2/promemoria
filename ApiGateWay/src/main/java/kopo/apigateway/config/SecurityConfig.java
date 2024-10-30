@@ -1,8 +1,8 @@
-package kopo.poly.apigateway.config;
+package kopo.apigateway.config;
 
-import kopo.poly.apigateway.filter.JwtAuthenticationFilter;
-import kopo.poly.apigateway.handler.AccessDeniedHandler;
-import kopo.poly.apigateway.handler.LoginServerAuthenticationEntryPoint;
+import kopo.apigateway.filter.JwtAuthenticationFilter;
+import kopo.apigateway.handler.AccessDeniedHandler;
+import kopo.apigateway.handler.LoginServerAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

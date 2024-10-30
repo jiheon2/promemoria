@@ -1,10 +1,10 @@
-package kopo.poly.apigateway.jwt;
+package kopo.apigateway.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import kopo.poly.apigateway.dto.TokenDTO;
-import kopo.poly.apigateway.util.CmmUtil;
+import kopo.apigateway.dto.TokenDTO;
+import kopo.apigateway.util.CmmUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
