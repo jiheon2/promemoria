@@ -14,5 +14,5 @@ public interface AnalyzeRepository extends ElasticsearchRepository<AnalyzeData, 
     List<AnalyzeData> findAllByUserId(String userId);
 
     // UserId와 날짜를 기준으로 분석 결과 상세 조회
-    List<AnalyzeData> findAllByUserIdAndDate(String userId, Date date);
+    List<AnalyzeData> findAllByUserIdAndDate(String userId, String date);
 }

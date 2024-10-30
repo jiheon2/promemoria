@@ -1,14 +1,13 @@
 package kopo.analyzeservice.repository;
 
 import kopo.analyzeservice.dto.MetaDTO;
-import org.springframework.data.elasticsearch.annotations.Query;
+import kopo.analyzeservice.repository.document.Metadata;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
-public interface MetaRepository extends ElasticsearchRepository<MetaDTO, String> {
+public interface MetaRepository extends ElasticsearchRepository<Metadata, String> {
     List<MetaDTO> findAllByObjectName(String objectName);
 }

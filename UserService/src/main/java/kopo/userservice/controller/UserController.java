@@ -47,37 +47,22 @@ public class UserController {
     }
 
     @PostMapping(value = "userInfo")
-    public ResponseEntity<CommonResponse> getUserInfo(@RequestParam("userId") String userId, BindingResult bindingResult) {
+    public ResponseEntity<CommonResponse> getUserInfo(@RequestParam("userId") String userId) {
         log.info("getUserInfo 실행 : {}", this.getClass().getName());
-
-        if (bindingResult.hasErrors()) {
-            return CommonResponse.getErrors(bindingResult);
-        }
-
         return ResponseEntity.ok(CommonResponse.of(HttpStatus.OK, HttpStatus.OK.series().name(), userInterface.getUserInfo(userId)));
     }
 
     @PostMapping(value = "findId")
     public ResponseEntity<CommonResponse> findId(@Valid @RequestParam("userName") String userName,
-                                                 @Valid @RequestParam("userEmail") String userEmail, BindingResult bindingResult) {
+                                                 @Valid @RequestParam("userEmail") String userEmail) {
         log.info("findId 실행 : {}", this.getClass().getName());
-
-        if (bindingResult.hasErrors()) {
-            return CommonResponse.getErrors(bindingResult);
-        }
-
         return ResponseEntity.ok(CommonResponse.of(HttpStatus.OK, HttpStatus.OK.series().name(), userInterface.findId(userName, userEmail)));
     }
 
     @PostMapping(value = "resetPw")
     public ResponseEntity<CommonResponse> resetPw(@Valid @RequestParam("userId") String userId,
-                                                  @Valid @RequestParam("userEmail") String userEmail, BindingResult bindingResult) {
+                                                  @Valid @RequestParam("userEmail") String userEmail) {
         log.info("resetPw 실행 : {}", this.getClass().getName());
-
-        if (bindingResult.hasErrors()) {
-            return CommonResponse.getErrors(bindingResult);
-        }
-
         return ResponseEntity.ok(CommonResponse.of(HttpStatus.OK, HttpStatus.OK.series().name(), userInterface.resetPw(userId, userEmail)));
     }
 
@@ -105,38 +90,21 @@ public class UserController {
     }
 
     @PostMapping(value = "deleteUser")
-    public ResponseEntity<CommonResponse> deleteUser(@Valid @RequestParam("userId") String userId, BindingResult bindingResult) {
-
+    public ResponseEntity<CommonResponse> deleteUser(@Valid @RequestParam("userId") String userId) {
         log.info("deleteUser 실행 : {}", this.getClass().getName());
-
-        if (bindingResult.hasErrors()) {
-            return CommonResponse.getErrors(bindingResult);
-        }
-
         return ResponseEntity.ok(CommonResponse.of(HttpStatus.OK, HttpStatus.OK.series().name(), userInterface.deleteUser(userId)));
     }
 
     @PostMapping(value = "existUser")
-    public ResponseEntity<CommonResponse> existUser(@Valid @RequestParam("userId") String userId, BindingResult bindingResult) {
-
+    public ResponseEntity<CommonResponse> existUser(@Valid @RequestParam("userId") String userId) {
         log.info("existUser 실행 : {}", this.getClass().getName());
-
-        if (bindingResult.hasErrors()) {
-            return CommonResponse.getErrors(bindingResult);
-        }
-
         return ResponseEntity.ok(CommonResponse.of(HttpStatus.OK, HttpStatus.OK.series().name(), userInterface.existUser(userId)));
     }
 
     @PostMapping(value = "existEmail")
-    public ResponseEntity<CommonResponse> existEmail(@Valid @RequestParam("userEmail") String userEmail, BindingResult bindingResult) {
+    public ResponseEntity<CommonResponse> existEmail(@Valid @RequestParam("userEmail") String userEmail) {
 
         log.info("existEmail 실행 : {}", this.getClass().getName());
-
-        if (bindingResult.hasErrors()) {
-            return CommonResponse.getErrors(bindingResult);
-        }
-
         return ResponseEntity.ok(CommonResponse.of(HttpStatus.OK, HttpStatus.OK.series().name(), userInterface.existEmail(userEmail)));
     }
 

@@ -94,7 +94,7 @@ public class AnalyzeService implements AnalyzeInterface {
     }
 
     @Override
-    public List<AnalyzeDTO> getAnalyzeData(String userId, Date date) {
+    public List<AnalyzeDTO> getAnalyzeData(String userId, String date) {
 
         log.info("getAnalyzeData start : {}", this.getClass().getName());
 
