@@ -1,10 +1,10 @@
 package kopo.analyzeservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 
-import java.util.Date;
-
 @Builder
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public record MetaDTO(
         String bucketName,
         String downloadFilePath,
