@@ -3,6 +3,7 @@ package kopo.userservice.service.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kopo.userservice.auth.AuthInfo;
+import kopo.userservice.auth.UserRole;
 import kopo.userservice.controller.response.Result;
 import kopo.userservice.dto.MsgDTO;
 import kopo.userservice.dto.UserDTO;
@@ -53,7 +54,7 @@ public class UserService implements UserInterface {
                     .userGender(userDTO.userGender())
                     .phoneNumber(userDTO.phoneNumber())
                     .postNumber(userDTO.postNumber())
-                    .roles("USER")
+                    .roles(UserRole.USER.getValue())
                     .build();
 
             try {
@@ -118,7 +119,20 @@ public class UserService implements UserInterface {
             if (userEntity.isPresent()) {
                 String password = "0000";
                 String encodedPassword = bCryptPasswordEncoder.encode(password);
-                UserEntity passwordEntity = UserEntity.builder().userId(userId).userPw(encodedPassword).build();
+                UserEntity passwordEntity = UserEntity.builder()
+                        .userName(userEntity.get().getUserName())
+                        .userId(userId)
+                        .userPw(encodedPassword)
+                        .userAge(userEntity.get().getUserAge())
+                        .userName(userEntity.get().getUserName())
+                        .userGender(userEntity.get().getUserGender())
+                        .postNumber(userEntity.get().getPostNumber())
+                        .userAddress1(userEntity.get().getUserAddress1())
+                        .userAddress2(userEntity.get().getUserAddress2())
+                        .phoneNumber(userEntity.get().getPhoneNumber())
+                        .userEmail(userEntity.get().getUserEmail())
+                        .roles(userEntity.get().getRoles())
+                        .build();
                 userRepository.save(passwordEntity);
 
                 return MsgDTO.builder()
@@ -203,12 +217,8 @@ public class UserService implements UserInterface {
             log.info("phoneNumber : {}", userEntity.getPhoneNumber());
             log.info("postNumber : {}", userEntity.getPostNumber());
 
-            if (userRepository.existsByUserEmail(userEntity.getUserEmail())) {
-                TransactionAspectSupport.currentTransactionStatus().isRollbackOnly(); // 롤백
-                return MsgDTO.builder().msg("중복된 이메일이 존재합니다.").result(Result.FAIL.getCode()).build();
-            } else {
-                return MsgDTO.builder().msg("회원정보가 수정되었습니다.").result(Result.SUCCESS.getCode()).build();
-            }
+            return MsgDTO.builder().msg("회원정보가 수정되었습니다.").result(Result.SUCCESS.getCode()).build();
+
         } catch (Exception e) {
             log.error("에러 발생 : {}", e.getMessage());
             return MsgDTO.builder().msg("에러가 발생하였습니다.").result(Result.ERROR.getCode()).build();

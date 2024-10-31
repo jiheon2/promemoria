@@ -18,6 +18,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Poppins:wght@200;300;400;500&display=swap"
           rel="stylesheet">
     <script src="/js/modernizr.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <style>
         @font-face {
             font-family: 'TTLaundryGothicB';
@@ -101,7 +103,7 @@
 
         .modal-body {
             max-height: 500px;
-            overflow-y: scroll;
+            overflow-y: auto;
         }
 
         .neighbor-item {
@@ -134,6 +136,10 @@
             background-color: #89480a; /* 버튼 호버 색상 */
             color: white;
         }
+
+        .no-neighbor-message {
+            text-align: center;
+        }
     </style>
 </head>
 <body class="bg-body" data-bs-spy="scroll" data-bs-target="#navbar" data-bs-root-margin="0px 0px -40%"
@@ -158,7 +164,7 @@
         <p class="small-text">새로 채팅방을 만들고 싶어요</p>
         <h1>채팅방 생성</h1>
     </div>
-    <div class="content-box box2" id="enterVideoChat">
+    <div class="content-box box2" id="enterVideoChat" onclick="callData()">
         <p class="small-text">이웃의 채팅방에 참여하고 싶어요</p>
         <h1>채팅방 참여</h1>
     </div>
@@ -174,38 +180,38 @@
             </div>
             <div class="modal-body">
                 <div class="neighbor-list">
-                    <div class="neighbor-item">
-                        <span class="neighbor-name">이웃명</span>
-                        <button class="enter-button">입장</button>
-                    </div>
-                    <div class="neighbor-item">
-                        <span class="neighbor-name">이웃명</span>
-                        <button class="enter-button">입장</button>
-                    </div>
-                    <div class="neighbor-item">
-                        <span class="neighbor-name">이웃명</span>
-                        <button class="enter-button">입장</button>
-                    </div>
-                    <div class="neighbor-item">
-                        <span class="neighbor-name">이웃명</span>
-                        <button class="enter-button">입장</button>
-                    </div>
-                    <div class="neighbor-item">
-                        <span class="neighbor-name">이웃명</span>
-                        <button class="enter-button">입장</button>
-                    </div>
-                    <div class="neighbor-item">
-                        <span class="neighbor-name">이웃명</span>
-                        <button class="enter-button">입장</button>
-                    </div>
-                    <div class="neighbor-item">
-                        <span class="neighbor-name">이웃명</span>
-                        <button class="enter-button">입장</button>
-                    </div>
-                    <div class="neighbor-item">
-                        <span class="neighbor-name">이웃명</span>
-                        <button class="enter-button">입장</button>
-                    </div>
+<!--                    <div class="neighbor-item">-->
+<!--                        <span class="neighbor-name">이웃명</span>-->
+<!--                        <button class="enter-button">입장</button>-->
+<!--                    </div>-->
+<!--                    <div class="neighbor-item">-->
+<!--                        <span class="neighbor-name">이웃명</span>-->
+<!--                        <button class="enter-button">입장</button>-->
+<!--                    </div>-->
+<!--                    <div class="neighbor-item">-->
+<!--                        <span class="neighbor-name">이웃명</span>-->
+<!--                        <button class="enter-button">입장</button>-->
+<!--                    </div>-->
+<!--                    <div class="neighbor-item">-->
+<!--                        <span class="neighbor-name">이웃명</span>-->
+<!--                        <button class="enter-button">입장</button>-->
+<!--                    </div>-->
+<!--                    <div class="neighbor-item">-->
+<!--                        <span class="neighbor-name">이웃명</span>-->
+<!--                        <button class="enter-button">입장</button>-->
+<!--                    </div>-->
+<!--                    <div class="neighbor-item">-->
+<!--                        <span class="neighbor-name">이웃명</span>-->
+<!--                        <button class="enter-button">입장</button>-->
+<!--                    </div>-->
+<!--                    <div class="neighbor-item">-->
+<!--                        <span class="neighbor-name">이웃명</span>-->
+<!--                        <button class="enter-button">입장</button>-->
+<!--                    </div>-->
+<!--                    <div class="neighbor-item">-->
+<!--                        <span class="neighbor-name">이웃명</span>-->
+<!--                        <button class="enter-button">입장</button>-->
+<!--                    </div>-->
                 </div>
             </div>
 <!--            <div class="modal-footer">-->
@@ -224,21 +230,85 @@
 <script src="/js/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+<script src="/js/common.js"></script>
 <script type="text/javascript" src="/js/plugins.js"></script>
 <script type="text/javascript" src="/js/script.js"></script>
+<script src="/js/peerConfig.js"></script> <!--webRTC 연결을 위한 js-->
 <script>
+
+    getToken()
+
     $(document).ready(function () {
         $('.header-include').load('/header.html');
         $('.footer-include').load('/footer.html');
-
-        $('#makeVideoChat').on("click", function () {
-            location.href="/video/video-chat-room.html";
-        })
 
         $('#enterVideoChat').on("click", function () {
             $("#videoChatListModal").modal("show");
         })
     })
+
+    function callData() {
+        // AJAX 요청을 사용해 이웃 리스트와 채팅방 목록 가져오기
+        const friendsListRequest = $.ajax({
+            url: "http://localhost:13000/friend/getMyFriends",
+            method: 'get',
+            dataType: "JSON",
+            headers: {
+                "X-User-Id": loginUserId
+            },
+            xhrFields: { withCredentials: true }
+        });
+
+        const chatListRequest = $.ajax({
+            url: "http://localhost:12000/getChatRoomList",
+            method: 'get',
+            dataType: "JSON"
+        });
+
+        // 두 요청이 모두 완료된 후 실행
+        $.when(friendsListRequest, chatListRequest).done((friendsListResponse, chatListResponse) => {
+            const friendsList = friendsListResponse[0];
+            const chatList = chatListResponse[0];
+            const neighborList = $('.neighbor-list'); // neighbor-list 요소 선택
+
+            neighborList.empty(); // 기존 내용을 초기화
+
+            console.log("이웃 리스트 결과: ", friendsList);
+            console.log("채팅방 게시글 결과: ", chatList);
+
+            // chatList에 있는 값이 friendsList에 있으면 neighbor-item 생성
+            chatList.forEach(chatRoomId => {
+                const friend = friendsList.find(friend => friend.friendId === chatRoomId);
+
+                if (friend) {
+                    // neighbor-item 생성
+                    const friendItem = $(`
+                    <div class="neighbor-item">
+                        <span class="neighbor-name">${friend.friendId}</span>
+                        <button class="enter-button">입장</button>
+                    </div>
+                `);
+
+                    // 입장 버튼 클릭 시 채팅방 입장
+                    friendItem.find('.enter-button').click(() => {
+                        console.log(`${friend.friendId} 채팅방으로 입장`);
+                        joinRoom(friend.friendId);
+                    });
+
+                    // 생성한 neighbor-item을 neighbor-list에 추가
+                    neighborList.append(friendItem);
+                }
+            });
+
+            // chatList와 friendsList에 공통 항목이 없는 경우 메시지 추가
+            if (neighborList.children().length === 0) {
+                neighborList.append('<div class="no-neighbor-message">채팅방을 개설한 이웃이 없습니다.</div>');
+            }
+
+        }).fail((jqXHR, textStatus, errorThrown) => {
+            console.error("AJAX 요청 실패:", textStatus, errorThrown);
+        });
+    }
 </script>
 </body>
 </html>

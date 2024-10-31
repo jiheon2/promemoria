@@ -8,23 +8,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
+    <script src="/js/common.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script type="text/javascript">
+
+        getToken()
 
         function callData() {
             // AJAX 요청을 사용해 이웃 리스트와 채팅방 목록 가져오기
             const friendsListRequest = $.ajax({
-                url: "http://localhost:25000/friend/getMyFriends",
+                url: "http://localhost:13000/friend/getMyFriends",
                 method: 'get',
                 dataType: "JSON",
                 headers: {
-                    "X-User-Id": "browni" // 테스트 하느라 넣어둔 거임 나중에 지워야 됨
+                    "X-User-Id": loginUserId // 테스트 하느라 넣어둔 거임 나중에 지워야 됨
                 },
                 xhrFields: { withCredentials: true }
             });
 
             const chatListRequest = $.ajax({
-                url: "http://localhost:25000/getChatRoomList",
+                url: "http://localhost:12000/getChatRoomList",
                 method: 'get',
                 dataType: "JSON"
             });

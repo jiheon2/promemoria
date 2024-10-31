@@ -104,17 +104,17 @@
         <div style="margin: 15px; display: flex; justify-content: center;">
             <div class="input-group input-group-lg">
                 <input type="text" class="form-control" aria-label="Sizing example input" placeholder="이름을 입력해주세요"
-                       aria-describedby="inputGroup-sizing-lg" id="userName">
+                       aria-describedby="inputGroup-sizing-lg" id="userName" name="userName">
             </div>
         </div>
         <div style="margin: 15px; display: flex; justify-content: center">
             <div class="input-group input-group-lg">
-                <input type="text" class="form-control" aria-label="Sizing example input" placeholder="이메일 입력해주세요"
-                       aria-describedby="inputGroup-sizing-lg" id="email">
+                <input type="email" class="form-control" aria-label="Sizing example input" placeholder="이메일 입력해주세요"
+                       aria-describedby="inputGroup-sizing-lg" id="email" name="userEmail">
             </div>
         </div>
     </div>
-    <button type="button" class="btn btn-primary" id="find">이메일 인증</button>
+    <button type="button" class="btn btn-primary" id="find">아이디 찾기</button>
 </div>
 <!-- 메인페이지 -->
 
@@ -131,6 +131,47 @@
     $(document).ready(function () {
         $('.header-include').load('/header.html');
         $('.footer-include').load('/footer.html');
+
+        $("#find").on("click", function () {
+
+            if (document.getElementById("userName").value === "") {
+                alert("이름을 입력하세요.");
+                document.getElementById("userName").focus();
+                return;
+            }
+
+            if (document.getElementById("email").value === "") {
+                alert("이메일을 입력하세요.");
+                document.getElementById("email").focus();
+                return;
+            }
+
+            $.ajax({
+                url: "http://localhost:13000/user/v1/findId",
+                type: "post",
+                dataType: "JSON",
+                data: {
+                    userName: document.getElementById("userName").value,
+                    userEmail: document.getElementById("email").value
+                },
+                xhrFields: {
+                    withCredentials: true
+                }
+            }).then(
+                function (json) {
+                    if (json.data.result === 1) {
+                        alert(json.data.msg);
+                    } else {
+                        alert(json.data.msg);
+                        $("#userNAme").focus();
+                    }
+                },
+                function () {
+                    alert("에러가 발생하였습니다. \n다음에 다시 시도하길 바랍니다.");
+                    $("#userName").focus();
+                }
+            );
+        })
     })
 </script>
 </body>

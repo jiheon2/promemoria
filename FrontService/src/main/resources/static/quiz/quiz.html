@@ -87,6 +87,15 @@
             background-color: #fff;
             padding: 50px;
             height: 250px; /* 박스 높이를 고정 */
+            text-align: center;
+        }
+
+        #quizNumber {
+            font-size: xx-large;
+        }
+
+        #quizQuestion {
+            font-size: large;
         }
 
         /* 모달 배경 */
@@ -110,7 +119,6 @@
             background-color: #fff;
             padding: 30px;
             width: 25%;
-            height: 60%;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             z-index: 1001;
@@ -138,6 +146,16 @@
             height: 100%;
         }
 
+        #ajaxLoder {
+            width:100%;
+            height:100%;
+            position:fixed;
+            z-index:9999;
+            background:#ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body class="bg-body" data-bs-spy="scroll" data-bs-target="#navbar" data-bs-root-margin="0px 0px -40%"
@@ -145,11 +163,17 @@
 
 <!-- 스피너 -->
 <div id="preloader">
-      <span class="loader">
-        <span class="loader-inner"></span>
-      </span>
+  <span class="loader">
+    <span class="loader-inner"></span>
+  </span>
 </div>
 <!-- 스피너 -->
+
+<!-- -->
+<div class="text-center" id="ajaxLoder">
+    <img src="/css/ajax-loader.gif" width="48">
+    <h6 style="margin-left: 15px; font-family: 'TTLaundryGothicB', sans-serif">퀴즈를 가져오고 있습니다.</h6>
+</div>
 
 <!-- 헤더 -->
 <div class="header-include"></div>
@@ -160,23 +184,21 @@
 <!-- 중앙 컨텐츠 박스 -->
 <div class="content-box">
     <div class="quiz-box">
-        <p>1번 퀴즈</p>
-        <p>2024 KBO 리그의 정규 시즌 3위는 삼성 라이온즈다.</p>
+        <p id="quizNumber"></p>
+        <p id="quizQuestion"></p>
     </div>
     <div class="answer-box">
-        <div class="answer" style="background-color: white; border: #1d71b8 solid 15px; box-shadow: 0 0 15px #1d71b8;"><i class="fi fi-br-o" style="color: #1d71b8;"></i></div>
-        <div class="answer" style="background-color: white; border: #f25a5a solid 15px; box-shadow: 0 0 15px #f25a5a;"><i class="fi fi-br-x" style="color: #f25a5a"></i></div>
+        <div class="answer" id="answerO" style="background-color: white; border: #1d71b8 solid 15px; box-shadow: 0 0 15px #1d71b8; cursor: pointer"><i class="fi fi-br-o" style="color: #1d71b8;"></i></div>
+        <div class="answer" id="answerX" style="background-color: white; border: #f25a5a solid 15px; box-shadow: 0 0 15px #f25a5a; cursor: pointer"><i class="fi fi-br-x" style="color: #f25a5a"></i></div>
     </div>
 </div>
 <!-- 메인페이지 -->
 
-<div class="modal-overlay" id="modalOverlay">
+<div class="modal-overlay" id="modalOverlay" style="display: none;">
     <div class="modal-content">
-        <div style="height: 90%;">
-            <h2>모달 창</h2>
-            <p>이것은 화면 정중앙에 위치한 모달 창입니다.</p>
-        </div>
-        <button class="close-btn" id="closeModalBtn">다음 문제 풀기</button>
+        <h2 id="answerTitle"></h2>
+        <p id="answerExplanation"></p>
+        <button class="close-btn" id="nextButton">다음 문제 풀기</button>
     </div>
 </div>
 
@@ -195,20 +217,96 @@
         $('.footer-include').load('/footer.html');
     })
 
-    // 모달 열기 및 닫기 기능
-    const openModalBtns = document.getElementsByClassName('answer');
-    const closeModalBtn = document.getElementById('closeModalBtn');
-    const modalOverlay = document.getElementById('modalOverlay');
+    let currentQuestionIndex = 0; // 현재 문제 인덱스
+    let quizData = {}; // 퀴즈 데이터 저장용 변수
 
-    for (let i = 0; i < openModalBtns.length; i++) {
-        openModalBtns[i].addEventListener('click', () => {
-            modalOverlay.style.display = 'block';
+    function getQuiz() {
+        const category = localStorage.getItem('category');
+        console.log(category);
+
+        $.ajax({
+            url: "http://localhost:11000/quiz/v1/getCategoryQuiz",
+            type: "POST",
+            dataType: "JSON",
+            data: { category: category },
+            beforeSend: function() {
+                $('#ajaxLoder').show(); // AJAX 호출 전 로딩 GIF 표시
+            },
+            success: function(json) {
+                quizData = json.data;
+                displayQuestion(currentQuestionIndex);
+            },
+            error: function(xhr, status, error) {
+                console.error("퀴즈 데이터를 불러오지 못했습니다.");
+            },
+            complete: function() {
+                $('#ajaxLoder').hide(); // AJAX 호출 완료 후 로딩 GIF 숨김
+            }
         });
+
+        localStorage.removeItem('category');
     }
 
-    closeModalBtn.addEventListener('click', () => {
-        modalOverlay.style.display = 'none';
+    function displayQuestion(index) {
+        if (index < quizData.questions.length) {
+            document.getElementById("quizNumber").innerText = (index + 1) + "번 퀴즈";
+            document.getElementById("quizQuestion").innerText = quizData.questions[index];
+        }
+    }
+
+    function showModal(isCorrect) {
+        if (isCorrect) {
+            // 정답인 경우: 해설을 보여주고, 다음 문제로 진행
+            const explanationText = quizData.descriptions[currentQuestionIndex];
+            document.getElementById("answerTitle").innerText = "정답입니다!"
+            document.getElementById("answerExplanation").innerText = explanationText;
+            document.getElementById("nextButton").style.display = 'block';
+
+            if (currentQuestionIndex === quizData.questions.length - 1) {
+                document.getElementById("nextButton").innerText = "퀴즈 끝내기";
+            } else {
+                document.getElementById("nextButton").innerText = "다음 문제 풀기";
+            }
+
+            document.getElementById("modalOverlay").style.display = 'block';
+        } else {
+            // 오답인 경우: "오답입니다!" 메시지를 잠시 보여주고 모달을 자동으로 닫기
+            document.getElementById("answerTitle").innerText = "오답입니다!"
+            document.getElementById("answerExplanation").innerText = "다시 한 번 풀어보세요!";
+            document.getElementById("modalOverlay").style.display = 'block';
+            document.getElementById("nextButton").style.display = 'none';
+
+            setTimeout(() => {
+                document.getElementById("modalOverlay").style.display = 'none';
+            }, 1000);
+        }
+    }
+
+    function hideModal() {
+        document.getElementById("modalOverlay").style.display = 'none';
+
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.questions.length) {
+            displayQuestion(currentQuestionIndex);
+        } else {
+            window.location.href = "/quiz/create-quiz.html"; // 마지막 문제 후 페이지 이동
+        }
+    }
+
+    document.getElementById("answerO").addEventListener("click", function() {
+        const isCorrect = quizData.answers[currentQuestionIndex] === "O";
+        showModal(isCorrect);
     });
+
+    document.getElementById("answerX").addEventListener("click", function() {
+        const isCorrect = quizData.answers[currentQuestionIndex] === "X";
+        showModal(isCorrect);
+    });
+
+    document.getElementById("nextButton").addEventListener("click", hideModal);
+
+    // 페이지 로드 시 퀴즈 데이터를 가져옴
+    document.addEventListener("DOMContentLoaded", getQuiz);
 
 </script>
 </body>

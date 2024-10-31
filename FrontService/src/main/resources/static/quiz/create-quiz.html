@@ -84,6 +84,12 @@
             padding: 20px;
             text-align: center;
             border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .list-table li:hover {
+            background-color: #f1d5a3;
+            border-color: #d5ba8c;
         }
 
     </style>
@@ -109,39 +115,39 @@
 <div class="content-box">
     <h1 style="text-align: center; margin-top: 50px">카테고리를 선택해주세요</h1>
     <ul class="list-table">
-        <li style="display: flex; flex-direction: column" class="category" value="요리">
+        <li style="display: flex; flex-direction: column" class="category" onclick="SeleteCategory('요리')">
             <i class="fi fi-rr-bowl-rice" style="font-size: 25px"></i>
             <div>요리</div>
         </li>
-        <li style="display: flex; flex-direction: column" class="category" value="동물">
+        <li style="display: flex; flex-direction: column" class="category" onclick="SeleteCategory('동물')">
             <i class="fi fi-ss-paw" style="font-size: 25px"></i>
             <div>동물</div>
         </li>
-        <li style="display: flex; flex-direction: column" class="category" value="음악">
+        <li style="display: flex; flex-direction: column" class="category" onclick="SeleteCategory('음악')">
             <i class="fi fi-ss-music-alt" style="font-size: 25px"></i>
             <div>음악</div>
         </li>
-        <li style="display: flex; flex-direction: column" class="category" value="스포츠">
+        <li style="display: flex; flex-direction: column" class="category" onclick="SeleteCategory('스포츠')">
             <i class="fi fi-rr-basketball" style="font-size: 25px"></i>
             <div>스포츠</div>
         </li>
-        <li style="display: flex; flex-direction: column" class="category" value="여행">
+        <li style="display: flex; flex-direction: column" class="category" onclick="SeleteCategory('여행')">
             <i class="fi fi-sr-plane-departure" style="font-size: 25px"></i>
             <div>여행</div>
         </li>
-        <li style="display: flex; flex-direction: column" class="category" value="지리">
+        <li style="display: flex; flex-direction: column" class="category" onclick="SeleteCategory('지리')">
             <i class="fi fi-sr-earth-americas" style="font-size: 25px"></i>
             <div>지리</div>
         </li>
-        <li style="display: flex; flex-direction: column" class="category" value="영화">
+        <li style="display: flex; flex-direction: column" class="category" onclick="SeleteCategory('영화')">
             <i class="fi fi-rr-camera-movie" style="font-size: 25px"></i>
             <div>영화</div>
         </li>
-        <li style="display: flex; flex-direction: column" class="category" value="자연">
+        <li style="display: flex; flex-direction: column" class="category" onclick="SeleteCategory('자연')">
             <i class="fi fi-rr-leaf" style="font-size: 25px"></i>
             <div>자연</div>
         </li>
-        <li style="display: flex; flex-direction: column" class="category" value="교육">
+        <li style="display: flex; flex-direction: column" class="category" onclick="SeleteCategory('교육')">
             <i class="fi fi-rr-graduation-cap" style="font-size: 25px"></i>
             <div>교육</div>
         </li>
@@ -163,6 +169,12 @@
         $('.header-include').load('/header.html');
         $('.footer-include').load('/footer.html');
     })
+
+    function SeleteCategory(category) {
+        localStorage.setItem("category", category);
+
+        window.location.href="/quiz/quiz.html";
+    }
 </script>
 </body>
 </html>
