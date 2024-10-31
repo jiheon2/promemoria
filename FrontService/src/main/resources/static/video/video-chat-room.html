@@ -139,11 +139,6 @@
                     </div>
                 </div>
             </div>
-            <div> <!-- TODO 이건 없애야 합니다... -->
-                <input type="number" id="roomId">
-                <button type="button" id="enterRoomBtn">입장하기</button>
-                <button type="button" id="startStreamBtn" style="display: none;">시작하기</button>
-            </div>
         </div>
     </div>
 </div>
@@ -156,14 +151,35 @@
 <script src="/js/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+<script src="/js/common.js"></script>
 <script type="text/javascript" src="/js/plugins.js"></script>
 <script type="text/javascript" src="/js/script.js"></script>
 <script src="/js/peerConfig.js"></script> <!--webRTC 연결을 위한 js-->
 <script>
+
+    getToken()
+
     $(document).ready(function () {
         $('.header-include').load('/header.html');
         $('.footer-include').load('/footer.html');
     })
+
+    $(document).ready(async function () {
+        try {
+            const roomId = localStorage.getItem("roomId");
+            console.log("페이지 진입 시 roomId 확인:", roomId);
+            await startCam(); // 웹 캠 실행
+
+            if (localStream) {
+                document.querySelector('#remoteVideoCallStream').style.display = 'block'; // 화면 표시
+            }
+
+            await connectSocket(); // 웹 소켓 연결
+            localStorage.removeItem("roomId");
+        } catch (error) {
+            console.error("Error during room entry process:", error);
+        }
+    });
 </script>
 </body>
 </html>

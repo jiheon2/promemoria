@@ -190,13 +190,13 @@
         <div style="margin: 15px; display: flex">
             <div class="input-group input-group-lg">
                 <span class="input-group-text">이메일</span>
-                <input type="text" readonly class="form-control" aria-label="Sizing example input"
+                <input type="email" readonly class="form-control" aria-label="Sizing example input"
                        aria-describedby="inputGroup-sizing-lg" id="email">
             </div>
         </div>
     </div>
 </div>
-<a href="my-page-edit.html"><button type="button" class="btn btn-success" id="edit">수정하기</button></a>
+<button type="button" class="btn btn-success" id="edit">수정하기</button>
 <!-- 메인페이지 -->
 
 <!-- 푸터 -->
@@ -206,13 +206,60 @@
 <script src="/js/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
 <script type="text/javascript" src="/js/plugins.js"></script>
 <script type="text/javascript" src="/js/script.js"></script>
 <script>
+
+    getToken();
+
     $(document).ready(function () {
         $('.header-include').load('/header.html');
         $('.footer-include').load('/footer.html');
+
+        // 비밀번호 수정
+        $("#btnUpdatePw").on("click", function () {
+            location.href = "/user/updatePw.html"
+        })
+
+        // 회원정보 수정
+        $("#edit").on("click", function () {
+            location.href = "/user/my-page-edit.html"
+        })
+
     })
+
+    // 회원정보 불러오기 함수
+    function userInfo() {
+        // 컨트롤러에 요청하기
+        $.ajax({
+            url: "http://localhost:13000/user/v1/userInfo",
+            type: "post",
+            dataType: "JSON",
+            data: { userId : loginUserId }
+            // xhrFields: {
+            //     withCredentials: true
+            // }
+        }).then(
+            function (json) {
+                const userInfo = json.data;
+
+                $("#userId").val(userInfo.userId);
+                $("#userName").val(userInfo.userName);
+                $("#age").val(userInfo.userAge);
+                $("#gender").val(userInfo.userGender + "자");
+                $("#phoneNumber").val(userInfo.phoneNumber);
+                $("#postNumber").val(userInfo.postNumber);
+                $("#address1").val(userInfo.userAddress1);
+                $("#address2").val(userInfo.userAddress2);
+                $("#email").val(userInfo.userEmail);
+            },
+            function () {
+                alert("로그인 해주시길 바랍니다.");
+                location.href = "/user/login.html";
+            }
+        );
+    }
 </script>
 </body>
 </html>

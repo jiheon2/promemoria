@@ -65,6 +65,13 @@
             padding: 50px;
         }
 
+        .input-group-text {
+            width: 100px;
+            justify-content: center;
+            background-color: #f8efdf;
+            color: #89480a;
+        }
+
         #edit {
             margin: 0 auto;
             align-items: center;
@@ -100,65 +107,76 @@
 <!-- 메인 페이지 -->
 <h1>회원정보 수정</h1>
 <!-- 중앙 컨텐츠 박스 -->
-<div class="content-box">
-    <!-- 컨텐츠가 들어갈 부분 -->
-    <div style="margin: 15px; display: flex">
-        <div class="input-group input-group-lg">
-            <input type="text" class="form-control" aria-label="Sizing example input" placeholder="이름을 입력해주세요"
-                   aria-describedby="inputGroup-sizing-lg" id="userName">
+<form id="f">
+    <div class="content-box">
+        <input hidden="" id="userId" name="userId">
+        <!-- 컨텐츠가 들어갈 부분 -->
+        <div style="margin: 15px; display: flex">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">이름</span>
+                <input type="text" class="form-control" aria-label="Sizing example input" placeholder="이름를 입력해주세요"
+                       aria-describedby="inputGroup-sizing-lg" id="userName" name="userName">
+            </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin: 15px; color: #89480a">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">나이</span>
+                <input type="text" class="form-control" aria-label="Sizing example input" placeholder="나이를 입력해주세요"
+                       aria-describedby="inputGroup-sizing-lg" id="age" name="userAge">
+            </div>
+        </div>
+        <div style="margin: 15px; display: flex">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">우편번호</span>
+                <input type="text" class="form-control" aria-label="Sizing example input" placeholder="우편번호를 입력해주세요"
+                       aria-describedby="inputGroup-sizing-lg" id="postNumber" name="postNumber">
+            </div>
+            <button type="button" class="btn btn-primary" id="btnAddr"
+                    style="margin-left: 10px; width: 20%; background-color: #f8efdf; border-color: #f8efdf; color: #89480a">
+                우편번호
+            </button>
+        </div>
+        <div style="margin: 15px; display: flex">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">주소</span>
+                <input type="text" class="form-control" aria-label="Sizing example input" placeholder="주소를 입력해주세요"
+                       aria-describedby="inputGroup-sizing-lg" id="address1" name="userAddress1">
+            </div>
+        </div>
+        <div style="margin: 15px; display: flex">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">상세주소</span>
+                <input type="text" class="form-control" aria-label="Sizing example input" placeholder="상세주소를 입력해주세요"
+                       aria-describedby="inputGroup-sizing-lg" id="address2" name="userAddress2">
+            </div>
+        </div>
+        <div style="margin: 15px; display: flex">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">휴대폰번호</span>
+                <input type="text" class="form-control" aria-label="Sizing example input" placeholder="휴대폰번호를 입력해주세요"
+                       aria-describedby="inputGroup-sizing-lg" id="phoneNumber" name="phoneNumber">
+            </div>
+        </div>
+        <div style="margin: 15px; display: flex">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">이메일</span>
+                <input type="email" class="form-control" aria-label="Sizing example input" placeholder="이메일을 입력해주세요"
+                       aria-describedby="inputGroup-sizing-lg" id="email" name="userEmail">
+            </div>
+            <button type="button" class="btn btn-primary" id="btnEamil"
+                    style="margin-left: 10px; width: 20%; background-color: #f8efdf; border-color: #f8efdf; color: #89480a">
+                확인
+            </button>
+        </div>
+        <div style="display: flex; justify-content: center; margin-top: 40px">
+            <button type="button" class="btn btn-success" id="edit">수정하기</button>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin: 15px">
+            <button type="button" id="updatePw" style="color: #89480a; cursor: pointer; background: none; border: none">비밀번호 변경</button>
+            <button type="button" id="delete" style="color: red; cursor: pointer; background: none; border: none">탈퇴하기</button>
         </div>
     </div>
-    <div style="display: flex; justify-content: space-between; margin: 15px; color: #89480a">
-        <div class="input-group input-group-lg">
-            <input type="text" class="form-control" aria-label="Sizing example input" placeholder="나이를 입력해주세요"
-                   aria-describedby="inputGroup-sizing-lg" id="age">
-        </div>
-    </div>
-    <div style="margin: 15px; display: flex">
-        <div class="input-group input-group-lg">
-            <input type="text" class="form-control" aria-label="Sizing example input" placeholder="우편번호를 입력해주세요"
-                   aria-describedby="inputGroup-sizing-lg" style="width: 70%" id="postNumber">
-        </div>
-        <button type="button" class="btn btn-primary"
-                style="margin-left: 10px; width: 20%; background-color: #f8efdf; border-color: #f8efdf; color: #89480a">
-            우편번호
-        </button>
-    </div>
-    <div style="margin: 15px; display: flex">
-        <div class="input-group input-group-lg">
-            <input type="text" class="form-control" aria-label="Sizing example input" placeholder="주소를 입력해주세요"
-                   aria-describedby="inputGroup-sizing-lg" id="address1">
-        </div>
-    </div>
-    <div style="margin: 15px; display: flex">
-        <div class="input-group input-group-lg">
-            <input type="text" class="form-control" aria-label="Sizing example input" placeholder="상세주소를 입력해주세요"
-                   aria-describedby="inputGroup-sizing-lg" id="address2">
-        </div>
-    </div>
-    <div style="margin: 15px; display: flex">
-        <div class="input-group input-group-lg">
-            <input type="text" class="form-control" aria-label="Sizing example input" placeholder="휴대폰번호를 입력해주세요"
-                   aria-describedby="inputGroup-sizing-lg" id="phoneNumber">
-        </div>
-    </div>
-    <div style="margin: 15px; display: flex">
-        <div class="input-group input-group-lg">
-            <input type="text" class="form-control" aria-label="Sizing example input" placeholder="이메일을 입력해주세요"
-                   aria-describedby="inputGroup-sizing-lg" style="width: 70%" id="email">
-        </div>
-        <button type="button" class="btn btn-primary"
-                style="margin-left: 10px; width: 20%; background-color: #f8efdf; border-color: #f8efdf; color: #89480a">
-            인증
-        </button>
-    </div>
-    <div style="display: flex; justify-content: center; margin-top: 40px">
-        <button type="button" class="btn btn-success" id="edit">수정하기</button>
-    </div>
-    <div style="text-align: right; margin: 15px">
-        <button type="button" id="delete" style="color: red; cursor: pointer; background: none; border: none">탈퇴하기</button>
-    </div>
-</div>
+</form>
 <!-- 메인페이지 -->
 
 <!-- 푸터 -->
@@ -166,15 +184,240 @@
 <!-- 푸터 -->
 
 <script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/jquery.serializeObject.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
 <script type="text/javascript" src="/js/plugins.js"></script>
 <script type="text/javascript" src="/js/script.js"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
+
+    getToken();
+
+    // 이메일 확인여부 (중복 1 / 사용가능 : 0)
+    let emailCheck = 1;
+    let olderEmail = "";
+
+    // 숫자만 가능
+    function onlyNumber(value) {
+        return /^[0-9]{1,2}$/.test(value);
+    }
+
+    // HTML 로딩이 완료되고, 실행
     $(document).ready(function () {
+
         $('.header-include').load('/header.html');
         $('.footer-include').load('/footer.html');
+
+        let f = document.getElementById("f");
+
+        f.addEventListener('submit', ev => {
+            console.log(ev);
+            ev.stopPropagation();
+            ev.preventDefault();
+        })
+
+        // 이메일 확인
+        $("#btnEmail").on("click", function () {
+            getEmailExists(f);
+        })
+
+        // 우편번호 찾기
+        $("#btnAddr").on("click", function (event) {
+            event.preventDefault(); // 폼 제출을 막음
+            kakaoPost(f);
+        });
+
+        // 탈퇴하기
+        $("#delete").on("click", function () {
+            const userConfirmed = confirm("정말 탈퇴하시겠습니까?");
+
+            // "예"를 선택한 경우
+            if (userConfirmed) {
+                $.ajax({
+                    url: "http://localhost:13000/user/v1/deleteUser",
+                    type: "post",
+                    dataType: "JSON",
+                    data: { userId : loginUserId },
+                    // xhrFields: {
+                    //     withCredentials: true
+                    // }
+                }).then(function (json) {
+                    if (json.data.result === 1) {
+                        alert(json.data.msg);
+                        location.href = "/user/login.html"
+                    } else {
+                        alert(json.data.msg);
+                        f.userName.focus();
+                    }
+                })
+            } else {
+                // "아니오"를 선택한 경우 아무 작업도 하지 않음
+                return;
+            }
+        })
+
+        // 비밀번호 수정
+        $("#updatePw").on("click", function () {
+            location.href = "/user/update-pwd.html"
+        })
+
+        // 회원정보 수정
+        $("#edit").on("click", function () {
+
+            if (f.userName.value === "") {
+                alert("이름을 입력하세요.");
+                f.userName.focus();
+                return;
+            }
+            if (f.age.value === "") {
+                alert("나이를 입력하세요.");
+                f.age.focus();
+                return;
+            }
+            if (f.postNumber.value === "") {
+                alert("우편번호를 입력하세요.");
+                f.postNumber.focus();
+                return;
+            }
+            if (f.address1.value === "") {
+                alert("주소를 입력하세요.");
+                f.address1.focus();
+                return;
+            }
+            if (f.address2.value === "") {
+                alert("상세주소를 입력하세요.");
+                f.address2.focus();
+                return;
+            }
+            if (f.phoneNumber.value === "") {
+                alert("휴대폰번호를 입력하세요.");
+                f.phoneNumber.focus();
+                return;
+            }
+            if (f.email.value === "") {
+                alert("이메일을 입력하세요.");
+                f.email.focus();
+                return;
+            }
+            if (oldEmail !== f.email.value && emailCheck === 1) {
+                alert("이메일 중복 체크 및 중복되지 않은 이메일로 가입 바랍니다.");
+                f.email.focus();
+                return;
+            }
+
+            $.ajax({
+                url: "http://localhost:13000/user/v1/updateUserInfo",
+                type: "post",
+                dataType: "JSON",
+                contentType: "application/json",
+                // xhrFields: {
+                //     withCredentials: true
+                // },
+                data: JSON.stringify($("#f").serializeObject())
+            }).then(
+                function (json) {
+                    if (json.data.result === 1) {
+                        alert(json.data.msg);
+                        console.log("이거실행")
+                        location.href = "/user/my-page.html"
+                    } else {
+                        alert(json.data.msg);
+                        console.log("이거실행")
+                        $("#userName").focus();
+                    }
+                },
+                function () {
+                    alert("회원정보 수정에 실패하였습니다. 다시 시도하시길 바랍니다.");
+                    console.log(error);
+                }
+            )
+        })
     })
+
+    // 회원정보 불러오기 함수
+    function userInfo() {
+        // 컨트롤러에 요청하기
+        $.ajax({
+            url: "http://localhost:13000/user/v1/userInfo",
+            type: "post",
+            dataType: "JSON",
+            data: { userId : loginUserId }
+            // xhrFields: {
+            //     withCredentials: true
+            // }
+        }).then(
+            function (json) {
+                const userInfo = json.data;
+
+                $("#userId").val(userInfo.userId);
+                $("#userName").val(userInfo.userName);
+                $("#age").val(userInfo.userAge);
+                $("#phoneNumber").val(userInfo.phoneNumber);
+                $("#postNumber").val(userInfo.postNumber);
+                $("#address1").val(userInfo.userAddress1);
+                $("#address2").val(userInfo.userAddress2);
+                $("#email").val(userInfo.userEmail);
+                oldEmail = userInfo.userEmail;
+            },
+            function () {
+                alert("로그인 해주시길 바랍니다.");
+                location.href = "/user/login.html";
+            }
+        );
+    }
+
+    // 회원이메일 중복 체크
+    function getEmailExists(f) {
+
+        if (f.email.value === "") {
+            alert("이메일을 입력하세요.");
+            f.email.focus();
+            return;
+        }
+
+        // 이메일 정규식
+        let emailFormat = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
+
+        if (!emailFormat.test(f.email.value)) {
+            alert("올바른 이메일 형식으로 입력하세요.");
+            f.email.focus();
+            return;
+        }
+
+        // Ajax 호출해서 이메일 중복확인
+        $.ajax({
+            url: "http://localhost:13000/user/v1/existEmail",
+            type: "post",
+            datatype: "JSON",
+            data: { userEmail: f.email.value },
+            success: function (json) {
+                if (json.existsYn === 1) {
+                    alert("이미 가입된 이메일 주소가 존재합니다.");
+                    f.email.focus();
+
+                } else {
+                    alert("가입 가능한 이메일입니다.");
+                    emailCheck = 0;
+                }
+
+            }
+        })
+
+    }
+
+    // 카카오 우편번호 조회 API 호출
+    function kakaoPost(f) {
+        new daum.Postcode({
+            oncomplete: function (data) {
+                let address = data.address; // 주소
+                let zonecode = data.zonecode; // 우편번호
+                f.postNumber.value = zonecode
+                f.address1.value = address
+            }
+        }).open();
+    }
 </script>
 </body>
 </html>

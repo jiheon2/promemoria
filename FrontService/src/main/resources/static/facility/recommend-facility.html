@@ -79,7 +79,7 @@
             background: none;
             outline: none;
             float: left;
-            color: #797979;
+            /*color: #797979;*/
             font-size: 16px;
             line-height: 30px;
         }
@@ -167,8 +167,8 @@
     <div class="content-box">
         <!-- 두 번째 박스의 내용 -->
         <div class="search-box">
-            <input class="search-txt" type="text" name="" placeholder="시설명을 검색하세요">
-            <button class="search-button" type="button">
+            <input class="search-txt" type="text" id="centerName" placeholder="시설명을 검색하세요">
+            <button class="search-button" type="button" id="btnSearch">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>
         </div>
@@ -179,25 +179,25 @@
         <div class="card">
             <div class="card-header">시설명</div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item" id="facilityName"><span>- </span>영등포구치매안심센터</li>
+                <li class="list-group-item" id="facilityName"><span>- </span></li>
             </ul>
         </div>
         <div class="card">
             <div class="card-header">시설유형</div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item" id="facilityType"><span>- </span>치매센터</li>
+                <li class="list-group-item" id="facilityType"><span>- </span></li>
             </ul>
         </div>
         <div class="card">
             <div class="card-header">시설주소</div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item" id="facilityAddress"><span>- </span>영등포</li>
+                <li class="list-group-item" id="facilityAddress"><span>- </span></li>
             </ul>
         </div>
         <div class="card">
             <div class="card-header">시설전화번호</div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item" id="facilityCallNum"><span>- </span>02-0000-0000</li>
+                <li class="list-group-item" id="facilityCallNum"><span>- </span></li>
             </ul>
         </div>
         <div class="card">
@@ -246,14 +246,19 @@
 
         // AJAX 요청
         $.ajax({
-            url: '/facility/v1/getCenterName', // API 엔드포인트
+            url: 'http://localhost:11000/facility/v1/getCenterName', // API 엔드포인트
             type: 'POST',
             data: { centerName: centerName },
             success: function(response) {
                 if (response && response.data) {
+                    var bounds = new kakao.maps.LatLngBounds();
+
                     response.data.forEach(function(facility) {
-                        addMarker(facility); // 시설 위치에 마커 추가
+                        var marker = addMarker(facility); // 마커 반환 후 변수에 저장
+                        bounds.extend(marker.getPosition()); // 반환된 마커의 위치를 bounds에 추가
                     });
+
+                    map.setBounds(bounds);
                 } else {
                     alert('시설을 찾을 수 없습니다.');
                 }
@@ -280,14 +285,19 @@
 
         // AJAX 요청
         $.ajax({
-            url: '/facility/v1/getCenterTypeList', // API 엔드포인트
+            url: 'http://localhost:11000/facility/v1/getCenterTypeList', // API 엔드포인트
             type: 'POST',
             data: { centerType: centerType },
             success: function(response) {
                 if (response && response.data) {
+                    var bounds = new kakao.maps.LatLngBounds();
+
                     response.data.forEach(function(facility) {
-                        addMarker(facility); // 시설 위치에 마커 추가
+                        var marker = addMarker(facility); // 마커 반환 후 변수에 저장
+                        bounds.extend(marker.getPosition()); // 반환된 마커의 위치를 bounds에 추가
                     });
+
+                    map.setBounds(bounds);
                 } else {
                     alert('시설을 찾을 수 없습니다.');
                 }
@@ -309,9 +319,8 @@
         marker.setMap(map);
         markers.push(marker); // 배열에 마커 추가
 
-        // 마커에 커서 올리면 센터 이름 표시
         var infowindow = new kakao.maps.InfoWindow({
-            content: '<div style="padding:5px; font-size: medium">' + facility.centerName + '</div>'
+            content: '<div style="text-align: center; padding: 5px; font-size: medium; width: 250px; height: auto; white-space: normal; overflow: hidden; word-break: break-all;">' + facility.centerName + '</div>',
         });
 
         kakao.maps.event.addListener(marker, 'mouseover', function() {
@@ -322,29 +331,26 @@
             infowindow.close();
         });
 
-        // 마커 클릭 시 시설 정보 표시 및 인포윈도우 관리
         kakao.maps.event.addListener(marker, 'click', function() {
-            // 이전 인포윈도우 닫기
             if (currentInfoWindow) {
                 currentInfoWindow.close();
             }
-            currentInfoWindow = infowindow; // 현재 인포윈도우 갱신
+            currentInfoWindow = infowindow;
             infowindow.open(map, marker);
 
-            // 시설 정보 카드에 데이터 채우기
             document.getElementById('facilityName').innerText = facility.centerName;
             document.getElementById('facilityType').innerText = facility.centerType;
             document.getElementById('facilityAddress').innerText = facility.addr;
             document.getElementById('facilityCallNum').innerText = facility.contactTel;
             document.getElementById('facilityWork').innerText = facility.taskContent;
 
-            // 시설 정보 카드 표시
             document.getElementById('facilityInfo').style.display = 'block';
 
-            // 지도 중심을 마커 위치로 이동 (확실하게 이동)
             map.panTo(markerPosition);
-            map.setLevel(5); // 레벨 조정
+            map.setLevel(5);
         });
+
+        return marker; // 마커 반환
     }
 
     // 기존 마커 제거 함수

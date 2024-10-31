@@ -9,8 +9,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script type="text/javascript">
-    </script>
 
 </head>
 <body>
@@ -41,8 +39,11 @@
 </div>
     <div id="remoteVideoCallStream"></div> <!--상대 웹 캠 화면-->
 
-
+<script src="/js/common.js"></script>
 <script src="/js/peerConfig.js"></script> <!--webRTC 연결을 위한 js-->
+<script type="text/javascript">
+    getToken()
+</script>
 
 </body>
 </html>

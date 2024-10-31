@@ -109,12 +109,12 @@
         </div>
         <div style="margin: 15px; display: flex; justify-content: center">
             <div class="input-group input-group-lg">
-                <input type="text" class="form-control" aria-label="Sizing example input" placeholder="이메일 입력해주세요"
+                <input type="email" class="form-control" aria-label="Sizing example input" placeholder="이메일 입력해주세요"
                        aria-describedby="inputGroup-sizing-lg" id="email">
             </div>
         </div>
     </div>
-    <button type="button" class="btn btn-primary" id="find">이메일 인증</button>
+    <button type="button" class="btn btn-primary" id="find">비밀번호 찾기</button>
 </div>
 <!-- 메인페이지 -->
 
@@ -131,6 +131,48 @@
     $(document).ready(function () {
         $('.header-include').load('/header.html');
         $('.footer-include').load('/footer.html');
+
+        $("#find").on("click", function () {
+
+            if (document.getElementById("userId").value === "") {
+                alert("아이디를 입력하세요.");
+                document.getElementById("userId").focus();
+                return;
+            }
+
+            if (document.getElementById("email").value === "") {
+                alert("이메일을 입력하세요.");
+                document.getElementById("email").focus();
+                return;
+            }
+
+            $.ajax({
+                url: "http://localhost:13000/user/v1/resetPw",
+                type: "post",
+                dataType: "JSON",
+                data: {
+                    userId: document.getElementById("userId").value,
+                    userEmail: document.getElementById("email").value
+                },
+                xhrFields: {
+                    withCredentials: true
+                }
+            }).then(
+                function (json) {
+                    if (json.data.result === 1) {
+                        alert(json.data.msg);
+                        location.href = "/user/login.html"
+                    } else {
+                        alert(json.data.msg);
+                        $("#userId").focus();
+                    }
+                },
+                function () {
+                    alert("에러가 발생하였습니다. \n다음에 다시 시도하길 바랍니다.");
+                    $("#userId").focus();
+                }
+            );
+        })
     })
 </script>
 </body>

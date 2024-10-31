@@ -105,107 +105,109 @@
 <!-- 메인 페이지 -->
 <h1>회원가입</h1>
 <!-- 두 개의 중앙 컨텐츠 박스 -->
-<div class="content-boxes">
-    <div class="content-box">
-        <!-- 첫 번째 박스의 내용 -->
-        <div style="margin: 15px; display: flex">
-            <div class="input-group input-group-lg">
-                <input type="text" class="form-control" aria-label="Sizing example input" placeholder="ID를 입력해주세요"
-                       aria-describedby="inputGroup-sizing-lg" style="width: 70%" id="userId">
-            </div>
-            <button type="button" class="btn btn-primary"
-                    style="margin-left: 10px; width: 20%; background-color: #f8efdf; border-color: #f8efdf; color: #89480a;">
-                확인
-            </button>
-        </div>
-        <div style="margin: 15px; display: flex">
-            <div class="input-group input-group-lg">
-                <input type="password" class="form-control" aria-label="Sizing example input" placeholder="비밀번호를 입력해주세요"
-                       aria-describedby="inputGroup-sizing-lg" id="password">
-            </div>
-        </div>
-        <div style="margin: 15px; display: flex">
-            <div class="input-group input-group-lg">
-                <input type="password" class="form-control" aria-label="Sizing example input"
-                       placeholder="비밀번호를 한번 더 입력해주세요"
-                       aria-describedby="inputGroup-sizing-lg" id="checkPassword">
-            </div>
-        </div>
-        <div style="margin: 15px; display: flex">
-            <div class="input-group input-group-lg">
-                <input type="text" class="form-control" aria-label="Sizing example input" placeholder="이름을 입력해주세요"
-                       aria-describedby="inputGroup-sizing-lg" id="userName">
-            </div>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin: 15px; color: #89480a">
-            <div style="display: flex; width: 50%">
+<form id="f">
+    <div class="content-boxes">
+        <div class="content-box">
+            <!-- 첫 번째 박스의 내용 -->
+            <div style="margin: 15px; display: flex">
                 <div class="input-group input-group-lg">
-                    <input type="text" class="form-control" aria-label="Sizing example input" placeholder="나이를 입력해주세요"
-                           aria-describedby="inputGroup-sizing-lg" id="age">
+                    <input type="text" class="form-control" aria-label="Sizing example input" placeholder="ID를 입력해주세요"
+                           aria-describedby="inputGroup-sizing-lg" style="width: 70%" id="userId" name="userId">
+                </div>
+                <button type="button" class="btn btn-primary" id="btnUserId"
+                        style="margin-left: 10px; width: 20%; background-color: #f8efdf; border-color: #f8efdf; color: #89480a;">
+                    확인
+                </button>
+            </div>
+            <div style="margin: 15px; display: flex">
+                <div class="input-group input-group-lg">
+                    <input type="password" class="form-control" aria-label="Sizing example input" placeholder="비밀번호를 입력해주세요"
+                           aria-describedby="inputGroup-sizing-lg" id="password" name="userPw">
                 </div>
             </div>
-            <div style="display: flex; width: 40%; align-items: center; justify-content: space-between">
-                <label style="width: 20%">성별</label>
-                <div class="form-check" style="width: 35%">
-                    <input class="form-check-input" type="radio" name="gender" id="male" checked
-                           style="background-color: #89480a">
-                    <label class="form-check-label" for="male">
-                        남
-                    </label>
+            <div style="margin: 15px; display: flex">
+                <div class="input-group input-group-lg">
+                    <input type="password" class="form-control" aria-label="Sizing example input"
+                           placeholder="비밀번호를 한번 더 입력해주세요"
+                           aria-describedby="inputGroup-sizing-lg" id="checkPassword" name="userPw2">
                 </div>
-                <div class="form-check" style="width: 35%">
-                    <input class="form-check-input" type="radio" name="gender" id="female"
-                           style="background-color: #89480a">
-                    <label class="form-check-label" for="female">
-                        여
-                    </label>
+            </div>
+            <div style="margin: 15px; display: flex">
+                <div class="input-group input-group-lg">
+                    <input type="text" class="form-control" aria-label="Sizing example input" placeholder="이름을 입력해주세요"
+                           aria-describedby="inputGroup-sizing-lg" id="userName" name="userName">
                 </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin: 15px; color: #89480a">
+                <div style="display: flex; width: 50%">
+                    <div class="input-group input-group-lg">
+                        <input type="text" class="form-control" aria-label="Sizing example input" placeholder="나이를 입력해주세요"
+                               aria-describedby="inputGroup-sizing-lg" id="age" name="userAge">
+                    </div>
+                </div>
+                <div style="display: flex; width: 40%; align-items: center; justify-content: space-between">
+                    <label style="width: 20%">성별</label>
+                    <div class="form-check" style="width: 35%">
+                        <input class="form-check-input" type="radio" name="userGender" id="male" value="남" checked
+                               style="background-color: #89480a">
+                        <label class="form-check-label" for="male">
+                            남
+                        </label>
+                    </div>
+                    <div class="form-check" style="width: 35%">
+                        <input class="form-check-input" type="radio" name="userGender" id="female" value="여"
+                               style="background-color: #89480a">
+                        <label class="form-check-label" for="female">
+                            여
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-box">
+            <!-- 두 번째 박스의 내용 -->
+            <div style="margin: 15px; display: flex">
+                <div class="input-group input-group-lg">
+                    <input type="text" class="form-control" aria-label="Sizing example input" placeholder="우편번호를 입력해주세요"
+                           aria-describedby="inputGroup-sizing-lg" style="width: 70%" id="postNumber" name="postNumber">
+                </div>
+                <button type="button" class="btn btn-primary" id="btnAddr"
+                        style="margin-left: 10px; width: 20%; background-color: #f8efdf; border-color: #f8efdf; color: #89480a">
+                    우편번호
+                </button>
+            </div>
+            <div style="margin: 15px; display: flex">
+                <div class="input-group input-group-lg">
+                    <input type="text" class="form-control" aria-label="Sizing example input" placeholder="주소를 입력해주세요"
+                           aria-describedby="inputGroup-sizing-lg" id="address1" name="userAddress1">
+                </div>
+            </div>
+            <div style="margin: 15px; display: flex">
+                <div class="input-group input-group-lg">
+                    <input type="text" class="form-control" aria-label="Sizing example input" placeholder="상세주소를 입력해주세요"
+                           aria-describedby="inputGroup-sizing-lg" id="address2" name="userAddress2">
+                </div>
+            </div>
+            <div style="margin: 15px; display: flex">
+                <div class="input-group input-group-lg">
+                    <input type="text" class="form-control" aria-label="Sizing example input" placeholder="휴대폰번호를 입력해주세요"
+                           aria-describedby="inputGroup-sizing-lg" id="phoneNumber" name="phoneNumber">
+                </div>
+            </div>
+            <div style="margin: 15px; display: flex">
+                <div class="input-group input-group-lg">
+                    <input type="email" class="form-control" aria-label="Sizing example input" placeholder="이메일을 입력해주세요"
+                           aria-describedby="inputGroup-sizing-lg" style="width: 70%" id="email" name="userEmail">
+                </div>
+                <button type="button" class="btn btn-primary" id="btnEmail"
+                        style="margin-left: 10px; width: 20%; background-color: #f8efdf; border-color: #f8efdf; color: #89480a">
+                    확인
+                </button>
             </div>
         </div>
     </div>
-    <div class="content-box">
-        <!-- 두 번째 박스의 내용 -->
-        <div style="margin: 15px; display: flex">
-            <div class="input-group input-group-lg">
-                <input type="text" class="form-control" aria-label="Sizing example input" placeholder="우편번호를 입력해주세요"
-                       aria-describedby="inputGroup-sizing-lg" style="width: 70%" id="postNumber">
-            </div>
-            <button type="button" class="btn btn-primary"
-                    style="margin-left: 10px; width: 20%; background-color: #f8efdf; border-color: #f8efdf; color: #89480a">
-                우편번호
-            </button>
-        </div>
-        <div style="margin: 15px; display: flex">
-            <div class="input-group input-group-lg">
-                <input type="text" class="form-control" aria-label="Sizing example input" placeholder="주소를 입력해주세요"
-                       aria-describedby="inputGroup-sizing-lg" id="address1">
-            </div>
-        </div>
-        <div style="margin: 15px; display: flex">
-            <div class="input-group input-group-lg">
-                <input type="text" class="form-control" aria-label="Sizing example input" placeholder="상세주소를 입력해주세요"
-                       aria-describedby="inputGroup-sizing-lg" id="address2">
-            </div>
-        </div>
-        <div style="margin: 15px; display: flex">
-            <div class="input-group input-group-lg">
-                <input type="text" class="form-control" aria-label="Sizing example input" placeholder="휴대폰번호를 입력해주세요"
-                       aria-describedby="inputGroup-sizing-lg" id="phoneNumber">
-            </div>
-        </div>
-        <div style="margin: 15px; display: flex">
-            <div class="input-group input-group-lg">
-                <input type="text" class="form-control" aria-label="Sizing example input" placeholder="이메일을 입력해주세요"
-                       aria-describedby="inputGroup-sizing-lg" style="width: 70%" id="email">
-            </div>
-            <button type="button" class="btn btn-primary"
-                    style="margin-left: 10px; width: 20%; background-color: #f8efdf; border-color: #f8efdf; color: #89480a">
-                인증
-            </button>
-        </div>
-    </div>
-</div>
-<button type="button" class="btn btn-primary" id="join">가입하기</button>
+    <button type="button" class="btn btn-primary" id="join">가입하기</button>
+</form>
 <!-- 메인페이지 -->
 
 <!-- 푸터 -->
@@ -213,16 +215,252 @@
 <!-- 푸터 -->
 
 <script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/jquery.serializeObject.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript" src="/js/plugins.js"></script>
 <script type="text/javascript" src="/js/script.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
+    // 아이디 확인여부 (중복 1 / 사용가능 : 0)
+    let userIdCheck = 1;
+
+    // 이메일 확인여부 (중복 1 / 사용가능 : 0)
+    let emailCheck = 1;
+
+    // 숫자만 가능
+    function onlyNumber(value) {
+        return /^[0-9]{1,2}$/.test(value);
+    }
+
+    // HTML로딩이 완료되고, 실행됨
     $(document).ready(function () {
         $('.header-include').load('/header.html');
         $('.footer-include').load('/footer.html');
+
+        let f = document.getElementById("f"); // form 태그
+
+        // 아이디 확인
+        $("#btnUserId").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+            UserIdExists(f);
+        })
+
+        // 이메일 확인
+        $("#btnEmail").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+            getEmailExists(f);
+        })
+
+        // 우편번호 찾기
+        $("#btnAddr").on("click", function (event) {
+            event.preventDefault(); // 폼 제출을 막음
+            kakaoPost(f);
+        });
+
+        // 회원가입
+        $("#join").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+            createUser(f);
+        })
     })
+
+    // 회원이메일 중복 체크
+    function getEmailExists(f) {
+
+        if (f.email.value === "") {
+            alert("이메일을 입력하세요.");
+            f.email.focus();
+            return;
+        }
+
+        // 이메일 정규식
+        let emailFormat = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
+
+        if (!emailFormat.test(f.email.value)) {
+            alert("올바른 이메일 형식으로 입력하세요.");
+            f.email.focus();
+            return;
+        }
+
+        // Ajax 호출해서 이메일 중복확인
+        $.ajax({
+            url: "http://localhost:13000/user/v1/existEmail",
+            type: "post",
+            datatype: "JSON",
+            data: { userEmail: f.email.value },
+            success: function (json) {
+                if (json.existsYn === 1) {
+                    alert("이미 가입된 이메일 주소가 존재합니다.");
+                    f.email.focus();
+
+                } else {
+                    alert("가입 가능한 이메일입니다.");
+                    emailCheck = 0;
+                }
+
+            }
+        })
+
+    }
+
+    // 회원아이디 중복 체크
+    function UserIdExists(f) {
+        if (f.userId.value === "") {
+            alert("아이디를 입력하세요.");
+            f.userId.focus();
+            return;
+        }
+
+        // Ajax 호출해서 아이디 중복확인
+        $.ajax({
+                url: "http://localhost:13000/user/v1/existEmail",
+                type: "post",
+                dataType: "JSON",
+                data: { userEmail: f.email.value },
+                success: function (json) {
+                    if (json.existsYn === 1) {
+                        alert("이미 가입된 아이디가 존재합니다.");
+                        f.email.focus();
+
+                    } else {
+                        alert("가입 가능한 아이디입니다.");
+                        userIdCheck = 0;
+                    }
+                }
+            }
+        )
+    }
+
+    // 카카오 우편번호 조회 API 호출
+    function kakaoPost(f) {
+        new daum.Postcode({
+            oncomplete: function (data) {
+                let address = data.address; // 주소
+                let zonecode = data.zonecode; // 우편번호
+                f.postNumber.value = zonecode
+                f.address1.value = address
+            }
+        }).open();
+    }
+
+    // 회원가입 정보의 유효성 체크하기
+    function createUser(f) {
+        if (f.userId.value === "") {
+            alert("아이디를 입력하세요.");
+            f.userId.focus();
+            return;
+        }
+
+        if (userIdCheck === 1) {
+            alert("아이디 중복 체크 및 중복되지 않은 아이디로 가입 바랍니다.");
+            f.userId.focus();
+            return;
+        }
+
+        if (f.password.value === "") {
+            alert("비밀번호를 입력하세요.");
+            f.password.focus();
+            return;
+        }
+
+        if (f.checkPassword.value === "") {
+            alert("비밀번호 확인을 입력하세요.");
+            f.checkPassword.focus();
+            return;
+        }
+
+        if (f.password.value !== f.checkPassword.value) {
+            alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            f.password.focus();
+            return;
+        }
+
+        if (f.userName.value === "") {
+            alert("이름을 입력하세요.");
+            f.userName.focus();
+            return;
+        }
+
+        if (f.userAge.value === "") {
+            alert("나이를 입력하세요.");
+            f.userAge.focus();
+            return;
+        }
+
+        if (onlyNumber(f.userAge.value) === false) {
+            alert("숫자만 입력 가능합니다.");
+            f.userAge.focus();
+            return;
+        }
+
+        if (f.postNumber.value === "") {
+            alert("우편번호를 입력하세요.");
+            f.postNumber.focus();
+            return;
+        }
+
+        if (f.address1.value === "") {
+            alert("주소를 입력하세요.");
+            f.address1.focus();
+            return;
+        }
+
+        if (f.address2.value === "") {
+            alert("상세주소를 입력하세요.");
+            f.address2.focus();
+            return;
+        }
+
+        if (f.phoneNumber.value === "") {
+            alert("휴대폰번호를 입력하세요.");
+            f.phoneNumber.focus();
+            return;
+        }
+
+        if (onlyNumber(f.phoneNumber.value) === false) {
+            alert("숫자만 입력 가능합니다.");
+            f.phoneNumber.focus();
+            return;
+        }
+
+        if (f.email.value === "") {
+            alert("이메일을 입력하세요.");
+            f.email.focus();
+            return;
+        }
+
+        if (emailCheck === 1) {
+            alert("이메일 중복 체크 및 중복되지 않은 이메일로 가입 바랍니다.");
+            f.email.focus();
+            return;
+        }
+
+        // Ajax 호출해서 회원가입하기
+        $.ajax({
+            url: "http://localhost:13000/user/v1/registerUser",
+            type: "post",
+            dataType: "JSON",
+            contentType: "application/json",
+            // xhrFields: {
+            //     withCredentials: true
+            // },
+            data: JSON.stringify($("#f").serializeObject())
+        }).then(
+            function (json) {
+                if (json.data.result === 1) {
+                    alert(json.data.msg);
+                    console.log("이거실행")
+                    location.href = "/user/login.html"
+                } else if (json.data.result === 2) {
+                    alert(json.data.msg);
+                    console.log("이거실행")
+                    $("#userId").focus();
+                } else {
+                    alert(json.data.msg);
+                    console.log("이거실행")
+                    $("#userId").focus();
+                }
+            }
+        )
+    }
 </script>
 </body>
 </html>
