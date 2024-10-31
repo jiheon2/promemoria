@@ -16,7 +16,7 @@ public record AnalyzeDTO(
         String name, // 회원 이름
         String date, // 분석 날짜
         String videoUrl, // 영상 원본 URL
-        String finalStatus // 최종 이상 여부
+        String objectName // 오브젝트 네임
 ) {
     @Builder
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)

@@ -11,7 +11,6 @@ import kopo.userservice.dto.MsgDTO;
 import kopo.userservice.dto.TokenDTO;
 import kopo.userservice.dto.UserDTO;
 import kopo.userservice.service.UserInterface;
-//import kopo.userservice.service.impl.RedisService;
 import kopo.userservice.util.CmmUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +41,6 @@ public class UserController {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserInterface userInterface;
-//    private final RedisService redisService;
 
     @PostMapping(value = "loginSuccess")
     public ResponseEntity<CommonResponse> loginSuccess(
@@ -147,13 +145,8 @@ public class UserController {
     }
 
     @PostMapping(value = "updateUserInfo")
-    public ResponseEntity<CommonResponse> updateUserInfo(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
+    public ResponseEntity<CommonResponse> updateUserInfo(@RequestBody UserDTO userDTO) {
         log.info("updateUserInfo 실행 : {}", this.getClass().getName());
-
-        if (bindingResult.hasErrors()) {
-            return CommonResponse.getErrors(bindingResult);
-        }
-
         return ResponseEntity.ok(CommonResponse.of(HttpStatus.OK, HttpStatus.OK.series().name(), userInterface.updateUserInfo(userDTO)));
     }
 

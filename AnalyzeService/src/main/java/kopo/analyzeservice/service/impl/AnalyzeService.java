@@ -12,6 +12,7 @@ import kopo.analyzeservice.feign.ModelClient;
 import kopo.analyzeservice.repository.AnalyzeRepository;
 import kopo.analyzeservice.repository.MetaRepository;
 import kopo.analyzeservice.repository.document.AnalyzeData;
+import kopo.analyzeservice.repository.document.Metadata;
 import kopo.analyzeservice.service.AnalyzeInterface;
 import kopo.analyzeservice.util.AnalyzeDataMapper;
 import kopo.analyzeservice.util.CustomMultipartFile;
@@ -41,20 +42,25 @@ public class AnalyzeService implements AnalyzeInterface {
     @Value("${ncp.objectStorage.bucketName}")
     private String bucketName;
 
-    @KafkaListener(topics = "analyze-data", groupId = "analyze-group")
-    public void listenAndSaveAnalyzeData(String kafkaObjectName) {
+    @KafkaListener(
+            topics = "analyze-topic",
+            groupId = "analyze-group",
+            containerFactory = "analyzeKafkaListenerContainerFactory"
+    )
+    public void listenAndSaveAnalyzeData(String uploadIdentifier) {
 
-        log.info("카프카에게 받은 메시지 : {}", kafkaObjectName);
+        log.info("카프카에게 받은 메시지 : {}", uploadIdentifier);
 
         // kafkaObjectName을 사용하여 메타 데이터를 가져오고 분석 데이터를 처리합니다.
-        List<MetaDTO> metaList = getMetaList(kafkaObjectName);
+        List<MetaDTO> metaList = getMetaList(uploadIdentifier);
         List<AnalyzeDTO> analyzeList = analyzeData(metaList);
+
 
         log.info("저장 데이터 : {}", analyzeList);
 
         // analyzeList 저장 로직 추가
         try {
-            this.saveAll(analyzeList); // 현재 클래스의 saveAll 메서드 호출
+            this.saveAnalyzeData(analyzeList); // 현재 클래스의 saveAll 메서드 호출
             MsgDTO dto = MsgDTO.builder()
                     .result(1)
                     .msg("Analyze data saved successfully.")
@@ -67,6 +73,31 @@ public class AnalyzeService implements AnalyzeInterface {
                     .msg("Failed to save analyze data.")
                     .build();
             log.error("Failed to save analyze data: {}", dto.msg());
+        }
+    }
+
+    @KafkaListener(
+            topics = "meta-topic",
+            groupId = "meta-group",
+            containerFactory = "metaKafkaListenerContainerFactory"
+    )
+    public void listenAndSaveMeta(Map<String, Object> uploadedMetadata) {
+
+        log.info("카프카에게 받은 메세지 : {}", uploadedMetadata);
+
+        try {
+            Metadata metadata = Metadata.builder()
+                    .uploadIdentifier((String) uploadedMetadata.get("uploadIdentifier"))
+                    .objectName((String) uploadedMetadata.get("objectName"))
+                    .bucketName((String) uploadedMetadata.get("bucketName"))
+                    .downloadFilePath((String) uploadedMetadata.get("downloadFilePath"))
+                    .userId((String) uploadedMetadata.get("userId"))
+                    .build();
+
+            metaRepository.save(metadata);
+            log.info("메타데이터 저장 성공");
+        } catch (Exception e) {
+            log.error("Error saving metadata", e);
         }
     }
 
@@ -122,13 +153,13 @@ public class AnalyzeService implements AnalyzeInterface {
     }
 
     @Override
-    public List<MetaDTO> getMetaList(String objectName) {
+    public List<MetaDTO> getMetaList(String uploadIdentifier) {
 
         log.info("getMetaList start : {}", this.getClass().getName());
 
-        log.info("objectName : {}", objectName);
+        log.info("objectName : {}", uploadIdentifier);
 
-        List<MetaDTO> metaList = metaRepository.findAllByObjectName(objectName);
+        List<MetaDTO> metaList = metaRepository.findAllByUploadIdentifier(uploadIdentifier);
 
         log.info("metaList : {}", metaList);
 
@@ -146,9 +177,17 @@ public class AnalyzeService implements AnalyzeInterface {
         return metaList.parallelStream()
                 .map(metaDTO -> {
                     String objectName = metaDTO.objectName();
+                    String downloadFilePath = metaDTO.downloadFilePath(); // downloadFilePath 가져오기
+
                     try {
                         MultipartFile file = downloadFileFromS3(bucketName, objectName);
-                        return modelClient.analyzeData(file);
+                        AnalyzeDTO analyzeResult = modelClient.analyzeData(file);
+
+                        // AnalyzeDTO에 downloadFilePath와 objectName 설정
+                        analyzeResult = AnalyzeDTO.builder().videoUrl(downloadFilePath).build();
+                        analyzeResult = AnalyzeDTO.builder().objectName(objectName).build();
+
+                        return analyzeResult;
                     } catch (IOException e) {
                         log.error("파일 처리 중 오류 발생: {}", objectName, e);
                         throw new RuntimeException("파일 처리 중 오류가 발생했습니다: " + objectName, e);
@@ -179,7 +218,7 @@ public class AnalyzeService implements AnalyzeInterface {
         }
     }
 
-    private void saveAll(List<AnalyzeDTO> analyzeList) {
+    private void saveAnalyzeData(List<AnalyzeDTO> analyzeList) {
         if (analyzeList == null || analyzeList.isEmpty()) {
             log.info("No analyze data to save.");
             return;
@@ -192,4 +231,6 @@ public class AnalyzeService implements AnalyzeInterface {
         analyzeRepository.saveAll(dataList);
         log.info("Saved {} analyze data entries.", dataList.size());
     }
+
+
 }

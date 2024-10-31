@@ -10,11 +10,9 @@ import lombok.NonNull;
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public record UserDTO(
 
-        @NonNull
         @NotBlank(message = "사용자 아이디는 필수입니다")
         String userId, // 아이디
 
-        @NonNull
         @NotBlank(message = "비밀번호는 필수입니다")
         String userPw, // 비밀번호
 
@@ -24,7 +22,6 @@ public record UserDTO(
         @NotBlank(message = "사용자 이름은 필수입니다")
         String userName, // 이름
 
-        @NonNull
         @NotBlank(message = "사용자 성별은 필수입니다")
         String userGender, // 성별
 
@@ -49,7 +46,6 @@ public record UserDTO(
         @NotBlank(message = "사용자 이메일은 필수입니다")
         String userEmail, // 이메일
 
-        @NonNull
         String roles // 회원 권한
 ) {
 }

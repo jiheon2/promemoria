@@ -1,0 +1,123 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: analyze-config
+data:
+  application.yaml: |
+    spring:
+      application:
+        name: analyze
+      elasticsearch:
+        uris: http://elasticsearch-master-hl:9200
+        host: localhost
+        port: 9200
+        connection-timeout: 3s  # 연결 시간 초과 설정
+        socket-timeout: 3s  # 소켓 시간 초과 설정
+      kafka:
+        bootstrap-servers: kafka-headless.kopo-trainee20.svc.cluster.local:9094
+        consumer:
+          group-id: analyze-group
+          auto-offset-reset: earliest
+          key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+          value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+          properties:
+            spring.json.trusted.packages: "*"
+        producer:
+          key-serializer: org.apache.kafka.common.serialization.StringSerializer
+          value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+    server:
+      port: 15000
+
+    ncp:
+      objectStorage:
+        endPoint: "https://kr.object.ncloudstorage.com"
+        regionName: "kr-standard"
+        bucketName: "pro-memoria24"
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: analyze-secret
+type: Opaque
+data:
+  elasticsearch-username: ZWxhc3RpYw==  # Base64 인코딩된 'elastic'
+  elasticsearch-password: MTIzNA==       # Base64 인코딩된 '1234'
+  object-storage-access-key: Z3RpSGFWZ1RuWUhGa1g2YVJ6THU=  # Base64 인코딩된 Access Key
+  object-storage-secret-key: ZU5WcWFyT2JEc3ZIdmFtRm92Y2NJQWNVRUZmT3pjc0tnNENDckkx # Base64 인코딩된 Secret Key
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analyze-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: analyze
+  template:
+    metadata:
+      labels:
+        app: analyze
+    spec:
+      containers:
+        - name: analyze
+          image: your-docker-image:latest  # 실제 Docker 이미지 이름으로 변경 필요
+          resources:
+            requests:
+              memory: "500Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1"
+          ports:
+            - containerPort: 15000
+          env:
+            - name: SPRING_ELASTICSEARCH_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: analyze-secret
+                  key: elasticsearch-username
+            - name: SPRING_ELASTICSEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: analyze-secret
+                  key: elasticsearch-password
+            - name: NCP_OBJECTSTORAGE_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: analyze-secret
+                  key: object-storage-access-key
+            - name: NCP_OBJECTSTORAGE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: analyze-secret
+                  key: object-storage-secret-key
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+              subPath: application.yaml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: analyze-config
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: analyze-service
+spec:
+  selector:
+    app: analyze
+  ports:
+    - protocol: TCP
+      port: 15000
+      targetPort: 15000
+  type: ClusterIP
+

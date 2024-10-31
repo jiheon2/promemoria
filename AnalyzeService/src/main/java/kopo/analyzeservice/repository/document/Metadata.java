@@ -17,5 +17,5 @@ public class Metadata {
     private String downloadFilePath;
     private String objectName;
     private String userId;
-    private String date;
+    private String uploadIdentifier;
 }
