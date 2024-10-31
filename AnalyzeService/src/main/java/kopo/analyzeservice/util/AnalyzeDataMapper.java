@@ -22,7 +22,7 @@ public class AnalyzeDataMapper {
                 .name(data.getUserName())
                 .date(data.getDate())
                 .videoUrl(data.getVideoUrl())
-                .finalStatus(data.getFinalStatus())
+                .objectName(data.getObjectName())
                 .build();
     }
 
@@ -86,7 +86,7 @@ public class AnalyzeDataMapper {
                 .date(dto.date())
                 .userName(dto.name())
                 .videoUrl(dto.videoUrl())
-                .finalStatus(dto.finalStatus())
+                .objectName(dto.objectName())
                 .build();
     }
 

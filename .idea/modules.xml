@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AnalyzeService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/AnalyzeService.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FrontService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/FrontService.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/UserService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/UserService.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/VideoChatService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/VideoChatService.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/promemoria.iml" filepath="$PROJECT_DIR$/.idea/promemoria.iml" />
     </modules>
   </component>

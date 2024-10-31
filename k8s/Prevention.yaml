@@ -88,9 +88,9 @@ metadata:
   name: prevention-db-secret
 type: Opaque
 data:
-  username: cG0=         # Base64로 인코딩된 'pm'
-  password: MTIzNA==     # Base64로 인코딩된 '1234'
-  db-url: amRiYzptYXJpYWRiOi8vMTk4LjE5LjE2MS45NzozMzA2L3Bt # Base64로 인코딩된 JDBC URL
+  username: cG0=
+  password: MTIzNA==
+  db-url: amRiYzptYXJpYWRiOi8vMTk4LjE5LjE2MS45NzozMzA2L3Bt
 
 ---
 
