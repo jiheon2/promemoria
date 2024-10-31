@@ -5,8 +5,10 @@ import kopo.userservice.repository.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
+public interface UserRepository extends JpaRepository<UserEntity, String> {
 
     // 회원 정보 조회
     UserEntity findByUserId(String userId);
@@ -25,4 +27,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     // 회원 탈퇴
     void deleteByUserId(String userId);
+
+    List<UserEntity> findByUserIdStartingWith(String friendId) throws Exception;
+    List<UserEntity> findByUserGenderAndUserAgeBetween(String gender, int minAge, int maxAge);
 }

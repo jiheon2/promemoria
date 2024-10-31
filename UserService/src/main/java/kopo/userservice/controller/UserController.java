@@ -11,7 +11,7 @@ import kopo.userservice.dto.MsgDTO;
 import kopo.userservice.dto.TokenDTO;
 import kopo.userservice.dto.UserDTO;
 import kopo.userservice.service.UserInterface;
-import kopo.userservice.service.impl.RedisService;
+//import kopo.userservice.service.impl.RedisService;
 import kopo.userservice.util.CmmUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +39,7 @@ public class UserController {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserInterface userInterface;
-    private final RedisService redisService;
+//    private final RedisService redisService;
 
     @PostMapping(value = "loginSuccess")
     public ResponseEntity<CommonResponse> loginSuccess(
@@ -63,7 +62,7 @@ public class UserController {
         log.info("accessToken : " + accessToken);
 
         ResponseCookie cookie = ResponseCookie.from(accessTokenName, accessToken)
-                .domain("")
+                .domain("localhost")
                 .path("/")
                 .maxAge(accessTokenValidTime)
                 .httpOnly(true)
@@ -81,9 +80,6 @@ public class UserController {
         String refreshToken = jwtTokenProvider.createToken(userId, userRoles, TokenType.REFRESH_TOKEN);
 
         log.info("refreshToken : " + refreshToken);
-
-        // 레디스에 리프레시 토큰 저장
-        redisService.setValues(refreshToken, userId);
 
         // 결과 메시지 전달하기
         MsgDTO dto = MsgDTO.builder().result(1).msg(userId + "님 로그인이 성공하였습니다.").build();

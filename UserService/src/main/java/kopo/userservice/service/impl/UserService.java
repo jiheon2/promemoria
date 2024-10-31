@@ -53,8 +53,7 @@ public class UserService implements UserInterface {
                     .userGender(userDTO.userGender())
                     .phoneNumber(userDTO.phoneNumber())
                     .postNumber(userDTO.postNumber())
-                    .isKakao(userDTO.isKakao())
-                    .roles(userDTO.roles())
+                    .roles("USER")
                     .build();
 
             try {
@@ -188,7 +187,6 @@ public class UserService implements UserInterface {
                     .userGender(userEntity.getUserGender())
                     .phoneNumber(userDTO.phoneNumber())
                     .postNumber(userDTO.postNumber())
-                    .isKakao(userEntity.getIsKakao())
                     .roles(userEntity.getRoles())
                     .build();
             userRepository.save(updateEntity);
