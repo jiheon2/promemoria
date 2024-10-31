@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-config
+data:
+  application.yaml: |
+    server:
+      port: 13000
+
+    spring:
+      application:
+        name: user
+
+      # JPA 설정
+      jpa:
+        generate-ddl: false
+        hibernate:
+          ddl-auto: none
+          naming:
+            physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        properties:
+          hibernate:
+            dialect: org.hibernate.dialect.PostgresSQLDialect
+            default_batch_fetch_size: 100
+            format_sql: true
+        show-sql: true
+        open-in-view: false
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: user-db-secret
+type: Opaque
+data:
+  username: cG0=          # Base64 인코딩된 'pm'
+  password: MTIzNA==      # Base64 인코딩된 '1234'
+  url: amRiYzptYXJpYWRiOi8vMTk4LjE5LjIxMS4yMDk6NTQzMi9wbQ== # Base64 인코딩된 JDBC URL
+  jwt-secret-key: MTIzNDU2NzgxMjM0NTY3ODEyMzQ1Njc4MTIzNDU2NzgxMjM0 # Base64 인코딩된 JWT Secret Key
+  redis-host: MTk4LjE5LjE3Mi4yMjQ=     # Base64 인코딩된 Redis 호스트
+  redis-port: NjM3OQ==                 # Base64 인코딩된 Redis 포트
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user
+  template:
+    metadata:
+      labels:
+        app: user
+    spec:
+      containers:
+        - name: user
+          image: your-docker-image:latest  # 실제 Docker 이미지 이름으로 변경 필요
+          resources:
+            requests:
+              memory: "500Mi"
+              cpu: "500m"
+            limits:
+              memory: "500Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 13000
+          env:
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: user-db-secret
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: user-db-secret
+                  key: password
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: user-db-secret
+                  key: url
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: user-db-secret
+                  key: jwt-secret-key
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+              subPath: application.yaml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: user-config
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+spec:
+  selector:
+    app: user
+  ports:
+    - protocol: TCP
+      port: 13000
+      targetPort: 13000
+  type: ClusterIP
