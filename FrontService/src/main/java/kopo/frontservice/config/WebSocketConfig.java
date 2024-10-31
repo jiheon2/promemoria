@@ -1,3 +1,5 @@
+package kopo.frontservice.config;
+
 import kopo.frontservice.interceptor.WebSocketChannelInterceptor;
 import kopo.frontservice.interceptor.WebSocketInterceptor;
 import org.springframework.context.annotation.Configuration;

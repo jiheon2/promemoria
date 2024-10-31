@@ -50,8 +50,6 @@ public class UserEntity {
     @Column(name = "user_email")
     private String userEmail;
 
-    @Column(name = "is_kakao")
-    private Boolean isKakao;
 
     @Column(name = "roles")
     private String roles;

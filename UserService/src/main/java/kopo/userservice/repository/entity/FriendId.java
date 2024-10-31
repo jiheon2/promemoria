@@ -1,4 +1,4 @@
-package kopo.frontservice.repository.entity;
+package kopo.userservice.repository.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

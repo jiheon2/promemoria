@@ -1,4 +1,10 @@
 package kopo.userservice.dto;
 
-public record FriendDTO() {
+import lombok.Builder;
+
+@Builder
+public record FriendDTO(
+        String userId,
+        String friendId
+) {
 }

@@ -18,7 +18,6 @@ public record UserDTO(
         @NotBlank(message = "비밀번호는 필수입니다")
         String userPw, // 비밀번호
 
-        @NotBlank(message = "나이는 필수입니다")
         int userAge, // 나이
 
         @NonNull
@@ -51,9 +50,6 @@ public record UserDTO(
         String userEmail, // 이메일
 
         @NonNull
-        String roles, // 회원 권한
-
-        @NonNull
-        Boolean isKakao // 카카오 회원 여부
+        String roles // 회원 권한
 ) {
 }
