@@ -23,7 +23,7 @@ public class AnalyzeData {
     private String date; // 분석 날짜
     private String userName; // 회원 이름
     private String videoUrl; // 영상 URL
-    private String finalStatus; // 최종 이상 여부
+    private String objectName; // 최종 이상 여부
 
     @Builder
     @JsonInclude(JsonInclude.Include.NON_NULL)
