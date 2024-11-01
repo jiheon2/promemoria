@@ -1,34 +1,332 @@
-// peer 생성 + 정보 교환 + offer/answer 처리
-
-// 1. 웹 캠 여는 함수
-let localStreamElement = document.querySelector('#localVideoCallStream');
-// 식별하기 위한 random key
+// let remoteStreamElement = document.querySelector('#remoteStream');
+let localStreamElement = document.querySelector('#localStream');
 const myKey = Math.random().toString(36).substring(2, 11);
 let pcListMap = new Map();
-let roomId;
+let roomName;
+let userName;
 let otherKeyList = [];
 let localStream = undefined;
 
-// 1. 웹 캠 여는 함수
-const startCam = async () => {
-    if (navigator.mediaDevices !== undefined) {
-        await navigator.mediaDevices.getUserMedia({audio: true, video: true})
-            .then(async (stream) => {
-                console.log('Stream found');
-                //웹캠, 마이크의 스트림 정보를 글로벌 변수로 저장한다.
-                localStream = stream;
-                // Disable the microphone by default
-                stream.getAudioTracks()[0].enabled = true;
-                localStreamElement.srcObject = localStream;
-                // Connect after making sure that local stream is availble
+roomName = localStorage.getItem("roomName")
+userName = localStorage.getItem("userName");
 
-            }).catch(error => {
-                console.error("Error accessing media devices:", error);
-            });
+$.ajax({
+    url: "http://localhost:12000/video/createRoom",
+    type: "get",
+    data: {
+        roomName : roomName,
+        userName : userName
+    },
+    success: function (json) {
+        
+        localStorage.removeItem("roomName")
+
+        // 웹소켓 객체를 생성하는 중
+        if (ws !== undefined && ws.readyState !== WebSocket.CLOSED) {
+            console.log("WebSocket is already opened.");
+            return;
+        }
+
+        // 접속 URL 예 : ws://localhost:10000/ws/테스트방/별명
+        ws = new WebSocket("ws://" + location.host + "/ws/" + roomName + "/" + userName);
+
+        // 웹소켓 열기
+        ws.onopen = function (event) {
+            if (event.data === undefined)
+                return;
+
+            console.log(event.data)
+        };
+
+        // 메시지 수신 시 처리
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+
+            if (data.state === "참여자목록") {
+                // 기존 참여자 목록을 초기 설정
+                if (data.msg !== undefined) participantList.innerText = data.msg;
+
+            } else if (data.state === "입장") {
+                // 입장한 유저 추가
+                addParticipant(data.msg);
+                // 방 개설 시간 설정 (첫 번째 유저 입장 시에만)
+                if (!isRoomOpened) {
+                    openingDate.textContent = getFormattedDate(new Date());
+                    isRoomOpened = true;
+                }
+
+            } else if (data.state === "퇴장") {
+                // 퇴장한 유저 제거
+                removeParticipant(data.msg);
+            }
+        };
     }
+})
 
+const startCam = async () => {
+
+    // 비디오 요소를 찾을 때까지 기다리도록 함수를 변경합니다.
+    const localStreamElement = document.querySelector('#localVideoCallStream');
+
+    if (localStreamElement) {
+
+        if (navigator.mediaDevices !== undefined) {
+            await navigator.mediaDevices.getUserMedia({audio: true, video: true})
+                .then(async (stream) => {
+
+                    localStream = stream;
+
+                    // Enable the cam by default
+                    stream.getVideoTracks()[0].enabled = true;
+
+                    // Disable the microphone by default
+                    stream.getAudioTracks()[0].enabled = false;
+
+                    // 비디오 요소를 표시하기 전에 display 속성을 변경
+                    document.querySelector('#localVideoCallStream').style.display = 'block';
+
+                    localStreamElement.srcObject = localStream;
+                    console.log("localStreamElement.srcObject : ", localStreamElement.srcObject)
+
+                    // Connect after making sure that local stream is availble
+
+                }).catch(error => {
+                    console.error("Error accessing media devices:", error);
+                });
+
+        } else {
+
+            console.error("Local video element not found");
+
+        }
+
+    }
 }
 
+const connectSocket = async () => {
+    const socket = new SockJS('/signaling');
+    stompClient = Stomp.over(socket);
+    stompClient.debug = null;
+
+    stompClient.connect({
+        'roomName': roomName,
+        'camKey': myKey
+    }, function () {
+        console.log('Connected to WebRTC server');
+
+        // iceCandidate 를 구독 해준다.
+        stompClient.subscribe(`/topic/peer/iceCandidate/${myKey}/${roomName}`, candidate => {
+            const key = JSON.parse(candidate.body).key
+            const message = JSON.parse(candidate.body).body;
+
+            //해당 신호를 Peer에 추가해준다.
+            pcListMap.get(key).addIceCandidate(new RTCIceCandidate({
+                candidate: message.candidate,
+                sdpMLineIndex: message.sdpMLineIndex,
+                sdpMid: message.sdpMid
+            }));
+
+        });
+
+        //offer 를 구독 해준다.
+        stompClient.subscribe(`/topic/peer/offer/${myKey}/${roomName}`, offer => {
+
+            const key = JSON.parse(offer.body).key;
+            const message = JSON.parse(offer.body).body;
+
+            //해당 키에 대한 새로운 peer를 생성하여 map 에 저장한다.
+            pcListMap.set(key, createPeerConnection(key));
+            //새로 만든 peer에 RTCSessionDescription를 추가해준다.
+            pcListMap.get(key).setRemoteDescription(new RTCSessionDescription({type: message.type, sdp: message.sdp}));
+            //받은 키에 대한 answer를 보낸다.
+            sendAnswer(pcListMap.get(key), key);
+
+        });
+
+        //answer 를 구독 해준다.
+        stompClient.subscribe(`/topic/peer/answer/${myKey}/${roomName}`, answer => {
+            const key = JSON.parse(answer.body).key;
+            const message = JSON.parse(answer.body).body;
+
+            //받은 키에 대한 peer에 description 해준다.
+            pcListMap.get(key).setRemoteDescription(new RTCSessionDescription(message));
+
+        });
+
+        stompClient.subscribe(`/topic/call/key`, message => {
+            stompClient.send(`/app/send/key`, {}, JSON.stringify(myKey));
+
+        });
+
+        stompClient.subscribe(`/topic/send/key`, message => {
+            const key = JSON.parse(message.body);
+
+            if (myKey !== key && otherKeyList.find((mapKey) => mapKey === myKey) === undefined) {
+                otherKeyList.push(key);
+            }
+        });
+
+        // 연결 종료 알림을 처리하는 구독 추가
+        stompClient.subscribe(`/topic/disconnect/${roomName}`, message => {
+            const key = JSON.parse(message.body).key;
+            console.log(`Peer disconnected: ${key}`);
+
+            // 원격 비디오 요소 제거
+            const remoteVideoElement = document.getElementById(key);
+
+            if (remoteVideoElement) {
+                remoteVideoElement.srcObject = null;
+                remoteVideoElement.remove();
+            }
+        });
+
+        // 웹소켓 연결이 끊어졌을 때 처리
+        socket.onclose = () => {
+            console.log('Disconnected from WebRTC server');
+            // 로컬 스트림 비디오 요소 제거
+            if (localStreamElement) {
+                localStreamElement.srcObject = null;
+                localStreamElement.style.display = 'none';
+            }
+
+            // 다른 사용자들에게 연결 종료 알림
+            stompClient.send(`/app/disconnect/${roomName}`, {}, JSON.stringify({key: myKey}));
+        };
+
+        // 사용자가 페이지를 떠날 때 서버로 연결 종료 알림을 보냄
+        window.onbeforeunload = () => {
+
+            // 원격 비디오 요소 제거
+            // const remoteVideoElement = document.getElementById(key);
+            const remoteVideoElement = document.getElementById(myKey);
+
+            if (remoteVideoElement) {
+                remoteVideoElement.srcObject = null;
+                remoteVideoElement.remove();
+            }
+
+            // 로컬 스트림 비디오 요소 제거
+            if (localStreamElement) {
+                localStreamElement.srcObject = null;
+                localStreamElement.style.display = 'none';
+            }
+
+            // 서버로 연결 종료 알림 전송
+            stompClient.send(`/app/disconnect/${roomName}`, {}, JSON.stringify({key: myKey}));
+        };
+
+        // 웹소켓 연결 완료 후 startStream 함수 호출
+        startStream();
+
+    });
+}
+
+let onTrack = (event, otherKey) => {
+
+    if (document.getElementById(`${otherKey}`) === null) {
+        const video = document.createElement('video');
+
+        video.autoplay = true;
+        video.controls = true;
+        video.id = otherKey;
+        video.srcObject = event.streams[0];
+
+        document.getElementById('remoteStreamDiv').appendChild(video);
+    }
+
+    //
+    // remoteStreamElement.srcObject = event.streams[0];
+    // remoteStreamElement.play();
+};
+
+const createPeerConnection = (otherKey) => {
+    const pc = new RTCPeerConnection();
+    try {
+        pc.addEventListener('icecandidate', (event) => {
+            onIceCandidate(event, otherKey);
+        });
+        pc.addEventListener('track', (event) => {
+            onTrack(event, otherKey);
+        });
+        if (localStream !== undefined) {
+            localStream.getTracks().forEach(track => {
+                pc.addTrack(track, localStream);
+            });
+        }
+
+        console.log('PeerConnection created');
+    } catch (error) {
+        console.error('PeerConnection failed: ', error);
+    }
+    return pc;
+}
+
+let onIceCandidate = (event, otherKey) => {
+    if (event.candidate) {
+        console.log('ICE candidate');
+        stompClient.send(`/app/peer/iceCandidate/${otherKey}/${roomName}`, {}, JSON.stringify({
+            key: myKey,
+            body: event.candidate
+        }));
+    }
+};
+
+let sendOffer = (pc, otherKey) => {
+    pc.createOffer().then(offer => {
+        setLocalAndSendMessage(pc, offer);
+        stompClient.send(`/app/peer/offer/${otherKey}/${roomName}`, {}, JSON.stringify({
+            key: myKey,
+            body: offer
+        }));
+        console.log('Send offer');
+    });
+};
+
+let sendAnswer = (pc, otherKey) => {
+    pc.createAnswer().then(answer => {
+        setLocalAndSendMessage(pc, answer);
+        stompClient.send(`/app/peer/answer/${otherKey}/${roomName}`, {}, JSON.stringify({
+            key: myKey,
+            body: answer
+        }));
+        console.log('Send answer');
+    });
+};
+
+const setLocalAndSendMessage = (pc, sessionDescription) => {
+    pc.setLocalDescription(sessionDescription);
+}
+
+//룸 번호 입력 후 캠 + 웹소켓 실행
+// document.querySelector('#enterRoomBtn').addEventListener('click', async () =>{
+
+$(document).ready(async function () {
+    // 캠 시작
+    await startCam();
+
+    // 웹소켓 연결
+    await connectSocket();
+})
+
+// 스트림 버튼 클릭시 , 다른 웹 key들 웹소켓을 가져 온뒤에 offer -> answer -> iceCandidate 통신
+// peer 커넥션은 pcListMap 으로 저장
+const startStream = async () => {
+
+    await stompClient.send(`/app/call/key`, {}, {});
+
+    setTimeout(() => {
+
+        otherKeyList.map((key) => {
+            if (!pcListMap.has(key)) {
+                pcListMap.set(key, createPeerConnection(key));
+                sendOffer(pcListMap.get(key), key);
+            }
+
+        });
+
+    }, 1000);
+
+};
 
 let screenStream; // 전역 변수로 정의하여 startRecording과 stopRecording에서 접근 가능
 let recordedChunks = [];
@@ -37,11 +335,12 @@ let recordedBlob;
 let intervalId;
 let splitChunks = [];   // 1분 단위로 분할된 파일을 저장할 배열
 let partCounter = 1;  // 분할 파일 번호 카운터
+let recordYn = "N"; // 초기 녹화 상태
 
 // 화면 캡처 및 스트림을 표시할 비디오 요소를 참조
 const videoElem = document.getElementById('localVideoCallStream');
 
-const downloadButton = document.getElementById('uploadRecordedFile');
+const downloadButton = document.getElementById('videoChatEndBtn');
 
 // 화면 캡처 시 사용할 옵션 설정
 const displayMediaOptions = {
@@ -135,8 +434,8 @@ async function startRecording() {
                 }
             }, 60000); // 1분 간격으로 분할
 
-            document.getElementById('startScreenRecordBtn').style.display = 'none';
-            document.getElementById('stopScreenRecordBtn').style.display = 'block';
+            document.getElementById('startScreenRecordBtn').disabled = true;
+            // document.getElementById('stopScreenRecordBtn').style.display = 'block';
         } else {
             console.error('localStream or screenStream is not available.');
         }
@@ -166,306 +465,111 @@ async function stopRecording() {
         videoElem.srcObject = null;
     }
 
-    document.getElementById('stopScreenRecordBtn').style.display = 'none';
+    // document.getElementById('stopScreenRecordBtn').style.display = 'none';
 }
-
-
-// 2. 웹 소켓 연결 함수
-const connectSocket = async () => {
-    const socket = new SockJS('/signaling');
-    stompClient = Stomp.over(socket);
-    stompClient.debug = null;
-
-    stompClient.connect({'X-User-Id': 'bread'},  // 헤더에 userId 값 추가하는 부분 --> 지금은 로그인이 안 됐으니 이렇게 넣어서 테스트하고, 나중에 이거 지우고 아래 코드로
-    // stompClient.connect({},
-        function () {
-            console.log('Connected to WebRTC server');
-
-            // 연결이 완료된 후 AJAX 요청 실행
-            $.ajax({
-                url: "http://localhost:25000/createRoom",
-                method: 'get',
-                headers: {
-                    "X-User-Id": "bread" // 테스트 하느라 넣어둔 거임 나중에 지워야 됨
-                },
-                xhrFields: { withCredentials: true
-                },
-                success: function(response) {
-                    console.log("방 생성 요청 성공:", response);
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.error("방 생성 요청 실패:", textStatus, errorThrown);
-                }
-            });
-
-            // 유저 B(peer)가 유저 A(peer)의 채팅방에 들어올 수 있게 해주는 부분은 여러 subscribe 구독 부분과,
-            // 이후 startStreamBtn 버튼 클릭 이벤트 내에서 동작하는 로직에서 이루어진다.
-
-            //iceCandidate peer 교환을 위한 subscribe
-            stompClient.subscribe(`/videoCall/peer/iceCandidate/${myKey}/${roomId}`, candidate => {
-                const key = JSON.parse(candidate.body).key
-                const message = JSON.parse(candidate.body).body;
-
-                // 해당 key에 해당되는 peer 에 받은 정보를 addIceCandidate 해준다.
-                pcListMap.get(key).addIceCandidate(new RTCIceCandidate({
-                    candidate: message.candidate,
-                    sdpMLineIndex: message.sdpMLineIndex,
-                    sdpMid: message.sdpMid
-                }));
-
-            });
-
-            //offer peer 교환을 위한 subscribe
-            stompClient.subscribe(`/videoCall/peer/offer/${myKey}/${roomId}`, offer => {
-                const key = JSON.parse(offer.body).key;
-                const message = JSON.parse(offer.body).body;
-
-                // 해당 key에 새로운 peerConnection 를 생성해준후 pcListMap 에 저장해준다.
-                pcListMap.set(key, createPeerConnection(key));
-                // 생성한 peer 에 offer정보를 setRemoteDescription 해준다.
-                pcListMap.get(key).setRemoteDescription(new RTCSessionDescription({
-                    type: message.type,
-                    sdp: message.sdp
-                }));
-                //sendAnswer 함수를 호출해준다.
-                sendAnswer(pcListMap.get(key), key);
-
-            });
-
-            //answer peer 교환을 위한 subscribe
-            stompClient.subscribe(`/videoCall/peer/answer/${myKey}/${roomId}`, answer => {
-                const key = JSON.parse(answer.body).key;
-                const message = JSON.parse(answer.body).body;
-
-                // 해당 key에 해당되는 Peer 에 받은 정보를 setRemoteDescription 해준다.
-                pcListMap.get(key).setRemoteDescription(new RTCSessionDescription(message));
-
-            });
-
-            // key를 보내라는 신호를 받은 subscribe
-            // 새로운 참가자(B)가 채팅방에 접속할 때마다 자신의 key를 전송하는 부분
-            // key는 각 사용자(peer)를 구분하기 위한 식별자 역할을 한다.
-            // new! 서버는 /call/key를 통해 새로운 참가자가 들어왔음을 알린다.
-            stompClient.subscribe(`/videoCall/call/key`, message => {
-                //자신의 key를 보내는 send
-                stompClient.send(`/videoCall/send/key`, {}, JSON.stringify(myKey));
-
-            });
-
-            // 상대방의 key를 받는 subscribe
-            // 구독을 통해 다른 참가자들의 key를 수신하고, otherKeyList에 저장한다.
-            // 유저 B가 유저 A의 방에 들어오면 유저 A가 유저 B의 key를 받아 저장하게 된다.
-            // new! 다른 참가자들의 키 수신? otherKeyList가 같은 채팅방 내 다른 사용자들?
-            stompClient.subscribe(`/videoCall/send/key`, message => {
-                const key = JSON.parse(message.body);
-
-                //만약 중복되는 키가 ohterKeyList에 있는지 확인하고 없다면 추가해준다.
-                if (myKey !== key && otherKeyList.find((mapKey) => mapKey === myKey) === undefined) {
-                    otherKeyList.push(key);
-                }
-            });
-
-        });
-}
-
-
-// 3. peerConnection 생성해주는 함수
-const createPeerConnection = (otherKey) => {
-    const pc = new RTCPeerConnection();
-    try {
-        // peerConnection에서 icecandidate 이벤트가 발생 시 onIceCandidate 함수 실행
-        pc.addEventListener('icecandidate', (event) => {
-            onIceCandidate(event, otherKey);
-        });
-        // peerConnection에서 track 이벤트가 발생 시 onTrack 함수 실행
-        pc.addEventListener('track', (event) => {
-            onTrack(event, otherKey);
-        });
-        // 만약 localStream이 존재하면 peerConnection에 addTrack 으로 추가
-        if (localStream !== undefined) {
-            localStream.getTracks().forEach(track => {
-                pc.addTrack(track, localStream);
-            });
-        }
-
-        console.log('PeerConnection created');
-    } catch (error) {
-        console.error('PeerConnection failed: ', error);
-    }
-    return pc;
-}
-
-// onIceCandidate 함수 추가
-let onIceCandidate = (event, otherKey) => {
-    if (event.candidate) {
-        console.log('ICE candidate');
-        stompClient.send(`/studyRoom/peer/iceCandidate/${otherKey}/${roomId}`, {}, JSON.stringify({
-            key: myKey,
-            body: event.candidate
-        }));
-    }
-};
-
-//onTrack 함수 추가
-let onTrack = (event, otherKey) => {
-    if (document.getElementById(`${otherKey}`) === null) {
-        const video = document.createElement('video');
-
-        video.autoplay = true;
-        video.controls = true;
-        video.id = otherKey;
-        video.srcObject = event.streams[0];
-
-        document.getElementById('remoteVideoCallStream').appendChild(video);
-    }
-};
-
-// offer 함수
-let sendOffer = (pc, otherKey) => {
-    pc.createOffer().then(offer => {
-        setLocalAndSendMessage(pc, offer);
-        stompClient.send(`/studyRoom/peer/offer/${otherKey}/${roomId}`, {}, JSON.stringify({
-            key: myKey,
-            body: offer
-        }));
-        console.log('Send offer');
-    });
-};
-
-// answer 함수
-let sendAnswer = (pc, otherKey) => {
-    pc.createAnswer().then(answer => {
-        setLocalAndSendMessage(pc, answer);
-        stompClient.send(`/studyRoom/peer/answer/${otherKey}/${roomId}`, {}, JSON.stringify({
-            key: myKey,
-            body: answer
-        }));
-        console.log('Send answer');
-    });
-};
-
-const setLocalAndSendMessage = (pc, sessionDescription) => {
-    pc.setLocalDescription(sessionDescription);
-}
-
-function displayNotification(notification) {
-    const notificationElement = document.createElement('p');
-    notificationElement.innerText = notification;
-    document.getElementById('notifications').appendChild(notificationElement);
-}
-
-
-<!-- 화상 채팅 버튼 이벤트들 -->
-// html 버튼 이벤트(캠 + 웹 소켓 실행)
-document.querySelector('#enterRoomBtn').addEventListener('click', async () => {
-    // 화면 바꾸는 로직이 들어가야됨!!!
-    await startCam();  // 웹 캠 실행
-
-    // startCam()이 실행 됐으면 현재 localStream은 stream 상태임(아래 조건문이 true 라는 것)
-    if (localStream !== undefined) {
-        document.querySelector('#remoteVideoCallStream').style.display = 'block';  // display: block은 해당 요소를 화면에 보이게 하고, 블록 요소로 취급하게 만듦
-        document.querySelector('#startStreamBtn').style.display = '';              // 시작하기 버튼 숨김 처리 해제
-    }
-    // roomId = document.querySelector('#roomId').value;
-    // document.querySelector('#roomId').disabled = true;       // disabled = true는 HTML 요소가 비활성화되도록 설정하는 것
-    document.querySelector('#enterRoomBtn').disabled = true; // -> input에는 값을 입력할 수 없고, 버튼은 클릭할 수 없음
-
-    await connectSocket();  // 웹 소켓 연결 + 방 생성
-});
-
-// 스트림 버튼 클릭시 , 다른 웹 key들 웹소켓을 가져 온뒤에 offer -> answer -> iceCandidate 통신
-// peer 커넥션은 pcListMap 으로 저장
-// 유저 A가 스트림을 시작할 때 otherKeyList에 있는 다른 유저들(여기서는 유저 B)에게 연결 요청을 보낸다.
-// setTimeout 내부의 otherKeyList.map 부분에서 각 key에 대해 createPeerConnection을 호출하고, 해당 피어에게 sendOffer 메서드를 통해 offer를 보낸다.
-// 이때 유저 B는 connectSocket 함수의 offer 관련 subscribe를 통해 이 offer를 수신하고, 이를 통해 연결이 시작된다.
-// new! startStreamBtn 클릭하면 createConnection 함수 호출 되면서 '동일 채팅방 내 다른 사용자'들과 연결됨
-document.querySelector('#startStreamBtn').addEventListener('click', async () => {
-    await stompClient.send(`/studyRoom/call/key`, {}, {});
-
-    setTimeout(() => {
-
-        otherKeyList.map((key) => {
-            if (!pcListMap.has(key)) {
-                pcListMap.set(key, createPeerConnection(key));
-                sendOffer(pcListMap.get(key), key);
-            }
-
-        });
-
-    }, 1000);
-});
-
-
-<!-- 녹화/다운 버튼 이벤트들 -->
-// 다운로드 버튼 클릭 이벤트: 분할된 파일을 사용자가 직접 다운로드할 수 있게 함
-// document.getElementById('uploadRecordedFile').addEventListener('click', () => {
-//     if (splitChunks.length > 0) {
-//         splitChunks.forEach((blob, index) => {
-//             const partURL = URL.createObjectURL(blob);
-//             const a = document.createElement('a');
-//             a.style.display = 'none';
-//             a.href = partURL;
-//             a.download = `RecordedVideo_part${index + 1}.mp4`;
-//             document.body.appendChild(a);
-//             a.click();
-//             document.body.removeChild(a);
-//             console.log(`Downloaded part ${index + 1}`);
-//         });
-//     } else {
-//         console.error('No split video parts available for download');
-//     }
-//
-//     // 전체 녹화 파일 다운로드
-//     if (recordedBlob) {
-//         const recordingURL = URL.createObjectURL(recordedBlob);
-//         const a = document.createElement('a');
-//         a.style.display = 'none';
-//         a.href = recordingURL;
-//         a.download = 'RecordedVideo.mp4';
-//         document.body.appendChild(a);
-//         a.click();
-//         document.body.removeChild(a);
-//         console.log('Download initiated');
-//     }
-// });
 
 // 버튼 클릭 이벤트 연결
 document.getElementById('startScreenRecordBtn').addEventListener('click', async () => {
-    await startRecording();
-});
+    // 화면 공유 안내 메시지 표시
+    const userConfirmed = confirm("화면 녹화를 시작하려면 다음 안내를 따르세요:\n\n1. 크롬 화면 공유 창에서 '창' 탭을 선택하세요.\n2. 현재 보고 있는 창을 선택하여 공유를 시작하세요.\n\n동의하신다면 확인을 눌러주세요.");
 
-document.getElementById('stopScreenRecordBtn').addEventListener('click', async () => {
-    await stopRecording();
-});
-
-
-document.getElementById('uploadRecordedFile').addEventListener('click', () => {
-    const formData = new FormData();
-
-    if (splitChunks.length > 0) {
-        splitChunks.forEach((blob, index) => {
-            formData.append(`videoPart`, blob, `RecordedVideo_part${index + 1}.mp4`);
-        });
-        console.log("Added split chunks to formData");
-    } else {
-        console.error('No split video parts available for upload');
+    // 사용자가 확인 버튼을 눌렀을 경우에만 녹화 시작
+    if (userConfirmed) {
+        await startRecording();
+        recordYn = "Y";
     }
 
-    if (recordedBlob) {
-        formData.append('fullRecording', recordedBlob, 'RecordedVideo.mp4');
-        console.log('Added full recording to formData');
-    }
+    // 배경색과 안내 멘트 업데이트
+    const recordAlert = document.getElementById('recordAlert');
+    recordAlert.classList.replace('bg-danger', 'bg-success');
+    recordAlert.textContent = '[화상 채팅 종료]를 누르면 자동으로 녹화가 종료됩니다.';
+});
 
-    // 서버로 formData 전송
-    fetch('file/uploadVideoChat', {
-        method: 'POST',
-        body: formData,
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Upload successful:', data);
-        })
-        .catch(error => {
+// document.getElementById('stopScreenRecordBtn').addEventListener('click', async () => {
+//     await stopRecording();
+// });
+
+document.getElementById('videoChatEndBtn').addEventListener('click', async () => {
+    if (recordYn === "Y") {
+        await stopRecording(); // 녹화 중단을 기다림
+
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        const formData = new FormData();
+
+        if (splitChunks.length > 0) {
+            splitChunks.forEach((blob, index) => {
+                formData.append(`videoPart`, blob, `RecordedVideo_part${index + 1}.mp4`);
+            });
+            console.log("Added split chunks to formData");
+        } else {
+            console.error('No split video parts available for upload');
+        }
+
+        if (recordedBlob) {
+            formData.append('fullRecording', recordedBlob, 'RecordedVideo.mp4');
+            console.log('Added full recording to formData');
+        }
+
+        try {
+            const response = await fetch('/file/uploadVideoChat', {
+                method: 'POST',
+                body: formData,
+            });
+
+            // JSON 파싱 전에 응답이 비어있는지 확인
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Upload successful:', data);
+                alert('녹화 종료 후 화상 채팅이 종료되었습니다.');
+            } else {
+                throw new Error('Upload failed');
+            }
+
+            location.href = "/video/video-chat.html";
+        } catch (error) {
             console.error('Upload failed:', error);
-        });
+            alert('업로드에 실패했습니다. 다시 시도해주세요.');
+        }
+    } else {
+        alert('화상 채팅이 종료되었습니다.');
+        location.href = "/video/video-chat.html";
+    }
+
+    // 배경색과 안내 멘트를 원래대로 되돌림
+    const recordAlert = document.getElementById('recordAlert');
+    recordAlert.classList.replace('bg-success', 'bg-danger');
+    recordAlert.textContent = '치매 조기 진단을 위해 [화면 녹화 시작]을 눌러주세요.';
 });
+
+
+// document.getElementById('uploadRecordedFile').addEventListener('click', () => {
+//     const formData = new FormData();
+//
+//     if (splitChunks.length > 0) {
+//         splitChunks.forEach((blob, index) => {
+//             formData.append(`videoPart`, blob, `RecordedVideo_part${index + 1}.mp4`);
+//         });
+//         console.log("Added split chunks to formData");
+//     } else {
+//         console.error('No split video parts available for upload');
+//     }
+//
+//     if (recordedBlob) {
+//         formData.append('fullRecording', recordedBlob, 'RecordedVideo.mp4');
+//         console.log('Added full recording to formData');
+//     }
+//
+//     // 서버로 formData 전송
+//     fetch('/file/uploadVideoChat', {
+//         method: 'POST',
+//         body: formData,
+//     })
+//         .then(response => response.json())
+//         .then(data => {
+//             console.log('Upload successful:', data);
+//         })
+//         .catch(error => {
+//             console.error('Upload failed:', error);
+//         });
+// });

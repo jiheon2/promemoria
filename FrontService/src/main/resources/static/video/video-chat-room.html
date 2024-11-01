@@ -64,7 +64,7 @@
             gap: 30px;
         }
 
-        #content-box1 {
+        #remoteStreamDiv {
             flex: 2;
             background-color: #fff;
             border-radius: 20px;
@@ -114,25 +114,25 @@
 <!-- 메인 페이지 -->
 <!-- 두 개의 중앙 컨텐츠 박스 -->
 <div class="content-boxes">
-    <div id="content-box1">
-        <div id="remoteVideoCallStream"></div> <!--상대 웹 캠 화면-->
+    <div id="remoteStreamDiv">
+
     </div>
     <div id="right-boxes">
         <div id="content-box2">
-            <video id="localVideoCallStream" autoplay playsinline controls></video> <!--내 웹 캠 화면-->
+            <video id="localVideoCallStream" autoplay playsinline controls style="display: none;"></video> <!--내 웹 캠 화면-->
         </div>
         <div id="content-box3" style="position: relative;">
             <h3 style="text-align: center">화상 채팅 정보</h3>
             <hr>
-            <p>참여자 : 홍길동, 임꺽정</p>
-            <p>개설일 : 2024/10/18</p>
+            <p>참여자 : <span id="participantList"></span></p>
+            <p>개설일 : <span id="openingDate"></span></p>
             <div style="text-align: center; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);">
-                <span class="badge rounded-pill bg-danger mb-3">치매 조기 진단을 위해 [화면 녹화 시작]을 눌러주세요.</span>
+                <span class="badge rounded-pill bg-danger mb-3" id="recordAlert">치매 조기 진단을 위해 [화면 녹화 시작]을 눌러주세요.</span>
                 <div class="d-flex justify-content-between">
                     <div style="flex: 1">
                         <button class="btn btn-danger w-100" id="startScreenRecordBtn">화면 녹화 시작</button>
-                        <button class="btn btn-warning w-100" id="stopScreenRecordBtn" style="display: none">화면 녹화 중지</button>
-                        <button class="btn btn-success w-100" id="uploadRecordedFile"  style="display: none">다운로드 하기</button>
+<!--                        <button class="btn btn-warning w-100" id="stopScreenRecordBtn" style="display: none">화면 녹화 중지</button>-->
+<!--                        <button class="btn btn-success w-100" id="uploadRecordedFile"  style="display: none">다운로드 하기</button>-->
                     </div>
                     <div style="flex: 1">
                         <button class="btn btn-secondary w-100" id="videoChatEndBtn" style="margin-left: 15px">화상채팅 종료</button>
@@ -154,32 +154,60 @@
 <script src="/js/common.js"></script>
 <script type="text/javascript" src="/js/plugins.js"></script>
 <script type="text/javascript" src="/js/script.js"></script>
-<script src="/js/peerConfig.js"></script> <!--webRTC 연결을 위한 js-->
 <script>
 
     getToken()
 
+    const participantList = document.querySelector("#participantList"); // 참여자 리스트 요소
+    const openingDate = document.querySelector("#openingDate"); // 개설일 표시 요소
+
+    let data = {};
+    let ws; // 웹소켓 객체
+    // 방 개설일을 최초 입장 시 시간으로 설정
+    let isRoomOpened = false;
+
     $(document).ready(function () {
         $('.header-include').load('/header.html');
         $('.footer-include').load('/footer.html');
+
     })
 
-    $(document).ready(async function () {
-        try {
-            const roomId = localStorage.getItem("roomId");
-            console.log("페이지 진입 시 roomId 확인:", roomId);
-            await startCam(); // 웹 캠 실행
-
-            if (localStream) {
-                document.querySelector('#remoteVideoCallStream').style.display = 'block'; // 화면 표시
-            }
-
-            await connectSocket(); // 웹 소켓 연결
-            localStorage.removeItem("roomId");
-        } catch (error) {
-            console.error("Error during room entry process:", error);
+    // 유저 추가 함수
+    function addParticipant(userName) {
+        if (!participantList.innerText.includes(userName)) {
+            participantList.innerText += participantList.innerText ? `, ${userName}` : userName;
         }
-    });
+    }
+
+    // 유저 제거 함수
+    function removeParticipant(userName) {
+        const participants = participantList.innerText.split(', ').filter(name => name !== userName);
+        participantList.innerText = participants.join(', ');
+    }
+
+    // 날짜 형식 변환 함수 (개설일 표시용)
+    function getFormattedDate(date) {
+        return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+    }
+
+    //
+    // $(document).ready(async function () {
+    //     try {
+    //         const roomId = localStorage.getItem("roomId");
+    //         console.log("페이지 진입 시 roomId 확인:", roomId);
+    //         await startCam(); // 웹 캠 실행
+    //
+    //         if (localStream) {
+    //             document.querySelector('#remoteVideoCallStream').style.display = 'block'; // 화면 표시
+    //         }
+    //
+    //         await connectSocket(); // 웹 소켓 연결
+    //         localStorage.removeItem("roomId");
+    //     } catch (error) {
+    //         console.error("Error during room entry process:", error);
+    //     }
+    // });
 </script>
+<script src="/js/peerConfig.js"></script> <!--webRTC 연결을 위한 js-->
 </body>
 </html>
