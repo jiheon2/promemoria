@@ -18,8 +18,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Poppins:wght@200;300;400;500&display=swap"
           rel="stylesheet">
     <script src="/js/modernizr.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <style>
         @font-face {
             font-family: 'TTLaundryGothicB';
@@ -164,7 +162,7 @@
         <p class="small-text">새로 채팅방을 만들고 싶어요</p>
         <h1>채팅방 생성</h1>
     </div>
-    <div class="content-box box2" id="enterVideoChat" onclick="callData()">
+    <div class="content-box box2" id="enterVideoChat">
         <p class="small-text">이웃의 채팅방에 참여하고 싶어요</p>
         <h1>채팅방 참여</h1>
     </div>
@@ -233,10 +231,11 @@
 <script src="/js/common.js"></script>
 <script type="text/javascript" src="/js/plugins.js"></script>
 <script type="text/javascript" src="/js/script.js"></script>
-<script src="/js/peerConfig.js"></script> <!--webRTC 연결을 위한 js-->
 <script>
 
     getToken()
+
+    let userName = "";
 
     $(document).ready(function () {
         $('.header-include').load('/header.html');
@@ -245,6 +244,32 @@
         $('#enterVideoChat').on("click", function () {
             $("#videoChatListModal").modal("show");
         })
+
+        // 화면 로딩이 완료되면 첫번째로 실행함
+        callData(); //전체 채팅방 리스트 가져오기
+
+        // 2번째부터 채팅방 전체리스트를 5초마다 로딩함
+        setInterval("callData()", 5000);
+
+        $('#makeVideoChat').on("click", function () {
+            $.ajax({
+                url: "http://localhost:12000/video/createRoom",
+                type: "get",
+                data: {
+                    roomName : loginUserId,
+                    userName : userName
+                },
+                success: function () {
+                    localStorage.setItem("roomName", loginUserId);
+                    localStorage.setItem("userName", userName);
+                    console.log("방 생성 후 설정된 roomName:", localStorage.getItem("roomName"));
+                    location.href = "/video/video-chat-room.html";
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("방 생성 요청 실패:", textStatus, errorThrown);
+                }
+            });
+        });
     })
 
     function callData() {
@@ -259,16 +284,17 @@
             xhrFields: { withCredentials: true }
         });
 
+        // 채팅방 목록 가져오기 (GET 요청)
         const chatListRequest = $.ajax({
-            url: "http://localhost:12000/getChatRoomList",
-            method: 'get',
+            url: "http://localhost:12000/video/getChatRoomList",
+            type: 'get', // 서버에서 GET 요청 처리하도록 맞춤
             dataType: "JSON"
         });
 
         // 두 요청이 모두 완료된 후 실행
         $.when(friendsListRequest, chatListRequest).done((friendsListResponse, chatListResponse) => {
             const friendsList = friendsListResponse[0];
-            const chatList = chatListResponse[0];
+            const chatList = Array.from(chatListResponse[0]); // Set을 배열로 변환
             const neighborList = $('.neighbor-list'); // neighbor-list 요소 선택
 
             neighborList.empty(); // 기존 내용을 초기화
@@ -292,7 +318,23 @@
                     // 입장 버튼 클릭 시 채팅방 입장
                     friendItem.find('.enter-button').click(() => {
                         console.log(`${friend.friendId} 채팅방으로 입장`);
-                        joinRoom(friend.friendId);
+                        $.ajax({
+                            url: "http://localhost:12000/video/createRoom",
+                            type: "get",
+                            data: {
+                                roomName: friend.friendId,
+                                userName: userName
+                            },
+                            success: function () {
+                                localStorage.setItem("roomName", friend.friendId);
+                                localStorage.setItem("userName", userName);
+                                console.log("방 생성 후 설정된 roomName:", localStorage.getItem("roomName"));
+                                location.href = "/video/video-chat-room.html";
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.error("방 생성 요청 실패:", textStatus, errorThrown);
+                            }
+                        });
                     });
 
                     // 생성한 neighbor-item을 neighbor-list에 추가
@@ -308,6 +350,30 @@
         }).fail((jqXHR, textStatus, errorThrown) => {
             console.error("AJAX 요청 실패:", textStatus, errorThrown);
         });
+    }
+
+    // 회원정보 불러오기 함수
+    function userInfo() {
+        // 컨트롤러에 요청하기
+        $.ajax({
+            url: "http://localhost:13000/user/v1/userInfo",
+            type: "post",
+            dataType: "JSON",
+            data: { userId : loginUserId }
+            // xhrFields: {
+            //     withCredentials: true
+            // }
+        }).then(
+            function (json) {
+                const userInfo = json.data;
+
+                userName = userInfo.userName;
+            },
+            function () {
+                alert("로그인 해주시길 바랍니다.");
+                location.href = "/user/login.html";
+            }
+        );
     }
 </script>
 </body>

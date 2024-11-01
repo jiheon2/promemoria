@@ -1,0 +1,236 @@
+package kopo.frontservice.chat;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import kopo.frontservice.dto.ChatDTO;
+import kopo.frontservice.util.CmmUtil;
+import kopo.frontservice.util.DateUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Component
+@RequiredArgsConstructor
+@Slf4j
+public class ChatHandler extends TextWebSocketHandler {
+
+
+    // 웹소켓에 접속되는 사용자들을 저장하며, 중복을 제거하기 위해 Set 데이터 구조 사용함
+    private static Set<WebSocketSession> clients = Collections.synchronizedSet(new LinkedHashSet<>());
+
+    // 채팅룸 조회하기 위해 사용
+    public static Map<String, String> roomInfo = Collections.synchronizedMap(new LinkedHashMap<>());
+
+    @Override
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        log.info(this.getClass().getName() + ".handleTextMessage Start!");
+
+        String roomName = CmmUtil.nvl((String) session.getAttributes().get("roomName"));
+        String userName = CmmUtil.nvl((String) session.getAttributes().get("userName"));
+        String roomNameHash = CmmUtil.nvl((String) session.getAttributes().get("roomNameHash"));
+
+        log.info("roomName : " + roomName);
+        log.info("userName : " + userName);
+        log.info("roomNameHash : " + roomNameHash);
+
+        // 채팅 메시지
+        String msg = CmmUtil.nvl(message.getPayload());
+        log.info("msg : " + msg);
+
+        // 발송시간 추가를 위해 JSON 문자열을 DTO로 변환
+        ChatDTO cDTO = new ObjectMapper().readValue(msg, ChatDTO.class);
+
+        cDTO = cDTO.toBuilder().date(DateUtil.getDateTime("yyyy-MM-dd HH:mm")).build();
+
+        // ChatDTO을 JSON으로 다시 변환하기
+        String json = new ObjectMapper().writeValueAsString(cDTO);
+
+        log.info("json : " + json);
+
+        // 웹소켓에 접속된 모든 사용자 검색
+        clients.forEach(s -> {
+
+            // 내가 접속한 채팅방에 있는 세션만 메시지 보내기
+            if (roomNameHash.equals(s.getAttributes().get("roomNameHash"))) {
+                try {
+
+                    TextMessage chatMsg = new TextMessage(json);
+                    s.sendMessage(chatMsg);
+
+                } catch (IOException e) {
+                    log.info("Error : " + e);
+                }
+
+            }
+        });
+
+        log.info(this.getClass().getName() + ".handleTextMessage End!");
+
+    }
+
+    /**
+     * 클라이언트가 접속 시 호출되는 메서드
+     *
+     * @param session
+     * @throws Exception
+     */
+    @Override
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+
+        log.info(this.getClass().getName() + ".afterConnectionEstablished Start!");
+
+        String roomName = CmmUtil.nvl((String) session.getAttributes().get("roomName"));
+        String userName = CmmUtil.nvl((String) session.getAttributes().get("userName"));
+        String roomNameHash = CmmUtil.nvl((String) session.getAttributes().get("roomNameHash"));
+
+        log.info("roomName : " + roomName);
+        log.info("userName : " + userName);
+        log.info("roomNameHash : " + roomNameHash);
+
+        // 기존 참여자 목록 수집
+        List<String> existingUsers = clients.stream()
+                .filter(s -> roomNameHash.equals(s.getAttributes().get("roomNameHash")))
+                .map(s -> CmmUtil.nvl((String) s.getAttributes().get("userName")))
+                .collect(Collectors.toList());
+
+        // 신규 참여자에게 기존 참여자 목록 전송
+        ChatDTO initDTO = ChatDTO.builder()
+                .name("관리자")
+                .state("참여자목록")
+                .msg(String.join(", ", existingUsers)) // 기존 참여자 목록을 쉼표로 구분하여 전송
+                .date(DateUtil.getDateTime("yyyy-MM-dd HH:mm"))
+                .build();
+
+        String initJson = new ObjectMapper().writeValueAsString(initDTO);
+        session.sendMessage(new TextMessage(initJson));
+
+        // 새로 입장한 유저 정보 다른 참여자에게 알림
+        clients.forEach(s -> {
+            if (roomNameHash.equals(s.getAttributes().get("roomNameHash"))) {
+                try {
+                    ChatDTO cDTO = ChatDTO.builder()
+                            .name("관리자")
+                            .state("입장")
+                            .msg(userName)
+                            .date(DateUtil.getDateTime("yyyy-MM-dd HH:mm"))
+                            .build();
+
+                    String json = new ObjectMapper().writeValueAsString(cDTO);
+                    s.sendMessage(new TextMessage(json));
+
+                } catch (IOException e) {
+                    log.info("Error : " + e);
+                }
+            }
+        });
+
+        // 기존 세션에 존재하지 않으면, 신규 세션이기에 저장함
+        if (!clients.contains(session)) {
+
+            clients.add(session); // 접속된 세션 저장
+
+            roomInfo.put(roomName, roomNameHash); // 생성된 채팅룸 이름 저장
+
+            log.info("session open : " + session);
+
+            // 웹소켓에 접속된 모든 사용자 검색
+            clients.forEach(s -> {
+
+                // 내가 접속한 채팅방에 있는 세션만 메시지 보내기
+                if (roomNameHash.equals(s.getAttributes().get("roomNameHash"))) {
+
+                    try {
+
+                        ChatDTO cDTO = ChatDTO.builder()
+                                .name("관리자")
+                                .state("입장")
+//                            .msg(userName + "님이 " + roomName + " 채팅방에 입장하셨습니다.")
+                                .msg(userName)
+                                .date(DateUtil.getDateTime("yyyy-MM-dd HH:mm"))
+                                .build();
+
+                        String json = new ObjectMapper().writeValueAsString(cDTO);
+                        log.info("json : " + json);
+
+                        TextMessage chatMsg = new TextMessage(json);
+                        s.sendMessage(chatMsg);
+
+                        cDTO = null;
+
+                    } catch (IOException e) {
+                        log.info("Error : " + e);
+                    }
+                }
+            });
+
+        }
+
+        log.info(this.getClass().getName() + ".afterConnectionEstablished End!");
+
+    }
+
+    /**
+     * 클라이언트가 접속 해제 시 호출되는 메서드
+     *
+     * @param session
+     * @param status
+     * @throws Exception
+     */
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        log.info(this.getClass().getName() + ".afterConnectionClosed Start!");
+
+        String roomName = CmmUtil.nvl((String) session.getAttributes().get("roomName"));
+        String userName = CmmUtil.nvl((String) session.getAttributes().get("userName"));
+        String roomNameHash = CmmUtil.nvl((String) session.getAttributes().get("roomNameHash"));
+
+        log.info("roomName : " + roomName);
+        log.info("userName : " + userName);
+        log.info("roomNameHash : " + roomNameHash);
+
+        clients.remove(session); // 접속되어있는 세션 삭제
+
+        // 웹소켓에 접속된 모든 사용자 검색
+        clients.forEach(s -> {
+
+            // 세션이 열려 있는지 확인
+            if (s.isOpen()) {
+
+                // 내가 접속한 채팅방에 있는 세션만 메시지 보내기
+                if (roomNameHash.equals(s.getAttributes().get("roomNameHash"))) {
+
+                    try {
+                        ChatDTO cDTO = ChatDTO.builder()
+                                .name("관리자")
+                                .state("퇴장")
+//                                .msg(userName + "님이 " + roomName + " 채팅방에 퇴장하셨습니다.")
+                                .msg(userName)
+                                .date(DateUtil.getDateTime("yyyy-MM-dd HH:mm"))
+                                .build();
+
+                        String json = new ObjectMapper().writeValueAsString(cDTO);
+                        log.info("json : " + json);
+
+                        TextMessage chatMsg = new TextMessage(json);
+                        s.sendMessage(chatMsg);
+
+                        cDTO = null;
+
+                    } catch (IOException e) {
+                        log.info("Error : " + e);
+                    }
+                }
+
+            }
+        });
+
+        log.info(this.getClass().getName() + ".afterConnectionClosed End!");
+    }
+}
