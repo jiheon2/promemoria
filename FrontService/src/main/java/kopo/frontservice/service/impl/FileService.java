@@ -56,12 +56,11 @@ public class FileService implements IFileService {
             .build();
 
     final String bucketName = "pro-memoria24";
-    final String userId = "bread";
     final LocalDateTime localDateTime = LocalDateTime.now();
 
 
     @Override
-    public void fullFileUploadOnServer(MultipartFile fullRecording) {
+    public void fullFileUploadOnServer(String userId, MultipartFile fullRecording) {
         try {
             String filePath = userId + "_" + localDateTime + "-" + fullRecording.getOriginalFilename();
             log.info("생성된 파일명 : " + filePath);
@@ -92,6 +91,7 @@ public class FileService implements IFileService {
             Map<String, Object> uploadedMetadata = new HashMap<>();
             uploadedMetadata.put("bucketName", bucketName);
             uploadedMetadata.put("objectName", filePath);
+            uploadedMetadata.put("userId", userId);
             uploadedMetadata.put("downloadFilePath", downloadFilePath);
 
             // Map을 JSON으로 변환
@@ -109,7 +109,7 @@ public class FileService implements IFileService {
     }
 
     @Override
-    public void filesUploadOnServer(MultipartFile[] videoPart) {
+    public void filesUploadOnServer(String userId, MultipartFile[] videoPart) {
 
         log.info("filesUploadOnServer Start : {}", this.getClass().getName());
 

@@ -1,13 +1,11 @@
 package kopo.frontservice.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kopo.frontservice.service.IFileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
@@ -24,14 +22,16 @@ public class FileController {
     @PostMapping("/uploadVideoChat")
     public ResponseEntity<Map<String, String>> uploadVideoChat(
             @RequestPart(required = false) MultipartFile[] videoPart,
-            @RequestPart(required = false) MultipartFile fullRecording) {
+            @RequestPart(required = false) MultipartFile fullRecording,
+            @RequestParam("userId") String userId) {
 
         log.info("파일 업로드 실행");
+        log.info("userId: {}", userId);
         Map<String, String> response = new HashMap<>();
 
         if (fullRecording != null) {
             log.info("fullRecording: {}", fullRecording.getOriginalFilename());
-            fileService.fullFileUploadOnServer(fullRecording);
+            fileService.fullFileUploadOnServer(userId, fullRecording);
             response.put("fullRecordingStatus", "uploaded");
         } else {
             log.info("fullRecording No files to upload.");
@@ -40,7 +40,7 @@ public class FileController {
 
         if (videoPart != null && videoPart.length > 0) {
             log.info(videoPart[0].getOriginalFilename());
-            fileService.filesUploadOnServer(videoPart);
+            fileService.filesUploadOnServer(userId, videoPart);
             response.put("videoPartStatus", "uploaded");
         } else {
             log.info("videoPart No files to upload.");

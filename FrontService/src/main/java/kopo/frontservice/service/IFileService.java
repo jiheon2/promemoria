@@ -7,6 +7,6 @@ public interface IFileService {
     String accessKey = "gtiHaVgTnYHFkX6aRzLu";
     String secretKey = "eNVqarObDsvHvamFovccIAcUQFFcOzcsKg4CCrI1";
 
-    void fullFileUploadOnServer(MultipartFile fullRecording);
-    void filesUploadOnServer(MultipartFile[] videoPart);
+    void fullFileUploadOnServer(String userId, MultipartFile fullRecording);
+    void filesUploadOnServer(String userId, MultipartFile[] videoPart);
 }
