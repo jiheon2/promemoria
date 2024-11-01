@@ -511,6 +511,9 @@ document.getElementById('videoChatEndBtn').addEventListener('click', async () =>
             console.log('Added full recording to formData');
         }
 
+        // userId 추가
+        formData.append('userId', loginUserId);
+
         try {
             const response = await fetch('/file/uploadVideoChat', {
                 method: 'POST',
