@@ -65,7 +65,7 @@
             margin: 0;
             width: 100%;
             max-height: 480px;
-            overflow-y: scroll;
+            overflow-y: auto;
         }
 
         .diagnosis-item {
@@ -138,9 +138,8 @@
     <ul class="diagnosis-list">
         <li class="diagnosis-item d-flex justify-content-between" onclick="location.href='/analyze/analyze.html'">
             <div>
-                <span class="date">2024-10-29</span><span> 분석 결과</span>
+                <span class="date"></span><span></span>
             </div>
-            <span class="status">결과: 비정상</span>
         </li>
     </ul>
 </div>
@@ -153,6 +152,7 @@
 <script src="/js/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+<script src="/js/common.js"></script>
 <script type="text/javascript" src="/js/plugins.js"></script>
 <script type="text/javascript" src="/js/script.js"></script>
 <script>
@@ -161,132 +161,74 @@
         $('.footer-include').load('/footer.html');
     })
 
-//    getToken()
+   getToken()
 
-    let loginUserId;
-
-    function getToken() {
-        // 쿠키에서 Access Token을 읽어오는 함수
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-        }
-
-        // 쿠키에서 JWT AccessToken 가져오기
-        const jwtAccessToken = getCookie("accessToken"); // 쿠키 이름이 'accessToken'이라고 가정
-
+    // 회원정보 불러오기 함수
+    function userInfo() {
+        // 컨트롤러에 요청하기
         $.ajax({
-            url: "http://localhost:13000/user/v1/getToken",
+            url: "http://localhost:13000/user/v1/userInfo",
             type: "post",
-            dataType: "json",
-            headers: {
-                "Authorization": `Bearer ${jwtAccessToken}`
+            dataType: "JSON",
+            data: { userId : loginUserId }
+            // xhrFields: {
+            //     withCredentials: true
+            // }
+        }).then(
+            function (json) {
+
             },
-            xhrFields: {
-                withCredentials: true
-            },
-            success: function (json) {
-                console.log(json); // 서버에서 받은 토큰 정보 출력
-                loginUserId = json.userId;
-                console.log(loginUserId);
-                userInfo();
-            },
-            error: function () {
+            function () {
                 alert("로그인 해주시길 바랍니다.");
-                location.href = loginPage;
-                console.log(error);
+                location.href = "/user/login.html";
             }
-        });
+        );
     }
 
-    function getAnalyzeData(userId, date) {
+
+
+
+    populateDiagnosisList()
+
+    function populateDiagnosisList() {
+    // AJAX 요청을 보내고 데이터를 받아오는 부분
         $.ajax({
-            url: "http://localhost:13000/analyze/v1/getAnalyzeData",
+            url: "http://localhost:15000/analyze/v1/getAnalyzeList",
             type: "post",
             dataType: "json",
             data: {
-                userId: userId,
-                date: date
-            },
-            headers: {
-                "Authorization": `Bearer ${jwtAccessToken}`
-            },
-            success: function (json) {
-                console.log("Analyze data:", json);
-                if (json.length > 0) {
-                    const analyzeData = json[0]; // 첫 번째 분석 데이터를 사용
-                    // 로컬 스토리지에 분석 데이터를 저장 (다음 페이지에서 사용할 수 있도록)
-                    localStorage.setItem("analyzeData", JSON.stringify(analyzeData));
-
-                    // analyze.html 페이지로 이동
-                    window.location.href = "/analyze/analyze.html";
-                } else {
-                    alert("분석 데이터를 찾을 수 없습니다.");
-                }
-            },
-            error: function () {
-                alert("데이터를 가져오는데 실패했습니다.");
-                console.log("Error occurred while fetching analyze data.");
-            }
-        });
-    }
-
-    // getAnalyzeList()
-    function getAnalyzeList() {
-        $.ajax({
-            url: "http://localhost:13000/analyze/v1/getAnalyzeList",
-            type: "post",
-            dataType: "json",
-            data: {
-              userId : loginUserId
-            },
-            headers: {
-                "Authorization": `Bearer ${jwtAccessToken}`
+                userId : loginUserId
             },
             xhrFields: {
                 withCredentials: true
             },
-            success: function (json) {
-                console.log(json); // 서버에서 받은 데이터 출력
-                const analyzeList = json.data; // 서버에서 받은 분석 데이터 리스트
-                const listContainer = $(".diagnosis-list"); // 분석 결과를 표시할 컨테이너
+            success: function (response) {
+                var $list = $('#diagnosis-list');
+                $list.empty(); // 기존 항목 삭제
 
-                // 리스트 초기화
-                listContainer.empty();
+                data.forEach(function(item) {
+                    // 날짜 부분 추출 (언더스코어 전까지)
+                    var date = item.date.split('_')[0]; // 예: "2024-11-02"
 
-                // 데이터가 있는 경우 리스트를 생성
-                analyzeList.forEach(analyze => {
-                    const date = analyze.date; // 분석 날짜
-                    const status = analyze.status === '비정상' ? "비정상" : "정상"; // 상태 값 변환
+                    // <li> 요소 생성
+                    var $li = $('<li>')
+                        .addClass('diagnosis-item d-flex justify-content-between')
+                        .attr('onclick', "location.href='/analyze/analyze.html'")
+                        .append(
+                            $('<div>').append(
+                                $('<span>').addClass('date').text(date),
+                            )
+                        );
 
-                    // li 요소 생성 및 삽입
-                    const listItem = `
-                    <li class="diagnosis-item d-flex justify-content-between"  onclick="getAnalyzeData('${objectName}', '${date}')">
-                        <div>
-                            <span class="date">${date}</span><span> 분석 결과</span>
-                        </div>
-                        <span class="status">결과: ${status}</span>
-                        <div class="objectName" hidden="hidden">${objectName}</div>
-                    </li>
-                `;
-
-                    listContainer.append(listItem); // 컨테이너에 추가
+                    // 리스트에 <li> 추가
+                    $list.append($li);
                 });
-                // 데이터가 없는 경우 알림 표시
-                if (analyzeList.length === 0) {
-                    listContainer.append("<li>분석 결과가 없습니다.</li>");
-                }
             },
-            error: function () {
-                alert("로그인 해주시길 바랍니다.");
-                location.href = loginPage;
-                console.log(error);
+            error: function(error) {
+                console.error('데이터 가져오기 오류:', error);
             }
         });
-    }
-
-
+    });
 </script>
 </body>
 </html>

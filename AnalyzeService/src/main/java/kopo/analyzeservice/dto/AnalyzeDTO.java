@@ -1,40 +1,31 @@
 package kopo.analyzeservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import lombok.Getter;
 
 import java.util.List;
 
+// 최상위 AnalyzeDTO 클래스
 @Builder
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public record AnalyzeDTO(
-        Result eye, // 눈
-        Result lip, // 입술
-        Result tilt, // 기울기
-        String userId, // 회원 아이디
-        String name, // 회원 이름
-        String date, // 분석 날짜
-        String videoUrl, // 영상 원본 URL
-        String objectName // 오브젝트 네임
+        Results results // 결과
 ) {
+    // Results 레코드: eye, lip, tilt 필드 포함
     @Builder
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    public record Result(
-            Status status, // 상태
-            List<Accuracy> accuracy // 정확도
-    ) {
-    }
-    @Builder
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    public record Accuracy(
-            String accurate, // 정확한 정도
-            String inaccurate // 정확하지 않은 정도
-    ) {
-    }
+    public static record Results(
+            Prediction eye, // 눈
+            Prediction lip, // 입술
+            Prediction tilt // 기울기
+    ) {}
 
-    public enum Status {
-        NORMAL, // 정상(0)
-        ABNORMAL // 비정상(1)
-    }
+    // Prediction 레코드: predicted_class과 probabilities 필드 포함
+    @Builder
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    public static record Prediction(
+            @JsonProperty("predicted_class") int predictedClass, // 예측된 클래스
+            List<List<Double>> probabilities // 확률 배열
+    ) {}
 }

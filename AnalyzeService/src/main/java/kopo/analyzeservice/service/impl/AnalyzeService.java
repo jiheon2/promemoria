@@ -20,13 +20,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.http.MediaType;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,6 +38,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AnalyzeService implements AnalyzeInterface {
 
+    private final ElasticsearchOperations elasticsearchOperations;
     private final AnalyzeRepository analyzeRepository;
     private final MetaRepository metaRepository;
     private final ModelClient modelClient;
@@ -43,7 +48,7 @@ public class AnalyzeService implements AnalyzeInterface {
     private String bucketName;
 
     @KafkaListener(
-            topics = "analyze-topic",
+            topics = "analyze-data",
             groupId = "analyze-group",
             containerFactory = "analyzeKafkaListenerContainerFactory"
     )
@@ -55,12 +60,12 @@ public class AnalyzeService implements AnalyzeInterface {
         List<MetaDTO> metaList = getMetaList(uploadIdentifier);
         List<AnalyzeDTO> analyzeList = analyzeData(metaList);
 
-
         log.info("저장 데이터 : {}", analyzeList);
+        log.info("저장 데이터 : {}", metaList);
 
         // analyzeList 저장 로직 추가
         try {
-            this.saveAnalyzeData(analyzeList); // 현재 클래스의 saveAll 메서드 호출
+            this.saveAnalyzeData(metaList, analyzeList); // 메타 정보를 함께 전달
             MsgDTO dto = MsgDTO.builder()
                     .result(1)
                     .msg("Analyze data saved successfully.")
@@ -77,7 +82,7 @@ public class AnalyzeService implements AnalyzeInterface {
     }
 
     @KafkaListener(
-            topics = "meta-topic",
+            topics = "meta-data",
             groupId = "meta-group",
             containerFactory = "metaKafkaListenerContainerFactory"
     )
@@ -101,30 +106,10 @@ public class AnalyzeService implements AnalyzeInterface {
         }
     }
 
-
     @Override
-    public List<AnalyzeDTO> getAnalyzeList(String userId) {
-
-        log.info("getAnalyzeList start : {}", this.getClass().getName());
-
-        log.info("조회할 UserId : {}", userId);
-
-        List<AnalyzeData> rList = analyzeRepository.findAllByUserId(userId);
-        // rList를 Optional로 감싸고 변환을 진행하여 코드 간결화
-        List<AnalyzeDTO> dtoList = Optional.ofNullable(rList)
-                .map(AnalyzeDataMapper::toDTOList)
-                .orElse(Collections.emptyList());
-
-        // dtoList가 비어 있지 않을 때만 상세 로그를 남기도록 조건부 로깅
-        if (!dtoList.isEmpty()) {
-            logDtoListAsJson(dtoList); // JSON 형식으로 dtoList 출력
-        } else {
-            log.info("No analysis data found for UserId: {}", userId);
-        }
-
-        log.info("getAnalyzeList end : {}", this.getClass().getName());
-
-        return dtoList;
+    public List<AnalyzeData> getAnalyzeList(String userId) {
+        // 사용자 ID로 모든 분석 데이터 조회
+        return analyzeRepository.findAllByUserId(userId);
     }
 
     @Override
@@ -159,7 +144,9 @@ public class AnalyzeService implements AnalyzeInterface {
 
         log.info("objectName : {}", uploadIdentifier);
 
-        List<MetaDTO> metaList = metaRepository.findAllByUploadIdentifier(uploadIdentifier);
+        List<Metadata> eList = metaRepository.findAllByUploadIdentifier(uploadIdentifier);
+
+        List<MetaDTO> metaList = convertList(eList);
 
         log.info("metaList : {}", metaList);
 
@@ -177,17 +164,12 @@ public class AnalyzeService implements AnalyzeInterface {
         return metaList.parallelStream()
                 .map(metaDTO -> {
                     String objectName = metaDTO.objectName();
-                    String downloadFilePath = metaDTO.downloadFilePath(); // downloadFilePath 가져오기
-
+                    String downloadFilePath = metaDTO.downloadFilePath();
+                    String analyzeDate = extractDateFromObjectName(objectName);
                     try {
                         MultipartFile file = downloadFileFromS3(bucketName, objectName);
-                        AnalyzeDTO analyzeResult = modelClient.analyzeData(file);
-
-                        // AnalyzeDTO에 downloadFilePath와 objectName 설정
-                        analyzeResult = AnalyzeDTO.builder().videoUrl(downloadFilePath).build();
-                        analyzeResult = AnalyzeDTO.builder().objectName(objectName).build();
-
-                        return analyzeResult;
+                        AnalyzeDTO analyzeDTO = modelClient.analyzeData(file);
+                        return analyzeDTO;
                     } catch (IOException e) {
                         log.error("파일 처리 중 오류 발생: {}", objectName, e);
                         throw new RuntimeException("파일 처리 중 오류가 발생했습니다: " + objectName, e);
@@ -218,19 +200,61 @@ public class AnalyzeService implements AnalyzeInterface {
         }
     }
 
-    private void saveAnalyzeData(List<AnalyzeDTO> analyzeList) {
+    private void saveAnalyzeData(List<MetaDTO> metaList, List<AnalyzeDTO> analyzeList) {
         if (analyzeList == null || analyzeList.isEmpty()) {
             log.info("No analyze data to save.");
             return;
         }
 
-        List<AnalyzeData> dataList = analyzeList.stream()
-                .map(AnalyzeDataMapper::toDocument)
-                .collect(Collectors.toList());
+        // 메타 필드와 분석 결과를 결합하여 AnalyzeData 엔티티 생성
+        List<AnalyzeData> dataList = new ArrayList<>();
+        for (int i = 0; i < metaList.size() && i < analyzeList.size(); i++) {
+            MetaDTO metaDTO = metaList.get(i);
+            AnalyzeDTO analyzeDTO = analyzeList.get(i);
+
+            String analyzeDate = extractDateFromObjectName(metaDTO.objectName());
+
+            AnalyzeData analyzeData = AnalyzeDataMapper.toDocument(
+                    metaDTO.userId(),
+                    analyzeDate,
+                    metaDTO.downloadFilePath(),
+                    metaDTO.objectName(),
+                    analyzeDTO
+            );
+
+            dataList.add(analyzeData);
+        }
 
         analyzeRepository.saveAll(dataList);
         log.info("Saved {} analyze data entries.", dataList.size());
     }
 
+    private String extractDateFromObjectName(String objectName) {
+        String analyzeDate = "";
+        Pattern pattern = Pattern.compile("_(\\d{4}-\\d{2}-\\d{2}_\\d{2}-\\d{2}-\\d{2})-");
+        Matcher matcher = pattern.matcher(objectName);
+        if (matcher.find()) {
+            analyzeDate = matcher.group(1);
+        } else {
+            throw new RuntimeException("objectName에서 날짜를 추출할 수 없습니다: " + objectName);
+        }
+        return analyzeDate;
+    }
+
+    public MetaDTO convertToMetaDTO(Metadata metadata) {
+        return MetaDTO.builder()
+                .bucketName(metadata.getBucketName())
+                .downloadFilePath(metadata.getDownloadFilePath())
+                .objectName(metadata.getObjectName())
+                .userId(metadata.getUserId())
+                .uploadIdentifier(metadata.getUploadIdentifier())
+                .build();
+    }
+
+    public List<MetaDTO> convertList(List<Metadata> eList) {
+        return eList.stream()
+                .map(this::convertToMetaDTO)
+                .collect(Collectors.toList());
+    }
 
 }

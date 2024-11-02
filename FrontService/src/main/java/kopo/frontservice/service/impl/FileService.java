@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -61,9 +62,14 @@ public class FileService implements IFileService {
 
     @Override
     public void fullFileUploadOnServer(String userId, MultipartFile fullRecording) {
+        String uploadIdentifier = UUID.randomUUID().toString();
+        log.info("생성된 업로드 식별자 : {}", uploadIdentifier);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+        String dateTime = localDateTime.format(formatter);
         try {
-            String filePath = userId + "_" + localDateTime + "-" + fullRecording.getOriginalFilename();
+            String filePath = userId + "_" + dateTime + "-" + fullRecording.getOriginalFilename();
             log.info("생성된 파일명 : " + filePath);
+
 
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(fullRecording.getSize());
@@ -93,18 +99,31 @@ public class FileService implements IFileService {
             uploadedMetadata.put("objectName", filePath);
             uploadedMetadata.put("userId", userId);
             uploadedMetadata.put("downloadFilePath", downloadFilePath);
+            uploadedMetadata.put("uploadIdentifier", uploadIdentifier);
 
             // Map을 JSON으로 변환
             ObjectMapper mapper = new ObjectMapper();
             String metadataToJson = mapper.writeValueAsString(uploadedMetadata);
 
             log.info("Metadata: " + metadataToJson);
+
+            // 메타데이터 저장 토픽 발행
+            log.info("메타데이터 저장 토픽 발행");
+            metaTemplate.send(METADATA_TOPIC, uploadedMetadata);
+            log.info("보낸 카프카 토픽 : {}", METADATA_TOPIC);
+            log.info("보낸 카프카 데이터 : {}", uploadedMetadata);
         } catch (AmazonS3Exception e) {
             e.printStackTrace();
         } catch (SdkClientException e) {
             e.printStackTrace();
         } catch (IOException e) {
             throw new IllegalArgumentException();
+        } finally {
+            // 데이터 분석 요청
+            log.info("데이터 분석 요청 토픽 발행");
+            analyzeTemplate.send(ANALYZE_TOPIC, uploadIdentifier);
+            log.info("보낸 카프카 토픽 : {}", ANALYZE_TOPIC);
+            log.info("보낸 카프카 데이터 : {}", uploadIdentifier);
         }
     }
 
@@ -115,10 +134,12 @@ public class FileService implements IFileService {
 
         String uploadIdentifier = UUID.randomUUID().toString();
         log.info("생성된 업로드 식별자 : {}", uploadIdentifier);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+        String dateTime = localDateTime.format(formatter);
 
         try {
             for (MultipartFile uploadFile : videoPart) {
-                String filePath = userId + localDateTime + "-" + uploadFile.getOriginalFilename();
+                String filePath = userId + dateTime + "-" + uploadFile.getOriginalFilename();
                 log.info("생성된 파일명 : " + filePath);
 
                 ObjectMetadata metadata = new ObjectMetadata();

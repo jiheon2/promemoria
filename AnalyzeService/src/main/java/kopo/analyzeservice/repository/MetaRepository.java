@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface MetaRepository extends ElasticsearchRepository<Metadata, String> {
-    List<MetaDTO> findAllByUploadIdentifier(String UploadIdentifier);
+    List<Metadata> findAllByUploadIdentifier(String UploadIdentifier);
 }

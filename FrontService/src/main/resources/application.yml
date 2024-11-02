@@ -1,10 +1,27 @@
 server:
-  port: 11000
-  address: localhost
+  port: 12000
 
 spring:
   application:
-    name: MonoPM
+    name: front
+  kafka:
+    bootstrap-servers: 223.130.147.174:9092
+    consumer:
+      group-id: analyze-group
+      auto-offset-reset: earliest  # 필요한 경우 'latest'로 설정 가능
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 300MB
 
 # JWT 토큰 설정
 jwt:
@@ -26,3 +43,8 @@ management:
     web:
       exposure:
         include: "*"
+
+
+
+accessKey: gtiHaVgTnYHFkX6aRzLu
+secretKey: eNVqarObDsvHvamFovccIAcUQFFcOzcsKg4CCrI1
