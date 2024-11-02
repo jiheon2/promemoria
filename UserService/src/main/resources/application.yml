@@ -1,13 +1,15 @@
 server:
-  port: 11000
+  port: 13000
 
 spring:
   application:
     name: user
   data:
     redis:
-      host: 198.19.172.224
+#      host: 198.19.172.224
+      host: localhost
       port: 6379
+      password: 1234
 
   # JPA ??
   jpa:
@@ -18,7 +20,7 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgresSQLDialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         default_batch_fetch_size: 100
         format_sql: true
     show-sql: true
@@ -26,7 +28,8 @@ spring:
   datasource:
     username: pm
     password: '1234'
-    url: jdbc:postgresql://198.19.211.209:5432/pm
+#    url: jdbc:postgresql://198.19.211.209:5432/pm
+    url: jdbc:postgresql://localhost:15432/pm
     driver-class-name: org.postgresql.Driver
 
 # JWT ?? ??

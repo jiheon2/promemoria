@@ -1,21 +1,20 @@
 spring:
   application:
-    name: AnalyzeService
+    name: analyze
   elasticsearch:
-    uris: https://localhost:9200  # Elasticsearch 서버 주소
-    host: localhost
+    uris: http://223.130.147.174:9200  # Elasticsearch 서버 주소
+    host: 223.130.147.174
     port: 9200
     username: elastic  # 사용자 이름
     password: 1234  # 비밀번호
     connection-timeout: 3s  # 연결 시간 초과 설정 (선택 사항)
     socket-timeout: 3s  # 소켓 시간 초과 설정 (선택 사항)
+    xpack.security.enabled: false
+
   kafka:
-    bootstrap-servers: kafka-headless.kopo-trainee20.svc.cluster.local:9094
+    bootstrap-servers: 223.130.147.174:9092
     consumer:
-      group-id: analyze-group
-      auto-offset-reset: earliest  # 필요한 경우 'latest'로 설정 가능
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       properties:
         spring.json.trusted.packages: "*"
     producer:
@@ -23,7 +22,7 @@ spring:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
 server:
-  port: 11000
+  port: 15000
 
 ncp:
   objectStorage:

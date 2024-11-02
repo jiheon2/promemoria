@@ -10,6 +10,6 @@ public record MetaDTO(
         String downloadFilePath,
         String objectName,
         String userId,
-        String date
+        String uploadIdentifier
 ) {
 }

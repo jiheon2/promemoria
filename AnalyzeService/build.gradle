@@ -38,8 +38,8 @@ dependencies {
     // Spring Kafka
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch:3.3.4'
-    implementation 'org.springframework.data:spring-data-elasticsearch:5.3.5'
-    implementation 'co.elastic.clients:elasticsearch-java:8.15.3'
+    implementation 'org.springframework.data:spring-data-elasticsearch'
+    implementation 'co.elastic.clients:elasticsearch-java:8.9.0'
     // OpenFeign
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation platform('com.amazonaws:aws-java-sdk-bom:1.12.529')
@@ -47,6 +47,7 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.modelmapper:modelmapper:3.1.0'
 }
 
 tasks.named('test') {

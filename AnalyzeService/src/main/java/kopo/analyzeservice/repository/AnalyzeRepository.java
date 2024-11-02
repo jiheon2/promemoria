@@ -1,6 +1,7 @@
 package kopo.analyzeservice.repository;
 
 import kopo.analyzeservice.repository.document.AnalyzeData;
+import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
 
