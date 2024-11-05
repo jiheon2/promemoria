@@ -51,12 +51,11 @@ public class SecurityConfig {
         // 페이지 접속 권한 설정(허용된 사용자만 해당 페이지에 접속 가능)
         // 요청 API(url)마다 권한을 다르게 설정함
         http.authorizeExchange(authz -> authz
-                .pathMatchers("/videoChat/v1/**").permitAll()   // 화상채팅
+                .pathMatchers("/friend/v1/**").permitAll()   // 화상채팅
                 .pathMatchers("/analyze/v1/**").permitAll()     // 분석 서비스
-                .pathMatchers("/prevention/v1/**").permitAll()  // 예방 서비스
+                .pathMatchers("/quiz/v1/**").permitAll()  // 예방 서비스
                 .pathMatchers("/user/v1/**").permitAll()        // 유저 서비스
-                .pathMatchers("/join/v1/**").permitAll()        // 회원가입
-                .pathMatchers("/ss/**").permitAll()  // Spring Security 로그인
+                .pathMatchers("/facility/v1/**").permitAll()        // 회원가입
                 .anyExchange().permitAll()
         );
 

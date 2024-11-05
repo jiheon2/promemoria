@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = {"https://www.promemoriapm.kr", "https://prevention.promemoriapm.kr"},
+        allowedHeaders =  "*",
+        methods = {RequestMethod.GET, RequestMethod.OPTIONS, RequestMethod.POST},
+        allowCredentials = "true")
 @Slf4j
 @RequestMapping(value = "/facility/v1")
 @RequiredArgsConstructor

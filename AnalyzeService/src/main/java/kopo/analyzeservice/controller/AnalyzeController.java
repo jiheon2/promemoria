@@ -9,8 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-@CrossOrigin(origins = {"http://localhost:12000"},
-        allowedHeaders = {"POST", "GET", "FEIGN"},
+@CrossOrigin(origins = {"https://www.promemoriapm.kr", "https://analyze.promemoriapm.kr"},
+        allowedHeaders = {"POST", "GET", "FEIGN", "OPTIONS"},
         allowCredentials = "true")
 @Slf4j
 @RequestMapping(value = "/analyze/v1")

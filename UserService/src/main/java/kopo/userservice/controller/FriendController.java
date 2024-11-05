@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = {"http://localhost:12000"},
+@CrossOrigin(origins = {"https://www.promemoriapm.kr", "https://user.promemoriapm.kr"},
         allowedHeaders = {"POST", "GET", "FEIGN"},
         allowCredentials = "true")
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/friend")
+@RequestMapping("/friend/v1")
 @RestController
 public class FriendController {
 

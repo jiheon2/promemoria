@@ -2,15 +2,25 @@ package kopo.frontservice.controller;
 
 //import kopo.poly.dto.SignalingMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
+@RequestMapping("/signaling")
 public class SignalingController {
+
+    @GetMapping("/info")
+    public ResponseEntity<String> getSignalingInfo() {
+        log.info("Signaling info requested");
+        return ResponseEntity.ok("Signaling info available");
+    }
 
     @MessageMapping("/peer/offer/{camKey}/{roomId}")
     @SendTo("/topic/peer/offer/{camKey}/{roomId}")

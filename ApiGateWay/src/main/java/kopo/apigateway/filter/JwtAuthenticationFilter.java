@@ -74,7 +74,8 @@ public class JwtAuthenticationFilter implements WebFilter {
         log.info("token : " + token);
 
         ResponseCookie cookie = ResponseCookie.from(tokenName, token)
-                .domain("프로메모리아 도메인")
+//                .domain("kopo-traine-front-servic-059de-100291067-f4b8e239e81a.kr.lb.naverncp.com")
+                .domain("kopo-traine-front-servic-059de-100291067-f4b8e239e81a.kr.lb.naverncp.com")
                 .path("/")
                 .maxAge(tokenValidTime)
 //                .httpOnly(true)

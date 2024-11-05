@@ -23,7 +23,6 @@ public record AnalyzeDTO(
 
     // Prediction 레코드: predicted_class과 probabilities 필드 포함
     @Builder
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public static record Prediction(
             @JsonProperty("predicted_class") int predictedClass, // 예측된 클래스
             List<List<Double>> probabilities // 확률 배열

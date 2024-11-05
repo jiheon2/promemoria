@@ -3,6 +3,7 @@
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/AnalyzeService" />
+    <file type="web" url="file://$PROJECT_DIR$/ApiGateWay" />
     <file type="web" url="file://$PROJECT_DIR$/AppManager" />
     <file type="web" url="file://$PROJECT_DIR$/ConfigService" />
     <file type="web" url="file://$PROJECT_DIR$/DiscoveryService" />

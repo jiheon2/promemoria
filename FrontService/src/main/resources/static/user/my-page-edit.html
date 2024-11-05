@@ -236,13 +236,13 @@
             // "예"를 선택한 경우
             if (userConfirmed) {
                 $.ajax({
-                    url: "http://localhost:13000/user/v1/deleteUser",
+                    url: "https://user.promemoriapm.kr/user/v1/deleteUser",
                     type: "post",
                     dataType: "JSON",
                     data: { userId : loginUserId },
-                    // xhrFields: {
-                    //     withCredentials: true
-                    // }
+                    xhrFields: {
+                        withCredentials: true
+                    }
                 }).then(function (json) {
                     if (json.data.result === 1) {
                         alert(json.data.msg);
@@ -308,13 +308,13 @@
             }
 
             $.ajax({
-                url: "http://localhost:13000/user/v1/updateUserInfo",
+                url: "https://user.promemoriapm.kr/user/v1/updateUserInfo",
                 type: "post",
                 dataType: "JSON",
                 contentType: "application/json",
-                // xhrFields: {
-                //     withCredentials: true
-                // },
+                xhrFields: {
+                    withCredentials: true
+                },
                 data: JSON.stringify($("#f").serializeObject())
             }).then(
                 function (json) {
@@ -340,13 +340,13 @@
     function userInfo() {
         // 컨트롤러에 요청하기
         $.ajax({
-            url: "http://localhost:13000/user/v1/userInfo",
+            url: "https://user.promemoriapm.kr/user/v1/userInfo",
             type: "post",
             dataType: "JSON",
-            data: { userId : loginUserId }
-            // xhrFields: {
-            //     withCredentials: true
-            // }
+            data: { userId : loginUserId },
+            xhrFields: {
+                withCredentials: true
+            }
         }).then(
             function (json) {
                 const userInfo = json.data;
@@ -388,7 +388,7 @@
 
         // Ajax 호출해서 이메일 중복확인
         $.ajax({
-            url: "http://localhost:13000/user/v1/existEmail",
+            url: "https://user.promemoriapm.kr/user/v1/existEmail",
             type: "post",
             datatype: "JSON",
             data: { userEmail: f.email.value },

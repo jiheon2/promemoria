@@ -55,7 +55,7 @@
 <script>
   function logout() {
     $.ajax({
-      url: "http://localhost:13000/user/v1/logout",
+      url: "https://user.promemoriapm.kr/user/v1/logout",
       type: "post",
       dataType: "json",
       xhrFields: {
@@ -91,7 +91,7 @@
     const jwtAccessToken = getCookie("accessToken"); // 쿠키 이름이 'accessToken'이라고 가정
 
     $.ajax({
-      url: "http://localhost:13000/user/v1/getToken",
+      url: "https://user.promemoriapm.kr/user/v1/getToken",
       type: "post",
       dataType: "json",
       headers: {
@@ -101,6 +101,7 @@
         withCredentials: true
       },
       success: function (json) {
+
         $("#loginOn").show();
         $("#loginOff").hide();
       },
