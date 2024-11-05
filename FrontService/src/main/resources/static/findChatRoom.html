@@ -17,7 +17,7 @@
         function callData() {
             // AJAX 요청을 사용해 이웃 리스트와 채팅방 목록 가져오기
             const friendsListRequest = $.ajax({
-                url: "http://localhost:13000/friend/getMyFriends",
+                url: "https://user.promemoriapm.kr/friend/v1/getMyFriends",
                 method: 'get',
                 dataType: "JSON",
                 headers: {
@@ -27,7 +27,7 @@
             });
 
             const chatListRequest = $.ajax({
-                url: "http://localhost:12000/getChatRoomList",
+                url: "/video/getChatRoomList",
                 method: 'get',
                 dataType: "JSON"
             });

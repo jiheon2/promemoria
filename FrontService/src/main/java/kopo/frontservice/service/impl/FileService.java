@@ -139,7 +139,7 @@ public class FileService implements IFileService {
 
         try {
             for (MultipartFile uploadFile : videoPart) {
-                String filePath = userId + dateTime + "-" + uploadFile.getOriginalFilename();
+                String filePath = userId + "_" + dateTime + "-" + uploadFile.getOriginalFilename();
                 log.info("생성된 파일명 : " + filePath);
 
                 ObjectMetadata metadata = new ObjectMetadata();

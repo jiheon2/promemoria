@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/AnalyzeService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/AnalyzeService.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ApiGateWay.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ApiGateWay.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/FrontService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/FrontService.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/PreventionService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/PreventionService.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/UserService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/UserService.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/promemoria.iml" filepath="$PROJECT_DIR$/.idea/promemoria.iml" />
     </modules>

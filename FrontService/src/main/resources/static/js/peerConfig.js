@@ -11,7 +11,7 @@ roomName = localStorage.getItem("roomName")
 userName = localStorage.getItem("userName");
 
 $.ajax({
-    url: "http://localhost:12000/video/createRoom",
+    url: "/video/createRoom",
     type: "get",
     data: {
         roomName : roomName,
@@ -28,7 +28,7 @@ $.ajax({
         }
 
         // 접속 URL 예 : ws://localhost:10000/ws/테스트방/별명
-        ws = new WebSocket("ws://" + location.host + "/ws/" + roomName + "/" + userName);
+        ws = new WebSocket("wss://" + location.host + "/ws/" + roomName + "/" + userName);
 
         // 웹소켓 열기
         ws.onopen = function (event) {

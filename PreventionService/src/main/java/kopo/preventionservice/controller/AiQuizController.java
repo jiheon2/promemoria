@@ -14,10 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = {
-        "http://192.168.0.99:16000",  // 프론트 서버
-        "https://www.forestbysy.store",
-},
+@CrossOrigin(origins = {"https://www.promemoriapm.kr", "https://prevention.promemoriapm.kr"},
         allowedHeaders =  "*",
         methods = {RequestMethod.GET, RequestMethod.OPTIONS, RequestMethod.POST},
         allowCredentials = "true")

@@ -282,7 +282,7 @@
 
         // Ajax 호출해서 이메일 중복확인
         $.ajax({
-            url: "http://localhost:13000/user/v1/existEmail",
+            url: "https://user.promemoriapm.kr/user/v1/existEmail",
             type: "post",
             datatype: "JSON",
             data: { userEmail: f.email.value },
@@ -311,7 +311,7 @@
 
         // Ajax 호출해서 아이디 중복확인
         $.ajax({
-                url: "http://localhost:13000/user/v1/existEmail",
+                url: "https://user.promemoriapm.kr/user/v1/existEmail",
                 type: "post",
                 dataType: "JSON",
                 data: { userEmail: f.email.value },
@@ -385,11 +385,11 @@
             return;
         }
 
-        if (onlyNumber(f.userAge.value) === false) {
-            alert("숫자만 입력 가능합니다.");
-            f.userAge.focus();
-            return;
-        }
+        // if (onlyNumber(f.userAge.value) === false) {
+        //     alert("숫자만 입력 가능합니다.");
+        //     f.userAge.focus();
+        //     return;
+        // }
 
         if (f.postNumber.value === "") {
             alert("우편번호를 입력하세요.");
@@ -415,11 +415,11 @@
             return;
         }
 
-        if (onlyNumber(f.phoneNumber.value) === false) {
-            alert("숫자만 입력 가능합니다.");
-            f.phoneNumber.focus();
-            return;
-        }
+        // if (onlyNumber(f.phoneNumber.value) === false) {
+        //     alert("숫자만 입력 가능합니다.");
+        //     f.phoneNumber.focus();
+        //     return;
+        // }
 
         if (f.email.value === "") {
             alert("이메일을 입력하세요.");
@@ -435,13 +435,13 @@
 
         // Ajax 호출해서 회원가입하기
         $.ajax({
-            url: "http://localhost:13000/user/v1/registerUser",
+            url: "https://user.promemoriapm.kr/user/v1/registerUser",
             type: "post",
             dataType: "JSON",
             contentType: "application/json",
-            // xhrFields: {
-            //     withCredentials: true
-            // },
+            xhrFields: {
+                withCredentials: true
+            },
             data: JSON.stringify($("#f").serializeObject())
         }).then(
             function (json) {

@@ -24,8 +24,8 @@ public class PreFlightCorsConfiguration {
     private static final String ALLOWED_METHODS = "GET, PUT, POST, DELETE, OPTIONS";
 
     private static final List<String> ALLOWED_ORIGINS = Arrays.asList(
-            "https://www.프로메모리아 프론트 서버",  // 프론트 서버
-            "https://api.프로메모리아 게이트 웨이"   // 게이트 웨이 자기 자신(http로 써뒀어도 알아서 https로 가니까 괜찮음)
+            "http://kopo-traine-api-gateway--a715b-100282058-a143ff010529.kr.lb.naverncp.com:11000",  // 프론트 서버
+            "http://kopo-traine-front-servic-059de-100291067-f4b8e239e81a.kr.lb.naverncp.com:12000"   // 게이트 웨이 자기 자신(http로 써뒀어도 알아서 https로 가니까 괜찮음)
     );
 
     private static final String MAX_AGE = "3600";

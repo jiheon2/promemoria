@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-@CrossOrigin(origins = {"http://localhost:12000"},
-        allowedHeaders = {"POST", "GET", "FEIGN"},
+@CrossOrigin(origins = {"https://www.promemoriapm.kr", "https://user.promemoriapm.kr"},
+        allowedHeaders = {"POST", "GET", "FEIGN", "OPTIONS"},
         allowCredentials = "true")
 @Slf4j
 @RequestMapping(value = "/user/v1")
@@ -63,7 +63,9 @@ public class UserController {
         log.info("accessToken : " + accessToken);
 
         ResponseCookie cookie = ResponseCookie.from(accessTokenName, accessToken)
-                .domain("localhost")
+                .domain("promemoriapm.kr")
+                .secure(true)
+                .sameSite("None")
                 .path("/")
                 .maxAge(accessTokenValidTime)
                 .httpOnly(true)

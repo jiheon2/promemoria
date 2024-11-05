@@ -108,6 +108,7 @@ public class AnalyzeService implements AnalyzeInterface {
 
     @Override
     public List<AnalyzeData> getAnalyzeList(String userId) {
+        log.info("userId: {}", userId);
         // 사용자 ID로 모든 분석 데이터 조회
         return analyzeRepository.findAllByUserId(userId);
     }

@@ -352,13 +352,13 @@
     function userInfo() {
         // 컨트롤러에 요청하기
         $.ajax({
-            url: "http://localhost:13000/user/v1/userInfo",
+            url: "https://user.promemoriapm.kr/user/v1/userInfo",
             type: "post",
             dataType: "JSON",
-            data: { userId : loginUserId }
-            // xhrFields: {
-            //     withCredentials: true
-            // }
+            data: { userId : loginUserId },
+            xhrFields: {
+                withCredentials: true
+            }
         }).then(
             function (json) {
                 const userInfo = json.data;
@@ -375,7 +375,7 @@
     function getFriendList() {
         // 컨트롤러에 요청하기
         $.ajax({
-            url: "http://localhost:13000/friend/getMyFriends",
+            url: "https://user.promemoriapm.kr/friend/v1/getMyFriends",
             type: "get",
             dataType: "json",
             headers: {
@@ -413,7 +413,7 @@
     // 이웃 삭제 함수
     function deleteFriend(friendId) {
         $.ajax({
-            url: "http://localhost:13000/friend/deleteMyFriend",
+            url: "https://user.promemoriapm.kr/friend/v1/deleteMyFriend",
             type: "post",
             headers: {
                 "X-User-Id": loginUserId
@@ -433,7 +433,7 @@
     // 추천 친구 목록을 가져와 화면에 표시하는 함수
     function loadRecommendedFriends() {
         $.ajax({
-            url: "http://localhost:13000/friend/recommendFriends",
+            url: "https://user.promemoriapm.kr/friend/v1/recommendFriends",
             type: "get",
             dataType: "json",
             headers: {
@@ -481,7 +481,7 @@
         }
 
         $.ajax({
-            url: "http://localhost:13000/friend/findFriends",
+            url: "https://user.promemoriapm.kr/friend/v1/findFriends",
             type: "post",
             dataType: "json",
             headers: {
@@ -524,7 +524,7 @@
     // 친구 추가 요청을 보내는 함수
     function addFriend(friendId) {
         $.ajax({
-            url: "http://localhost:13000/friend/insertMyFriend",
+            url: "https://user.promemoriapm.kr/friend/v1/insertMyFriend",
             type: "post",
             headers: {
                 "X-User-Id": loginUserId // userId를 헤더로 전달

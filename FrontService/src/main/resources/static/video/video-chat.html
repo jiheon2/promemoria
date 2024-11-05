@@ -250,7 +250,7 @@
 
         $('#makeVideoChat').on("click", function () {
             $.ajax({
-                url: "http://localhost:12000/video/createRoom",
+                url: "/video/createRoom",
                 type: "get",
                 data: {
                     roomName : loginUserId,
@@ -272,7 +272,7 @@
     function callData() {
         // AJAX 요청을 사용해 이웃 리스트와 채팅방 목록 가져오기
         const friendsListRequest = $.ajax({
-            url: "http://localhost:13000/friend/getMyFriends",
+            url: "https://user.promemoriapm.kr/friend/v1/getMyFriends",
             method: 'get',
             dataType: "JSON",
             headers: {
@@ -283,7 +283,7 @@
 
         // 채팅방 목록 가져오기 (GET 요청)
         const chatListRequest = $.ajax({
-            url: "http://localhost:12000/video/getChatRoomList",
+            url: "/video/getChatRoomList",
             type: 'get', // 서버에서 GET 요청 처리하도록 맞춤
             dataType: "JSON"
         });
@@ -316,7 +316,7 @@
                     friendItem.find('.enter-button').click(() => {
                         console.log(`${friend.friendId} 채팅방으로 입장`);
                         $.ajax({
-                            url: "http://localhost:12000/video/createRoom",
+                            url: "/video/createRoom",
                             type: "get",
                             data: {
                                 roomName: friend.friendId,
@@ -353,13 +353,13 @@
     function userInfo() {
         // 컨트롤러에 요청하기
         $.ajax({
-            url: "http://localhost:13000/user/v1/userInfo",
+            url: "https://user.promemoriapm.kr/user/v1/userInfo",
             type: "post",
             dataType: "JSON",
-            data: { userId : loginUserId }
-            // xhrFields: {
-            //     withCredentials: true
-            // }
+            data: { userId : loginUserId },
+            xhrFields: {
+                withCredentials: true
+            }
         }).then(
             function (json) {
                 const userInfo = json.data;

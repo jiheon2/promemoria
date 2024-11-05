@@ -18,7 +18,7 @@ function getToken() {
     // console.log(jwtAccessToken)
 
     $.ajax({
-        url: "http://localhost:13000/user/v1/getToken",
+        url: "https://user.promemoriapm.kr/user/v1/getToken",
         type: "post",
         dataType: "json",
         xhrFields: {

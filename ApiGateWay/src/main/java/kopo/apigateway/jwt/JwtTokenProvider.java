@@ -99,7 +99,11 @@ public class JwtTokenProvider {
          SecretKey secret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
 
         // JWT 토큰 정보
-        Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(secret)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
 
         String userId = CmmUtil.nvl(claims.getSubject());
         String role = CmmUtil.nvl((String)claims.get("roles"));  // Loginservice 생성된 토큰의 권한명과 동일

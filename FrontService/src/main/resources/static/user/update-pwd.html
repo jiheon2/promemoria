@@ -173,13 +173,13 @@
 
             if (f.newPassword1.value === f.newPassword2.value) {
                 $.ajax({
-                    url: "http://localhost:13000/user/v1/updatePassword",
+                    url: "https://user.promemoriapm.kr/user/v1/updatePassword",
                     type: "post",
                     dataType: "JSON",
                     contentType: "application/json",
-                    // xhrFields: {
-                    //     withCredentials: true
-                    // },
+                    xhrFields: {
+                        withCredentials: true
+                    },
                     data: JSON.stringify($("#f").serializeObject())
                 }).then(
                     function (json) {
@@ -206,13 +206,13 @@
     function userInfo() {
         // 컨트롤러에 요청하기
         $.ajax({
-            url: "http://localhost:13000/user/v1/userInfo",
+            url: "https://user.promemoriapm.kr/user/v1/userInfo",
             type: "post",
             dataType: "JSON",
-            data: { userId : loginUserId }
-            // xhrFields: {
-            //     withCredentials: true
-            // }
+            data: { userId : loginUserId },
+            xhrFields: {
+                withCredentials: true
+            }
         }).then(
             function (json) {
                 const userInfo = json.data;

@@ -233,13 +233,13 @@
     function userInfo() {
         // 컨트롤러에 요청하기
         $.ajax({
-            url: "http://localhost:13000/user/v1/userInfo",
+            url: "https://user.promemoriapm.kr/user/v1/userInfo",
             type: "post",
             dataType: "JSON",
-            data: { userId : loginUserId }
-            // xhrFields: {
-            //     withCredentials: true
-            // }
+            data: { userId : loginUserId },
+            xhrFields: {
+                withCredentials: true
+            }
         }).then(
             function (json) {
                 const userInfo = json.data;

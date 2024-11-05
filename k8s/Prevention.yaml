@@ -14,86 +14,18 @@ spec:
     spec:
       containers:
         - name: prevention
-          image: your-docker-image:latest # 실제 이미지 이름으로 변경 필요
+          image: docker.io/jiheonk/prevention:latest
+          imagePullPolicy: Always
           resources:
             requests:
-              memory: "500Mi"  # 최소 메모리 요청
-              cpu: "500m"      # 최소 CPU 요청 (0.5 CPU)
+              memory: "500Mi"
+              cpu: "500m"
             limits:
-              memory: "500Mi"  # 최대 메모리 제한
-              cpu: "500m"         # 최대 CPU 제한 (1 CPU)
+              memory: "500Mi"
+              cpu: "500m"
           ports:
             - containerPort: 14000
-          env:
-            - name: SPRING_DATASOURCE_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: prevention-db-secret
-                  key: username
-            - name: SPRING_DATASOURCE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: prevention-db-secret
-                  key: password
-            - name: SPRING_DATASOURCE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: prevention-db-secret
-                  key: db-url
-          volumeMounts:
-            - name: config-volume
-              mountPath: /config
-              subPath: application.yaml
-      volumes:
-        - name: config-volume
-          configMap:
-            name: prevention-config
-
 ---
-
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: prevention-config
-data:
-  application.yaml: |
-    server:
-      port: 14000
-
-    spring:
-      application:
-        name: prevention
-
-      # JPA 설정
-      jpa:
-        open-in-view: 'false'
-        show-sql: 'true'
-        properties:
-          hibernate:
-            default_batch_fetch_size: '100'
-            format_sql: 'true'
-            use_sql_comments: 'true'
-
-        hibernate:
-          ddl-auto: update
-          naming:
-            physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-
-
----
-
-apiVersion: v1
-kind: Secret
-metadata:
-  name: prevention-db-secret
-type: Opaque
-data:
-  username: cG0=
-  password: MTIzNA==
-  db-url: amRiYzptYXJpYWRiOi8vMTk4LjE5LjE2MS45NzozMzA2L3Bt
-
----
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -105,4 +37,4 @@ spec:
     - protocol: TCP
       port: 14000
       targetPort: 14000
-  type: ClusterIP
+  type: LoadBalancer
