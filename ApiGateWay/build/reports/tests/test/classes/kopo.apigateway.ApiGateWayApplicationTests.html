@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - ApiGateWayApplicationTests</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>ApiGateWayApplicationTests</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/kopo.apigateway.html">kopo.apigateway</a> &gt; ApiGateWayApplicationTests</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">1</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">1.120s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">contextLoads()</td>
+<td class="success">1.120s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>16:38:59.222 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [kopo.apigateway.ApiGateWayApplicationTests]: ApiGateWayApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+16:38:59.375 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration kopo.apigateway.ApiGateWayApplication for test class kopo.apigateway.ApiGateWayApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2024-11-04T16:39:02.099+09:00  INFO 31620 --- [gateway] [    Test worker] k.apigateway.ApiGateWayApplicationTests  : Starting ApiGateWayApplicationTests using Java 17.0.10 with PID 31620 (started by data8316-04 in C:\promemoria\ApiGateWay)
+2024-11-04T16:39:02.103+09:00  INFO 31620 --- [gateway] [    Test worker] k.apigateway.ApiGateWayApplicationTests  : No active profile set, falling back to 1 default profile: &quot;default&quot;
+2024-11-04T16:39:03.885+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.cloud.context.scope.GenericScope     : BeanFactory id=3781bcd0-dcf0-3bb2-bcbf-4d82fc4311de
+&gt;&gt;&gt;&gt;&gt; preflight 전용 CORS 필터 실행
+2024-11-04T16:39:04.247+09:00  INFO 31620 --- [gateway] [    Test worker] ctiveUserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 81b270d7-f961-45ba-81d4-3b99c5a93163
+
+2024-11-04T16:39:04.458+09:00  INFO 31620 --- [gateway] [    Test worker] kopo.apigateway.config.SecurityConfig    : kopo.apigateway.config.SecurityConfig$$SpringCGLIB$$0.filterChain Start!
+2024-11-04T16:39:04.508+09:00  INFO 31620 --- [gateway] [    Test worker] kopo.apigateway.config.SecurityConfig    : kopo.apigateway.config.SecurityConfig$$SpringCGLIB$$0.filterChain End!
+2024-11-04T16:39:06.168+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2024-11-04T16:39:06.660+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [After]
+2024-11-04T16:39:06.660+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Before]
+2024-11-04T16:39:06.660+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Between]
+2024-11-04T16:39:06.661+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Cookie]
+2024-11-04T16:39:06.661+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Header]
+2024-11-04T16:39:06.661+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Host]
+2024-11-04T16:39:06.661+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Method]
+2024-11-04T16:39:06.661+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Path]
+2024-11-04T16:39:06.661+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Query]
+2024-11-04T16:39:06.661+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [ReadBody]
+2024-11-04T16:39:06.662+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [RemoteAddr]
+2024-11-04T16:39:06.662+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [XForwardedRemoteAddr]
+2024-11-04T16:39:06.662+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Weight]
+2024-11-04T16:39:06.662+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [CloudFoundryRouteService]
+2024-11-04T16:39:08.313+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2024-11-04T16:39:08.428+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 16 endpoints beneath base path '/actuator'
+2024-11-04T16:39:08.864+09:00  INFO 31620 --- [gateway] [    Test worker] k.apigateway.ApiGateWayApplicationTests  : Started ApiGateWayApplicationTests in 9.251 seconds (process running for 10.784)
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 8.8</a> at 2024. 11. 4. 오후 4:39:10</p>
+</div>
+</div>
+</body>
+</html>

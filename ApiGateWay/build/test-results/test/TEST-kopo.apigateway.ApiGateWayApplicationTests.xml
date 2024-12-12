@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="kopo.apigateway.ApiGateWayApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-11-04T07:39:08" hostname="DESKTOP-4JAI1TA" time="1.12">
+  <properties/>
+  <testcase name="contextLoads()" classname="kopo.apigateway.ApiGateWayApplicationTests" time="1.12"/>
+  <system-out><![CDATA[16:38:59.222 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [kopo.apigateway.ApiGateWayApplicationTests]: ApiGateWayApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+16:38:59.375 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration kopo.apigateway.ApiGateWayApplication for test class kopo.apigateway.ApiGateWayApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2024-11-04T16:39:02.099+09:00  INFO 31620 --- [gateway] [    Test worker] k.apigateway.ApiGateWayApplicationTests  : Starting ApiGateWayApplicationTests using Java 17.0.10 with PID 31620 (started by data8316-04 in C:\promemoria\ApiGateWay)
+2024-11-04T16:39:02.103+09:00  INFO 31620 --- [gateway] [    Test worker] k.apigateway.ApiGateWayApplicationTests  : No active profile set, falling back to 1 default profile: "default"
+2024-11-04T16:39:03.885+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.cloud.context.scope.GenericScope     : BeanFactory id=3781bcd0-dcf0-3bb2-bcbf-4d82fc4311de
+>>>>> preflight 전용 CORS 필터 실행
+2024-11-04T16:39:04.247+09:00  INFO 31620 --- [gateway] [    Test worker] ctiveUserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 81b270d7-f961-45ba-81d4-3b99c5a93163
+
+2024-11-04T16:39:04.458+09:00  INFO 31620 --- [gateway] [    Test worker] kopo.apigateway.config.SecurityConfig    : kopo.apigateway.config.SecurityConfig$$SpringCGLIB$$0.filterChain Start!
+2024-11-04T16:39:04.508+09:00  INFO 31620 --- [gateway] [    Test worker] kopo.apigateway.config.SecurityConfig    : kopo.apigateway.config.SecurityConfig$$SpringCGLIB$$0.filterChain End!
+2024-11-04T16:39:06.168+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2024-11-04T16:39:06.660+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [After]
+2024-11-04T16:39:06.660+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Before]
+2024-11-04T16:39:06.660+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Between]
+2024-11-04T16:39:06.661+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Cookie]
+2024-11-04T16:39:06.661+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Header]
+2024-11-04T16:39:06.661+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Host]
+2024-11-04T16:39:06.661+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Method]
+2024-11-04T16:39:06.661+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Path]
+2024-11-04T16:39:06.661+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Query]
+2024-11-04T16:39:06.661+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [ReadBody]
+2024-11-04T16:39:06.662+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [RemoteAddr]
+2024-11-04T16:39:06.662+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [XForwardedRemoteAddr]
+2024-11-04T16:39:06.662+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Weight]
+2024-11-04T16:39:06.662+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [CloudFoundryRouteService]
+2024-11-04T16:39:08.313+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2024-11-04T16:39:08.428+09:00  INFO 31620 --- [gateway] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 16 endpoints beneath base path '/actuator'
+2024-11-04T16:39:08.864+09:00  INFO 31620 --- [gateway] [    Test worker] k.apigateway.ApiGateWayApplicationTests  : Started ApiGateWayApplicationTests in 9.251 seconds (process running for 10.784)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
